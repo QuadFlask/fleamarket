@@ -1,4 +1,4 @@
-package com.github.quadflask.fleamarketseller;
+package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,35 +15,51 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MainActivity extends AppCompatActivity {
+import com.github.quadflask.fleamarketseller.FleamarketApplication;
+import com.github.quadflask.fleamarketseller.R;
+import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.store.Store;
 
-	private SectionsPagerAdapter mSectionsPagerAdapter;
+import butterknife.BindView;
 
-	private ViewPager mViewPager;
+public class MainActivity extends BaseActivity {
+
+	@BindView(R.id.toolbar)
+	Toolbar toolbar;
+
+	@BindView(R.id.container)
+	ViewPager mViewPager;
+
+	@BindView(R.id.tabs)
+	TabLayout tabLayout;
+
+	@BindView(R.id.fab)
+	FloatingActionButton fab;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-		mViewPager = (ViewPager) findViewById(R.id.container);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-		TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 		tabLayout.setupWithViewPager(mViewPager);
-
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-						.setAction("Action", null).show();
-			}
+		fab.setOnClickListener(view -> {
+			FleamarketApplication.actionCreator().newCategory(Category.builder().name("test").build());
+			Snackbar
+					.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+					.setAction("Action", null)
+					.show();
 		});
+	}
+
+	@Override
+	public void onNext(Store.StoreChangeEvent storeChangeEvent) {
+		// TODO update ui...
+	}
+
+	@Override
+	protected int getContentViewResId() {
+		return R.layout.activity_main;
 	}
 
 	@Override
@@ -63,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
-
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 

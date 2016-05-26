@@ -1,4 +1,4 @@
-package com.github.quadflask.fleamarketseller.actions;
+package com.github.quadflask.fleamarketseller.store;
 
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.dispatcher.DispatcherModule;
@@ -11,10 +11,10 @@ import dagger.Provides;
 @Module(
 		includes = DispatcherModule.class
 )
-public class ActionCreatorModule {
+public class StoreModule {
 	@Provides
 	@Singleton
-	ActionCreator provideActionCreator(Dispatcher dispatcher) {
-		return new ActionCreator(dispatcher);
+	Store provideStore(Dispatcher dispatcher) {
+		return new Store(dispatcher);
 	}
 }

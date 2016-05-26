@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/rl_root"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="8dp">
+
+	<TextView
+		android:id="@+id/textView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Category parent"
+		android:textColor="@color/colorPrimaryDark"
+		android:textSize="16sp"
+		android:textStyle="bold"/>
+	<AutoCompleteTextView
+		android:id="@+id/actv_category"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/textView"
+		android:layout_marginBottom="16dp"
+		android:completionHint="category..."
+		android:completionThreshold="1"/>
+
+	<TextView
+		android:id="@+id/textView2"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/actv_category"
+		android:text="Category name"
+		android:textColor="@color/colorPrimaryDark"
+		android:textSize="16sp"
+		android:textStyle="bold"/>
+	<EditText
+		android:id="@+id/tv_category_name"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/textView2"
+		android:inputType="text"/>
+
+	<Button
+		android:id="@+id/btn_complete"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentStart="true"
+		android:text="Done"/>
+
+</RelativeLayout>
