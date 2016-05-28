@@ -28,7 +28,7 @@ public class Dispatcher {
 		if (observer != null) {
 			unregister(observer);
 			registerMap.put(observer, rxBus
-					.toObserverable()
+					.toObservable()
 					.subscribe(observer));
 		}
 	}
@@ -37,7 +37,7 @@ public class Dispatcher {
 		if (observer != null) {
 			unregister(observer);
 			registerMap.put(observer, rxBus
-					.toObserverable()
+					.toObservable()
 					.filter(a -> a instanceof UiUpdateEvent)
 					.map(e -> (UiUpdateEvent) e)
 					.observeOn(AndroidSchedulers.mainThread())

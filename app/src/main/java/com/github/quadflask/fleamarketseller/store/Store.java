@@ -110,18 +110,18 @@ public class Store implements Observer {
 
 		return Stream
 				.of(parents)
-				.map(category -> category.getName())
+				.map(Category::getName)
 				.collect(Collectors.toList());
 	}
 
 	public static class StoreChangeEvent {
 	}
 
-	interface RealmInsert {
+	private interface RealmInsert {
 		void insert(Realm realm);
 	}
 
-	void insertWith(RealmInsert realmInsert) {
+	private void insertWith(RealmInsert realmInsert) {
 		Realm realm = FleamarketApplication.realm();
 		try {
 			realm.beginTransaction();
