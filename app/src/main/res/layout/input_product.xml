@@ -112,7 +112,8 @@
 					android:id="@+id/tv_product_name"
 					android:layout_width="fill_parent"
 					android:layout_height="56dp"
-					android:inputType="text"/>
+					android:inputType="text"
+					android:maxLines="1"/>
 			</LinearLayout>
 
 			<LinearLayout
@@ -133,7 +134,8 @@
 					android:id="@+id/tv_product_price"
 					android:layout_width="fill_parent"
 					android:layout_height="56dp"
-					android:inputType="numberDecimal"/>
+					android:inputType="numberDecimal"
+					android:maxLines="1"/>
 			</LinearLayout>
 			<Button
 				android:id="@+id/btn_complete"
