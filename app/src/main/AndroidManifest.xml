@@ -25,6 +25,12 @@
 			android:theme="@style/AppTheme.NoActionBar"
 			android:windowSoftInputMode="stateVisible|adjustPan">
 		</activity>
+		<activity
+			android:name=".view.InputProductActivity"
+			android:label="@string/act_title_input_product_income"
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="stateVisible|adjustPan">
+		</activity>
 	</application>
 
 </manifest>

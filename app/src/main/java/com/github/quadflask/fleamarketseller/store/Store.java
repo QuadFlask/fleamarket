@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import lombok.val;
 import rx.Observer;
 
@@ -108,6 +109,19 @@ public class Store implements Observer {
 				.isNull("parent")
 				.findAll();
 
+		return toCategoryNames(parents);
+	}
+
+	public List<String> loadCategoryNames() {
+		val parents = FleamarketApplication.realm()
+				.where(Category.class)
+				.isNotNull("parent")
+				.findAll();
+
+		return toCategoryNames(parents);
+	}
+
+	private List<String> toCategoryNames(RealmResults<Category> parents) {
 		return Stream
 				.of(parents)
 				.map(Category::getName)

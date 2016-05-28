@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.github.quadflask.fleamarketseller.R;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
@@ -37,9 +38,11 @@ public class MainActivity extends BaseActivity {
 
 		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 		tabLayout.setupWithViewPager(mViewPager);
-		fab.setOnClickListener(view -> {
+	}
 
-		});
+	@OnClick(R.id.fab)
+	void openInputProduct() {
+		startActivity(new Intent(this, InputProductActivity.class));
 	}
 
 	@Override
