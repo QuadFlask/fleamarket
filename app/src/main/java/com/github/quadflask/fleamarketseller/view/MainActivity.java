@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
 		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 		tabLayout.setupWithViewPager(mViewPager);
 		fab.setOnClickListener(view -> {
-			startActivity(new Intent(this, InputCategoryActivity.class));
+
 		});
 	}
 
@@ -62,8 +62,11 @@ public class MainActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_add_category) {
+			startActivity(new Intent(this, InputCategoryActivity.class));
 			return true;
+		} else if (id == R.id.action_settings) {
+
 		}
 
 		return super.onOptionsItemSelected(item);

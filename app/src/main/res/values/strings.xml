@@ -1,5 +1,7 @@
 <resources>
-	<string name="app_name">FleamarketSeller</string>
-	<string name="action_settings">Settings</string>
+	<string name="app_name">플리마켓</string>
+	<string name="action_settings">설정</string>
+	<string name="action_add_category">카테고리 추가</string>
 	<string name="section_format">Hello World from section: %1$d</string>
+	<string name="act_title_input_category">카테고리 추가</string>
 </resources>
