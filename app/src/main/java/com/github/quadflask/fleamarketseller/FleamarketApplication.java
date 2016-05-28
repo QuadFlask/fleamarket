@@ -12,6 +12,7 @@ import com.github.quadflask.fleamarketseller.store.StoreModule;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class FleamarketApplication extends Application {
 	private static Realm realm;
@@ -32,6 +33,14 @@ public class FleamarketApplication extends Application {
 	}
 
 	private void initDependencies() {
+		RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+		Realm.setDefaultConfiguration(realmConfig);
+		// delete all data
+		realm().beginTransaction();
+		realm().deleteAll();
+		realm().commitTransaction();
+		//
+
 		DaggerFleamarketApplicationComponent
 				.builder()
 				.dispatcherModule(new DispatcherModule())

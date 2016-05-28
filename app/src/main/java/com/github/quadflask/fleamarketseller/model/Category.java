@@ -3,6 +3,7 @@ package com.github.quadflask.fleamarketseller.model;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.Required;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,9 @@ public class Category extends RealmObject implements Columnable {
 	private String name;
 
 	private Category parent;
+
+	@Ignore
+	private String parentName;
 
 	public Category() {
 	}

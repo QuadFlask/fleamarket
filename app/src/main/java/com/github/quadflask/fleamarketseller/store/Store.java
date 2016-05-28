@@ -1,10 +1,16 @@
 package com.github.quadflask.fleamarketseller.store;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.github.quadflask.fleamarketseller.FleamarketApplication;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
+import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
+import com.google.common.base.Strings;
 
 import java.util.Date;
+import java.util.List;
 
 import io.realm.Realm;
 import lombok.val;
@@ -24,6 +30,17 @@ public class Store implements Observer {
 			val _action = (Action.CreateCategory) action;
 			val category = _action.category;
 
+			if (!Strings.isNullOrEmpty(category.getParentName())
+					&& findParentCategoryByName(category.getParentName()) == null) {
+				insertWith(realm -> realm.copyToRealm(Category.builder()
+						.date(new Date())
+						.parentName(null)
+						.name(category.getParentName())
+						.build()));
+			}
+
+			category.setParent(findParentCategoryByName(category.getParentName()));
+
 			insertWith(realm -> {
 				if (category.getDate() == null)
 					category.setDate(new Date());
@@ -31,9 +48,14 @@ public class Store implements Observer {
 			});
 
 			emitStoreChange();
+			emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
 		} else if (action instanceof Action.CreateProduct) {
 			val _action = (Action.CreateProduct) action;
 			val product = _action.product;
+
+			product.setCategory(findCategoryByName(product.getCategoryName()));
+//			product.setVendor(findVendorByName(product.getVendorName()));
+//			product.setMarket(findMarketByName(product.getMarketName()));
 
 			insertWith(realm -> {
 				if (product.getDate() == null)
@@ -42,7 +64,29 @@ public class Store implements Observer {
 			});
 
 			emitStoreChange();
+			emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
 		}
+	}
+
+	private Category findParentCategoryByName(String parentName) {
+		if (Strings.isNullOrEmpty(parentName)) return null;
+		return FleamarketApplication.realm()
+				.where(Category.class)
+				.isNull("parent")
+				.equalTo("name", parentName)
+				.findFirst();
+	}
+
+	private Category findCategoryByName(String name) {
+		if (Strings.isNullOrEmpty(name)) return null;
+		return FleamarketApplication.realm()
+				.where(Category.class)
+				.equalTo("name", name)
+				.findFirst();
+	}
+
+	private void emitUiUpdate(UiUpdateEvent uiUpdateEvent) {
+		dispatcher.emitUiUpdate(uiUpdateEvent);
 	}
 
 	private void emitStoreChange() {
@@ -56,6 +100,18 @@ public class Store implements Observer {
 
 	@Override
 	public void onCompleted() {
+	}
+
+	public List<String> loadParentCategoryNames() {
+		val parents = FleamarketApplication.realm()
+				.where(Category.class)
+				.isNull("parent")
+				.findAll();
+
+		return Stream
+				.of(parents)
+				.map(category -> category.getName())
+				.collect(Collectors.toList());
 	}
 
 	public static class StoreChangeEvent {

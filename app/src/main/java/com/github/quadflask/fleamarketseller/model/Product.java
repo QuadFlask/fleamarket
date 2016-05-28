@@ -3,6 +3,7 @@ package com.github.quadflask.fleamarketseller.model;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.Required;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,13 @@ public class Product extends RealmObject {
 	private Long price = 0L;
 	private Long count = 1L;
 	private String text = "";
+
+	@Ignore
+	private String categoryName;
+	@Ignore
+	private String vendorName;
+	@Ignore
+	private String marketName;
 
 	public Product() {
 	}

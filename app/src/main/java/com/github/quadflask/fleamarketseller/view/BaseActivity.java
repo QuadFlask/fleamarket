@@ -6,13 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.github.quadflask.fleamarketseller.FleamarketApplication;
-import com.github.quadflask.fleamarketseller.store.Store;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observer;
 
-public abstract class BaseActivity extends AppCompatActivity implements Observer<Store.StoreChangeEvent> {
+public abstract class BaseActivity extends AppCompatActivity implements Observer<UiUpdateEvent> {
 	private Unbinder bind;
 
 	@Override

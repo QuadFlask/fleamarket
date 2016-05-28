@@ -3,6 +3,7 @@ package com.github.quadflask.fleamarketseller.dispatcher;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.rx.RxBus;
 import com.github.quadflask.fleamarketseller.store.Store;
+import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -32,13 +33,13 @@ public class Dispatcher {
 		}
 	}
 
-	public void registerView(final Observer<Store.StoreChangeEvent> observer) {
+	public void registerView(final Observer<UiUpdateEvent> observer) {
 		if (observer != null) {
 			unregister(observer);
 			registerMap.put(observer, rxBus
 					.toObserverable()
-					.filter(a -> a instanceof Store.StoreChangeEvent)
-					.map(e -> (Store.StoreChangeEvent) e)
+					.filter(a -> a instanceof UiUpdateEvent)
+					.map(e -> (UiUpdateEvent) e)
 					.observeOn(AndroidSchedulers.mainThread())
 					.subscribe(observer));
 		}
@@ -57,6 +58,10 @@ public class Dispatcher {
 
 	public void emitChange(Store.StoreChangeEvent storeChangeEvent) {
 		dispatch(storeChangeEvent == null ? new Store.StoreChangeEvent() : storeChangeEvent);
+	}
+
+	public void emitUiUpdate(UiUpdateEvent event) {
+		dispatch(event);
 	}
 
 	public void unregisterAll() {

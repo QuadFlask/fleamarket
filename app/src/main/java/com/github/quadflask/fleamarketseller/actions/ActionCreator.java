@@ -19,5 +19,4 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.CreateProduct(product));
 
 	}
-
 }

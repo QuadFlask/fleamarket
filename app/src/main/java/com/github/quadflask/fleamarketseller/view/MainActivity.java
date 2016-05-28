@@ -1,8 +1,8 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,10 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.quadflask.fleamarketseller.FleamarketApplication;
 import com.github.quadflask.fleamarketseller.R;
-import com.github.quadflask.fleamarketseller.model.Category;
-import com.github.quadflask.fleamarketseller.store.Store;
 
 import butterknife.BindView;
 
@@ -26,13 +23,10 @@ public class MainActivity extends BaseActivity {
 
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
-
 	@BindView(R.id.container)
 	ViewPager mViewPager;
-
 	@BindView(R.id.tabs)
 	TabLayout tabLayout;
-
 	@BindView(R.id.fab)
 	FloatingActionButton fab;
 
@@ -44,16 +38,12 @@ public class MainActivity extends BaseActivity {
 		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 		tabLayout.setupWithViewPager(mViewPager);
 		fab.setOnClickListener(view -> {
-			FleamarketApplication.actionCreator().newCategory(Category.builder().name("test").build());
-			Snackbar
-					.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null)
-					.show();
+			startActivity(new Intent(this, InputCategoryActivity.class));
 		});
 	}
 
 	@Override
-	public void onNext(Store.StoreChangeEvent storeChangeEvent) {
+	public void onNext(UiUpdateEvent event) {
 		// TODO update ui...
 	}
 

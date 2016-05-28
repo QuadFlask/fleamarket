@@ -14,7 +14,6 @@ public class Action {
 	protected String type;
 	protected Object data;
 
-
 	public static class CreateCategory {
 		public final Category category;
 

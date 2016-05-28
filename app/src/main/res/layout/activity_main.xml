@@ -7,7 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fitsSystemWindows="true"
-	tools:context="quadflask.github.com.fleamarketseller.MainActivity">
+	tools:context="com.github.quadflask.fleamarketseller.view.MainActivity">
 
 	<android.support.design.widget.AppBarLayout
 		android:id="@+id/appbar"
