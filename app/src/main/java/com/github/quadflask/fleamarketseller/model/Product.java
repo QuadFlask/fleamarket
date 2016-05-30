@@ -21,18 +21,10 @@ public class Product extends RealmObject {
 	private String name;
 
 	private Category category;
-	private Vendor vendor;
-	private Market market;
-	private Long price = 0L;
-	private Long count = 1L;
 	private String text = "";
 
 	@Ignore
 	private String categoryName;
-	@Ignore
-	private String vendorName;
-	@Ignore
-	private String marketName;
 
 	public Product() {
 	}

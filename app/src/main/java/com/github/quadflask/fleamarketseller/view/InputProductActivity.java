@@ -78,7 +78,6 @@ public class InputProductActivity extends BaseActivity {
 				.builder()
 				.categoryName(categoryName)
 				.name(productName)
-				.price(price)
 				.build());
 	}
 }

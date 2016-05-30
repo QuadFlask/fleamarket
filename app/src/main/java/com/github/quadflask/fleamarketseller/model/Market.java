@@ -14,4 +14,5 @@ public class Market extends RealmObject {
 	private Date date;
 	@Required
 	private String name;
+	private String location;
 }

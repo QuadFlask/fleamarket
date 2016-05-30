@@ -11,4 +11,6 @@ import lombok.Setter;
 public class Vendor extends RealmObject {
 	private Date date;
 	private String name;
+	private String location;
+	private String phoneNumber;
 }
