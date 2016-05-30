@@ -20,8 +20,6 @@ import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 import com.github.quadflask.fleamarketseller.model.Vendor;
 
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -64,8 +62,8 @@ public class InputTransactionActivity extends BaseActivity {
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		toolbar.setNavigationOnClickListener(v -> finish());
 
-		transactionBuilder = Transaction.builder().isIncome(isSelling(rgBuyingOrSelling.getCheckedRadioButtonId()));
-		updateViewState(isSelling(rgBuyingOrSelling.getCheckedRadioButtonId()));
+		updateViewState(isSelling());
+		transactionBuilder = Transaction.builder().isIncome(isSelling());
 		rgBuyingOrSelling.setOnCheckedChangeListener((group, checkedId) -> {
 			boolean isSelling = isSelling(checkedId);
 			transactionBuilder.isIncome(isSelling);
@@ -99,13 +97,12 @@ public class InputTransactionActivity extends BaseActivity {
 
 	@OnClick(R.id.btn_complete)
 	void addTransaction() {
-		if (isSelling(rgBuyingOrSelling.getCheckedRadioButtonId()))
+		if (isSelling())
 			transactionBuilder.marketName(spMarket.getSelectedItem().toString());
 		else transactionBuilder.vendorName(spVendor.getSelectedItem().toString());
 
 		actionCreator().newTransaction(
 				transactionBuilder
-						.date(new Date())
 						.count(Long.parseLong(edCount.getText().toString()))
 						.price(Long.parseLong(edPrice.getText().toString()))
 						.build()
@@ -126,6 +123,10 @@ public class InputTransactionActivity extends BaseActivity {
 
 	private boolean isSelling(int checkedId) {
 		return checkedId == R.id.rb_selling;
+	}
+
+	private boolean isSelling() {
+		return rgBuyingOrSelling.getCheckedRadioButtonId() == R.id.rb_selling;
 	}
 
 	private void updateViewState(boolean isChecked) {
