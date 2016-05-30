@@ -37,14 +37,30 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal">
-				<CheckBox
-					android:id="@+id/cb_is_income"
+				<RadioGroup
+					android:id="@+id/rg_buying_or_selling"
 					android:layout_width="match_parent"
 					android:layout_height="56dp"
-					android:text="is income?"
-				/>
+					android:orientation="horizontal">
+					<RadioButton
+						android:id="@+id/rb_buying"
+						android:layout_width="0dp"
+						android:layout_height="56dp"
+						android:layout_weight="0.5"
+						android:text="매입"
+					/>
+					<RadioButton
+						android:id="@+id/rb_selling"
+						android:layout_width="0dp"
+						android:layout_height="56dp"
+						android:layout_weight="0.5"
+						android:checked="true"
+						android:text="매출"
+					/>
+				</RadioGroup>
 			</LinearLayout>
 			<LinearLayout
+				android:id="@+id/ll_market_container"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal">
@@ -65,6 +81,7 @@
 					android:layout_height="56dp"/>
 			</LinearLayout>
 			<LinearLayout
+				android:id="@+id/ll_vendor_container"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal">
@@ -124,7 +141,8 @@
 					android:layout_width="fill_parent"
 					android:layout_height="56dp"
 					android:inputType="numberDecimal"
-					android:maxLines="1"/>
+					android:maxLines="1"
+					android:text="1"/>
 			</LinearLayout>
 			<LinearLayout
 				android:layout_width="match_parent"

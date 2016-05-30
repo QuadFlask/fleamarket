@@ -6,6 +6,9 @@ import com.github.quadflask.fleamarketseller.FleamarketApplication;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.model.Market;
+import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.model.Vendor;
 import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.base.Strings;
 
@@ -55,8 +58,6 @@ public class Store implements Observer {
 			val product = _action.product;
 
 			product.setCategory(findCategoryByName(product.getCategoryName()));
-//			product.setVendor(findVendorByName(product.getVendorName()));
-//			product.setMarket(findMarketByName(product.getMarketName()));
 
 			insertWith(realm -> {
 				if (product.getDate() == null)
@@ -66,7 +67,38 @@ public class Store implements Observer {
 
 			emitStoreChange();
 			emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
+		} else if (action instanceof Action.CreateTransaction) {
+			val _action = (Action.CreateTransaction) action;
+			val transaction = _action.transaction;
+
+			transaction.setMarket(findMarketByName(transaction.getMarketName()));
+			transaction.setVendor(findVendorByName(transaction.getVendorName()));
+
+			insertWith(realm -> {
+				if (transaction.getDate() == null)
+					transaction.setDate(new Date());
+				realm.copyToRealm(transaction);
+			});
+
+			emitStoreChange();
+			emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
 		}
+	}
+
+	private Vendor findVendorByName(String vendorName) {
+		if (Strings.isNullOrEmpty(vendorName)) return null;
+		return FleamarketApplication.realm()
+				.where(Vendor.class)
+				.equalTo("name", vendorName)
+				.findFirst();
+	}
+
+	private Market findMarketByName(String marketName) {
+		if (Strings.isNullOrEmpty(marketName)) return null;
+		return FleamarketApplication.realm()
+				.where(Market.class)
+				.equalTo("name", marketName)
+				.findFirst();
 	}
 
 	private Category findParentCategoryByName(String parentName) {
@@ -119,6 +151,24 @@ public class Store implements Observer {
 				.findAll();
 
 		return toCategoryNames(parents);
+	}
+
+	public RealmResults<Product> loadProducts() {
+		return FleamarketApplication.realm()
+				.where(Product.class)
+				.findAll();
+	}
+
+	public RealmResults<Market> loadMarkets() {
+		return FleamarketApplication.realm()
+				.where(Market.class)
+				.findAll();
+	}
+
+	public RealmResults<Vendor> loadVendors() {
+		return FleamarketApplication.realm()
+				.where(Vendor.class)
+				.findAll();
 	}
 
 	private List<String> toCategoryNames(RealmResults<Category> parents) {

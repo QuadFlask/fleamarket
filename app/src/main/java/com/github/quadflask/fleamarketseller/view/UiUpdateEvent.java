@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.view;
 
 import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.model.Transaction;
 
 public class UiUpdateEvent {
 
@@ -18,6 +19,14 @@ public class UiUpdateEvent {
 
 		public ProductAdded(Product addedProduct) {
 			this.addedProduct = addedProduct;
+		}
+	}
+
+	public static class TransactionAdded extends UiUpdateEvent {
+		final Transaction transaction;
+
+		public TransactionAdded(Transaction transaction) {
+			this.transaction = transaction;
 		}
 	}
 }

@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.actions;
 
 import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.model.Transaction;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,14 @@ public class Action {
 
 		public CreateProduct(Product product) {
 			this.product = product;
+		}
+	}
+
+	public static class CreateTransaction {
+		public final Transaction transaction;
+
+		public CreateTransaction(Transaction transaction) {
+			this.transaction = transaction;
 		}
 	}
 }
