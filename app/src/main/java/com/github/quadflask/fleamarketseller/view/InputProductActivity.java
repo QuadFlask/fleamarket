@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,10 +28,6 @@ public class InputProductActivity extends BaseActivity {
 	Toolbar toolbar;
 	@BindView(R.id.sp_category)
 	Spinner spCategory;
-	@BindView(R.id.sp_market)
-	Spinner spMarket;
-	@BindView(R.id.sp_vendor)
-	Spinner spVendor;
 	@BindView(R.id.tv_product_name)
 	EditText edName;
 	@BindView(R.id.tv_product_price)
@@ -65,7 +62,16 @@ public class InputProductActivity extends BaseActivity {
 
 	@Override
 	public void onNext(UiUpdateEvent event) {
+		if (event instanceof UiUpdateEvent.CategoryAdded) {
+			val _event = (UiUpdateEvent.CategoryAdded) event;
+			val parent = _event.addedCategory.getParent();
 
+			reloadCategories();
+
+			edName.setText("");
+
+			Snackbar.make(llRoot, "Product added", Snackbar.LENGTH_SHORT).show();
+		}
 	}
 
 	@OnClick(R.id.btn_complete)
@@ -78,6 +84,7 @@ public class InputProductActivity extends BaseActivity {
 				.builder()
 				.categoryName(categoryName)
 				.name(productName)
+				.price(price)
 				.build());
 	}
 }
