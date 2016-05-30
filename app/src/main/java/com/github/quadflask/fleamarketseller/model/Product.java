@@ -21,6 +21,7 @@ public class Product extends RealmObject {
 	private String name;
 
 	private Category category;
+	private Long price;
 	private String text = "";
 
 	@Ignore

@@ -13,9 +13,11 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 public class Transaction {
 	private Date date;
-	private Product product;
 	private Boolean isIncome;
-	private Long price;
+	private Product product;
 	private Market market;
+	private Vendor vendor;
+	private Long count;
+	private Long price;
 	private String text;
 }
