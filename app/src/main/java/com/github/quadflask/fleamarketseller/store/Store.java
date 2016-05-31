@@ -82,7 +82,26 @@ public class Store implements Observer {
 
 			emitStoreChange();
 			emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
+		} else if (action instanceof Action.EditProduct) {
+			val _action = (Action.EditProduct) action;
+			val editedProduct = _action.product;
+			Product product = findProductByName(_action.oldName);
+
+			if (product != null) {
+				product.setName(editedProduct.getName());
+				product.setPrice(editedProduct.getPrice());
+				product.setText(editedProduct.getText());
+				product.setCategory(findCategoryByName(editedProduct.getCategoryName()));
+			}
 		}
+	}
+
+	private Product findProductByName(String name) {
+		if (Strings.isNullOrEmpty(name)) return null;
+		return FleamarketApplication.realm()
+				.where(Product.class)
+				.equalTo("name", name)
+				.findFirst();
 	}
 
 	private Vendor findVendorByName(String vendorName) {
