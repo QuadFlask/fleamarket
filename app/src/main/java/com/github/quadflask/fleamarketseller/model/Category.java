@@ -14,7 +14,7 @@ import lombok.experimental.Builder;
 @Setter
 @Builder
 @AllArgsConstructor
-public class Category extends RealmObject implements Columnable {
+public class Category extends RealmObject implements Columnable, Comparable {
 	@Required
 	private Date date;
 	@Required
@@ -43,5 +43,20 @@ public class Category extends RealmObject implements Columnable {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (this == o) return 0;
+		if (o == null || getClass() != o.getClass()) return -1;
+		Category category = (Category) o;
+
+		int compareParentName = category.getParent().getName().compareTo(getParent().getName());
+		if (compareParentName == 0) {
+			int compareName = category.getName().compareTo(getName());
+			if (compareName == 0)
+				return category.getDate().compareTo(getDate());
+			else return compareName;
+		} else return compareParentName;
 	}
 }

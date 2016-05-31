@@ -14,7 +14,7 @@ import lombok.experimental.Builder;
 @Setter
 @Builder
 @AllArgsConstructor
-public class Product extends RealmObject {
+public class Product extends RealmObject implements Comparable {
 	@Required
 	private Date date;
 	@Required
@@ -28,5 +28,20 @@ public class Product extends RealmObject {
 	private String categoryName;
 
 	public Product() {
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (this == o) return 0;
+		if (o == null || getClass() != o.getClass()) return -1;
+		Product product = (Product) o;
+
+		int compareCategory = product.getCategory().compareTo(getCategory());
+		if (compareCategory == 0) {
+			int compareName = product.getName().compareTo(getName());
+			if (compareName == 0)
+				return product.getDate().compareTo(getDate());
+			else return compareName;
+		} else return compareCategory;
 	}
 }
