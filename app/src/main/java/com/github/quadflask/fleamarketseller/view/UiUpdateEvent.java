@@ -29,4 +29,12 @@ public class UiUpdateEvent {
 			this.transaction = transaction;
 		}
 	}
+
+	public class ProductUpdated extends UiUpdateEvent {
+		final Product product;
+
+		public ProductUpdated(Product product) {
+			this.product = product;
+		}
+	}
 }

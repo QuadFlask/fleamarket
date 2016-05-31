@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -42,6 +43,14 @@ public class InputProductActivity extends BaseActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		toolbar.setNavigationOnClickListener(v -> finish());
+
+		Intent intent = getIntent();
+		if (intent != null) {
+			if (intent.getAction().equals(IntentConstant.ACTION_EDIT)) {
+				String productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
+				// TODO prepare for edit produdt...
+			}
+		}
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import lombok.val;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
-public class ProductListActivity extends BaseActivity {
+public class ProductListActivity extends BaseActivity implements OnClickEditProduct {
 	@BindView(R.id.ll_root)
 	LinearLayout llRoot;
 	@BindView(R.id.toolbar)
@@ -55,12 +55,15 @@ public class ProductListActivity extends BaseActivity {
 			adapter = new RealmBasedRecyclerViewAdapter<Product, ProductViewHolder>(this, products, true, false) {
 				@Override
 				public ProductViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					return new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
+					ProductViewHolder productViewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
+					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEditProduct((Product) productViewHolder.root.getTag()));
+					return productViewHolder;
 				}
 
 				@Override
 				public void onBindRealmViewHolder(ProductViewHolder productViewHolder, int i) {
 					Product product = realmResults.get(i);
+					productViewHolder.root.setTag(product);
 					productViewHolder.name.setText(product.getName());
 					productViewHolder.date.setText(product.getDate().toLocaleString());
 					productViewHolder.category.setText(product.getCategory().getName());
@@ -77,9 +80,20 @@ public class ProductListActivity extends BaseActivity {
 
 	@Override
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
+		// ui will be update in onResume
 		if (uiUpdateEvent instanceof UiUpdateEvent.ProductAdded) {
-
+			// TODO...
+		} else if (uiUpdateEvent instanceof UiUpdateEvent.ProductUpdated) {
+			// TODO...
 		}
+	}
+
+	@Override
+	public void onClickEditProduct(Product product) {
+		Intent intent = new Intent(this, InputProductActivity.class);
+		intent.setAction(IntentConstant.ACTION_EDIT);
+		intent.putExtra(IntentConstant.EXTRA_PRODUCT, product.getName());
+		startActivity(intent);
 	}
 
 	@Override
@@ -87,15 +101,20 @@ public class ProductListActivity extends BaseActivity {
 		return R.layout.activity_list_product;
 	}
 
-
 	private static class ProductViewHolder extends RealmViewHolder {
+		LinearLayout root;
 		TextView name, category, date;
 
 		ProductViewHolder(View itemView) {
 			super(itemView);
+			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
 			name = (TextView) itemView.findViewById(R.id.tv_product_name);
 			date = (TextView) itemView.findViewById(R.id.tv_date);
 			category = (TextView) itemView.findViewById(R.id.tv_product_category);
 		}
 	}
+}
+
+interface OnClickEditProduct {
+	void onClickEditProduct(Product product);
 }
