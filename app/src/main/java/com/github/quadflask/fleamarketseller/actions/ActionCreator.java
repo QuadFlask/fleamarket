@@ -18,7 +18,10 @@ public class ActionCreator {
 
 	public void newProduct(Product product) {
 		dispatcher.dispatch(new Action.CreateProduct(product));
+	}
 
+	public void editProduct(String oldName, Product product) {
+		dispatcher.dispatch(new Action.EditProduct(oldName, product));
 	}
 
 	public void newTransaction(Transaction transaction) {

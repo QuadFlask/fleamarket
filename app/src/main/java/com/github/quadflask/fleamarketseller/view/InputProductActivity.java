@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
@@ -22,7 +23,6 @@ import static com.github.quadflask.fleamarketseller.FleamarketApplication.action
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
 public class InputProductActivity extends BaseActivity {
-
 	@BindView(R.id.ll_root)
 	LinearLayout llRoot;
 	@BindView(R.id.toolbar)
@@ -34,7 +34,10 @@ public class InputProductActivity extends BaseActivity {
 	@BindView(R.id.tv_product_price)
 	EditText edPrice;
 	@BindView(R.id.btn_complete)
-	Button button;
+	Button btnComplete;
+
+	private String action = "";
+	private String productName;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,8 +50,9 @@ public class InputProductActivity extends BaseActivity {
 		Intent intent = getIntent();
 		if (intent != null) {
 			if (intent.getAction().equals(IntentConstant.ACTION_EDIT)) {
-				String productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
-				// TODO prepare for edit produdt...
+				action = IntentConstant.ACTION_EDIT;
+				productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
+				btnComplete.setText("수정하기");
 			}
 		}
 	}
@@ -79,7 +83,10 @@ public class InputProductActivity extends BaseActivity {
 
 			edName.setText("");
 
-			Snackbar.make(llRoot, "Product added", Snackbar.LENGTH_SHORT).show();
+			Snackbar.make(llRoot, "추가됨", Snackbar.LENGTH_SHORT).show();
+		} else if (event instanceof UiUpdateEvent.ProductUpdated) {
+			Toast.makeText(this, "수정완료", Toast.LENGTH_SHORT).show();
+			finish();
 		}
 	}
 
@@ -89,11 +96,21 @@ public class InputProductActivity extends BaseActivity {
 		val productName = edName.getText().toString();
 		val price = Long.parseLong(edPrice.getText().toString());
 
-		actionCreator().newProduct(Product
-				.builder()
-				.categoryName(categoryName)
-				.name(productName)
-				.price(price)
-				.build());
+		if (action.equals(IntentConstant.ACTION_EDIT)) {
+			String oldName = this.productName;
+			actionCreator().editProduct(oldName, Product
+					.builder()
+					.categoryName(categoryName)
+					.name(productName)
+					.price(price)
+					.build());
+		} else {
+			actionCreator().newProduct(Product
+					.builder()
+					.categoryName(categoryName)
+					.name(productName)
+					.price(price)
+					.build());
+		}
 	}
 }

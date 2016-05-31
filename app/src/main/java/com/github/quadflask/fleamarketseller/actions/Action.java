@@ -38,4 +38,14 @@ public class Action {
 			this.transaction = transaction;
 		}
 	}
+
+	public static class EditProduct {
+		private final String oldName;
+		private final Product product;
+
+		public EditProduct(String oldName, Product product) {
+			this.oldName = oldName;
+			this.product = product;
+		}
+	}
 }
