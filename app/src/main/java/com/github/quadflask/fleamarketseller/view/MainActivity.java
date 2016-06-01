@@ -65,8 +65,17 @@ public class MainActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 
-		if (id == R.id.action_add_category) {
-			startActivity(new Intent(this, InputCategoryActivity.class));
+		if (id == R.id.action_category_list) {
+			startActivity(new Intent(this, CategoryListActivity.class));
+			return true;
+		} else if (id == R.id.action_product_list) {
+			startActivity(new Intent(this, ProductListActivity.class));
+			return true;
+		} else if (id == R.id.action_vendor_list) {
+			startActivity(new Intent(this, VendorListActivity.class));
+			return true;
+		} else if (id == R.id.action_market_list) {
+			startActivity(new Intent(this, MarketListActivity.class));
 			return true;
 		} else if (id == R.id.action_settings) {
 

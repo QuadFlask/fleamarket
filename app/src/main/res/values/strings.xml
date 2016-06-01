@@ -10,4 +10,8 @@
 	<string name="act_title_category_list">카테고리</string>
 	<string name="act_title_market_list">마켓</string>
 	<string name="act_title_vendor_list">구매처</string>
+	<string name="action_category_list">카테고리 목록</string>
+	<string name="action_product_list">제품 목록</string>
+	<string name="action_vendor_list">매입처 목록</string>
+	<string name="action_market_list">마켓 목록</string>
 </resources>
