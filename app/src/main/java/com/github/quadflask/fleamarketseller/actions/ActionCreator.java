@@ -24,6 +24,10 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.EditProduct(oldName, product));
 	}
 
+	public void editCategory(String oldName, Category category) {
+		dispatcher.dispatch(new Action.EditCategory(oldName, category));
+	}
+
 	public void newTransaction(Transaction transaction) {
 		dispatcher.dispatch(new Action.CreateTransaction(transaction));
 	}

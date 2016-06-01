@@ -93,7 +93,37 @@ public class Store implements Observer {
 				product.setText(editedProduct.getText());
 				product.setCategory(findCategoryByName(editedProduct.getCategoryName()));
 			}
+			emitStoreChange();
+			emitUiUpdate(new UiUpdateEvent.ProductUpdated(product));
+		} else if (action instanceof Action.EditCategory) {
+			val _action = (Action.EditCategory) action;
+			val editedCategory = _action.category;
+			Category category = findCategoryByName(_action.targetCategoryName);
+
+			if (category != null) {
+				category.setName(editedCategory.getName());
+				category.setParent(findCategoryByName(editedCategory.getParentName()));
+			}
+			emitStoreChange();
+			emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
 		}
+	}
+
+	private void emitUiUpdate(UiUpdateEvent uiUpdateEvent) {
+		dispatcher.emitUiUpdate(uiUpdateEvent);
+	}
+
+	private void emitStoreChange() {
+		dispatcher.emitChange(new StoreChangeEvent());
+	}
+
+	@Override
+	public void onError(Throwable e) {
+		e.printStackTrace();
+	}
+
+	@Override
+	public void onCompleted() {
 	}
 
 	private Product findProductByName(String name) {
@@ -135,23 +165,6 @@ public class Store implements Observer {
 				.where(Category.class)
 				.equalTo("name", name)
 				.findFirst();
-	}
-
-	private void emitUiUpdate(UiUpdateEvent uiUpdateEvent) {
-		dispatcher.emitUiUpdate(uiUpdateEvent);
-	}
-
-	private void emitStoreChange() {
-		dispatcher.emitChange(new StoreChangeEvent());
-	}
-
-	@Override
-	public void onError(Throwable e) {
-		e.printStackTrace();
-	}
-
-	@Override
-	public void onCompleted() {
 	}
 
 	public RealmResults<Category> loadAllCategories() {

@@ -30,11 +30,19 @@ public class UiUpdateEvent {
 		}
 	}
 
-	public class ProductUpdated extends UiUpdateEvent {
+	public static class ProductUpdated extends UiUpdateEvent {
 		final Product product;
 
 		public ProductUpdated(Product product) {
 			this.product = product;
+		}
+	}
+
+	public static class CategoryUpdated extends UiUpdateEvent {
+		final Category category;
+
+		public CategoryUpdated(Category category) {
+			this.category = category;
 		}
 	}
 }

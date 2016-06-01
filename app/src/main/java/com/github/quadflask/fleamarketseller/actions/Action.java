@@ -48,4 +48,14 @@ public class Action {
 			this.product = product;
 		}
 	}
+
+	public static class EditCategory {
+		public final String targetCategoryName;
+		public final Category category;
+
+		public EditCategory(String targetCategoryName, Category category) {
+			this.targetCategoryName = targetCategoryName;
+			this.category = category;
+		}
+	}
 }

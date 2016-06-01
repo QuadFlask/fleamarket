@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -41,10 +42,22 @@ public class InputCategoryActivity extends BaseActivity {
 	@BindView(R.id.btn_complete)
 	Button btnComplete;
 
+	private String action = "";
+	private String categoryName;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setToolbar(toolbar);
+
+		Intent intent = getIntent();
+		if (intent != null) {
+			if (intent.getAction().equals(IntentConstant.ACTION_EDIT)) {
+				action = IntentConstant.ACTION_EDIT;
+				categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
+				btnComplete.setText("수정하기");
+			}
+		}
 	}
 
 	@Override
@@ -96,13 +109,23 @@ public class InputCategoryActivity extends BaseActivity {
 		val categoryName = edCategoryName.getText().toString();
 
 		if (!Strings.isNullOrEmpty(categoryName)) {
-			actionCreator().newCategory(Category
-					.builder()
-					.date(new Date())
-					.name(categoryName)
-					.parentName(parentCategoryName)
-					.build()
-			);
+			if (action.equals(IntentConstant.ACTION_EDIT)) {
+				val targetCategoryName = this.categoryName;
+				actionCreator().editCategory(targetCategoryName, Category
+						.builder()
+						.name(categoryName)
+						.parentName(parentCategoryName)
+						.build()
+				);
+			} else {
+				actionCreator().newCategory(Category
+						.builder()
+						.date(new Date())
+						.name(categoryName)
+						.parentName(parentCategoryName)
+						.build()
+				);
+			}
 		}
 	}
 }

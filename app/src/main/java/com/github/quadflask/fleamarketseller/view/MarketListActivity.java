@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Market;
 
@@ -71,6 +72,13 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 	@OnClick(R.id.fab)
 	void addMarket() {
 		// TODO.. open dialog
+
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title("마켓 추가")
+				.customView(R.layout.dialog_input_market, true)
+				.positiveText("추가")
+				.show();
+		View view = dialog.getContentView();
 	}
 
 	@Override
