@@ -32,6 +32,8 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 	@BindView(R.id.rv_list)
 	RealmRecyclerView rvList;
 
+	private RealmBasedRecyclerViewAdapter<Product, ProductViewHolder> adapter;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,8 +46,6 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 		reloadProducts();
 	}
 
-	private RealmBasedRecyclerViewAdapter<Product, ProductViewHolder> adapter;
-
 	private void reloadProducts() {
 		val products = store().loadProducts().sort("category");
 		if (adapter == null) {
@@ -53,14 +53,14 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 				@Override
 				public ProductViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
 					ProductViewHolder productViewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
-					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEditProduct((Product) productViewHolder.root.getTag()));
+					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEditProduct(productViewHolder.product));
 					return productViewHolder;
 				}
 
 				@Override
 				public void onBindRealmViewHolder(ProductViewHolder productViewHolder, int i) {
 					Product product = realmResults.get(i);
-					productViewHolder.root.setTag(product);
+					productViewHolder.product = product;
 					productViewHolder.name.setText(product.getName());
 					productViewHolder.date.setText(product.getDate().toLocaleString());
 					productViewHolder.category.setText(product.getCategory().getName());
@@ -101,6 +101,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 	private static class ProductViewHolder extends RealmViewHolder {
 		LinearLayout root;
 		TextView name, category, date;
+		Product product;
 
 		ProductViewHolder(View itemView) {
 			super(itemView);
