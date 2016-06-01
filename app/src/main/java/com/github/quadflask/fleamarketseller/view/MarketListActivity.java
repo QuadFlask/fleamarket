@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmViewHolder;
 import lombok.val;
 
+import static com.github.quadflask.fleamarketseller.FleamarketApplication.actionCreator;
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
 public class MarketListActivity extends BaseActivity implements OnClickEditListener<Market> {
@@ -71,24 +73,31 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 
 	@OnClick(R.id.fab)
 	void addMarket() {
-		// TODO.. open dialog
-
-		MaterialDialog dialog = new MaterialDialog.Builder(this)
+		new MaterialDialog.Builder(this)
 				.title("마켓 추가")
 				.customView(R.layout.dialog_input_market, true)
 				.positiveText("추가")
+				.onPositive((dialog, which) -> {
+					View view = dialog.getContentView();
+					EditText edName = (EditText) view.findViewById(R.id.ed_name);
+					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
+
+					actionCreator().newMarket(Market.builder()
+							.name(edName.getText().toString())
+							.location(edLocation.getText().toString())
+							.build());
+				})
 				.show();
-		View view = dialog.getContentView();
-	}
-
-	@Override
-	public void onNext(UiUpdateEvent uiUpdateEvent) {
-
 	}
 
 	@Override
 	public void onClickEdit(Market market) {
 		// TODO.. open dialog
+	}
+
+	@Override
+	public void onNext(UiUpdateEvent uiUpdateEvent) {
+
 	}
 
 	@Override

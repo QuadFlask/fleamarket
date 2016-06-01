@@ -36,37 +36,42 @@ public class Store implements Observer {
 
 			if (!Strings.isNullOrEmpty(category.getParentName())
 					&& findParentCategoryByName(category.getParentName()) == null) {
-				insertWith(realm -> realm.copyToRealm(Category.builder()
+				if (!insertWith(realm -> realm.copyToRealm(Category.builder()
 						.date(new Date())
 						.parentName(null)
 						.name(category.getParentName())
-						.build()));
+						.build()))) {
+					// TODO
+					// emitUiUpdate(new UiUpdateEvent.CategoryAddFail(category));
+				}
 			}
 
 			category.setParent(findParentCategoryByName(category.getParentName()));
 
-			insertWith(realm -> {
+			if (insertWith(realm -> {
 				if (category.getDate() == null)
 					category.setDate(new Date());
 				realm.copyToRealm(category);
-			});
+			})) {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
+			}
 
-			emitStoreChange();
-			emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
 		} else if (action instanceof Action.CreateProduct) {
 			val _action = (Action.CreateProduct) action;
 			val product = _action.product;
 
 			product.setCategory(findCategoryByName(product.getCategoryName()));
 
-			insertWith(realm -> {
+			if (insertWith(realm -> {
 				if (product.getDate() == null)
 					product.setDate(new Date());
 				realm.copyToRealm(product);
-			});
+			})) {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
+			}
 
-			emitStoreChange();
-			emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
 		} else if (action instanceof Action.CreateTransaction) {
 			val _action = (Action.CreateTransaction) action;
 			val transaction = _action.transaction;
@@ -74,14 +79,27 @@ public class Store implements Observer {
 			transaction.setMarket(findMarketByName(transaction.getMarketName()));
 			transaction.setVendor(findVendorByName(transaction.getVendorName()));
 
-			insertWith(realm -> {
+			if (insertWith(realm -> {
 				if (transaction.getDate() == null)
 					transaction.setDate(new Date());
 				realm.copyToRealm(transaction);
-			});
+			})) {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
+			}
 
-			emitStoreChange();
-			emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
+		} else if (action instanceof Action.CreateMarket) {
+			val _action = (Action.CreateMarket) action;
+			val market = _action.market;
+
+			if (insertWith(realm -> {
+				if (market.getDate() != null)
+					market.setDate(new Date());
+				realm.copyToRealm(market);
+			})) {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.MarketAdded(market));
+			}
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
 			val editedProduct = _action.product;
@@ -92,9 +110,10 @@ public class Store implements Observer {
 				product.setPrice(editedProduct.getPrice());
 				product.setText(editedProduct.getText());
 				product.setCategory(findCategoryByName(editedProduct.getCategoryName()));
+
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.ProductUpdated(product));
 			}
-			emitStoreChange();
-			emitUiUpdate(new UiUpdateEvent.ProductUpdated(product));
 		} else if (action instanceof Action.EditCategory) {
 			val _action = (Action.EditCategory) action;
 			val editedCategory = _action.category;
@@ -103,9 +122,10 @@ public class Store implements Observer {
 			if (category != null) {
 				category.setName(editedCategory.getName());
 				category.setParent(findCategoryByName(editedCategory.getParentName()));
+
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
 			}
-			emitStoreChange();
-			emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
 		}
 	}
 
@@ -223,15 +243,17 @@ public class Store implements Observer {
 		void insert(Realm realm);
 	}
 
-	private void insertWith(RealmInsert realmInsert) {
+	private boolean insertWith(RealmInsert realmInsert) {
 		Realm realm = FleamarketApplication.realm();
 		try {
 			realm.beginTransaction();
 			realmInsert.insert(realm);
 			realm.commitTransaction();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			realm.cancelTransaction();
+			return false;
 		}
 	}
 }

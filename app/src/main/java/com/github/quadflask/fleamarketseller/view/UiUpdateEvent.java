@@ -1,6 +1,7 @@
 package com.github.quadflask.fleamarketseller.view;
 
 import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
@@ -43,6 +44,14 @@ public class UiUpdateEvent {
 
 		public CategoryUpdated(Category category) {
 			this.category = category;
+		}
+	}
+
+	public static class MarketAdded extends UiUpdateEvent {
+		final Market market;
+
+		public MarketAdded(Market market) {
+			this.market = market;
 		}
 	}
 }

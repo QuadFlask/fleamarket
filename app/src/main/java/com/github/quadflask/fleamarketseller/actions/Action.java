@@ -1,6 +1,7 @@
 package com.github.quadflask.fleamarketseller.actions;
 
 import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
@@ -56,6 +57,14 @@ public class Action {
 		public EditCategory(String targetCategoryName, Category category) {
 			this.targetCategoryName = targetCategoryName;
 			this.category = category;
+		}
+	}
+
+	public static class CreateMarket {
+		public final Market market;
+
+		public CreateMarket(Market market) {
+			this.market = market;
 		}
 	}
 }

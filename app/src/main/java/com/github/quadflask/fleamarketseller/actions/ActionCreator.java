@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.actions;
 
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
@@ -18,6 +19,10 @@ public class ActionCreator {
 
 	public void newProduct(Product product) {
 		dispatcher.dispatch(new Action.CreateProduct(product));
+	}
+
+	public void newMarket(Market market) {
+		dispatcher.dispatch(new Action.CreateMarket(market));
 	}
 
 	public void editProduct(String oldName, Product product) {

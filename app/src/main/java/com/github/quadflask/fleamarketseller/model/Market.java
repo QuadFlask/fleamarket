@@ -4,11 +4,15 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Required;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Builder;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class Market extends RealmObject {
 	@Required
 	private Date date;
