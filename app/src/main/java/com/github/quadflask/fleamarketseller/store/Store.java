@@ -2,7 +2,6 @@ package com.github.quadflask.fleamarketseller.store;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.github.quadflask.fleamarketseller.FleamarketApplication;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
@@ -22,6 +21,8 @@ import io.realm.RealmResults;
 import lombok.val;
 import rx.Observer;
 
+import static com.github.quadflask.fleamarketseller.FleamarketApplication.realm;
+
 public class Store implements Observer {
 
 	private Dispatcher dispatcher;
@@ -29,6 +30,11 @@ public class Store implements Observer {
 	public Store(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
 	}
+
+	Realm.Transaction.OnError onInsertCommonError = error -> {
+		// TODO
+		// emitUiUpdate(new UiUpdateEvent.CategoryAddFail(category));
+	};
 
 	@Override
 	public void onNext(final Object action) {
@@ -38,28 +44,28 @@ public class Store implements Observer {
 
 			if (!Strings.isNullOrEmpty(category.getParentName())
 					&& findParentCategoryByName(category.getParentName()) == null) {
-				if (!insertWith(realm -> realm.copyToRealm(Category.builder()
-						.id(nextKey(Category.class))
-						.date(new Date())
-						.parentName(null)
-						.name(category.getParentName())
-						.build()))) {
-					// TODO
-					// emitUiUpdate(new UiUpdateEvent.CategoryAddFail(category));
-				}
+
+				realm().executeTransactionAsync(
+						realm -> realm.copyToRealm(Category.builder()
+								.id(nextKey(Category.class))
+								.date(new Date())
+								.parentName(null)
+								.name(category.getParentName())
+								.build()),
+						onInsertCommonError);
 			}
 
 			category.setParent(findParentCategoryByName(category.getParentName()));
 
-			if (insertWith(realm -> {
+			realm().executeTransactionAsync(realm -> {
 				if (category.getDate() == null)
 					category.setDate(new Date());
 				category.setId(nextKey(Category.class));
 				realm.copyToRealm(category);
-			})) {
+			}, () -> {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
-			}
+			});
 
 		} else if (action instanceof Action.CreateProduct) {
 			val _action = (Action.CreateProduct) action;
@@ -67,15 +73,15 @@ public class Store implements Observer {
 
 			product.setCategory(findCategoryByName(product.getCategoryName()));
 
-			if (insertWith(realm -> {
+			realm().executeTransactionAsync(realm -> {
 				if (product.getDate() == null)
 					product.setDate(new Date());
 				product.setId(nextKey(Product.class));
 				realm.copyToRealm(product);
-			})) {
+			}, () -> {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
-			}
+			}, onInsertCommonError);
 
 		} else if (action instanceof Action.CreateTransaction) {
 			val _action = (Action.CreateTransaction) action;
@@ -84,29 +90,30 @@ public class Store implements Observer {
 			transaction.setMarket(findMarketByName(transaction.getMarketName()));
 			transaction.setVendor(findVendorByName(transaction.getVendorName()));
 
-			if (insertWith(realm -> {
+			realm().executeTransactionAsync(realm -> {
 				if (transaction.getDate() == null)
 					transaction.setDate(new Date());
 				transaction.setId(nextKey(Transaction.class));
 				realm.copyToRealm(transaction);
-			})) {
+			}, () -> {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
-			}
+			}, onInsertCommonError);
 
 		} else if (action instanceof Action.CreateMarket) {
 			val _action = (Action.CreateMarket) action;
 			val market = _action.market;
 
-			if (insertWith(realm -> {
+			realm().executeTransactionAsync(realm -> {
 				if (market.getDate() != null)
 					market.setDate(new Date());
 				market.setId(nextKey(Market.class));
 				realm.copyToRealm(market);
-			})) {
+			}, () -> {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.MarketAdded(market));
-			}
+			}, onInsertCommonError);
+
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
 			val editedProduct = _action.product;
@@ -171,7 +178,7 @@ public class Store implements Observer {
 
 	private Product findProductByName(String name) {
 		if (Strings.isNullOrEmpty(name)) return null;
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Product.class)
 				.equalTo("name", name)
 				.findFirst();
@@ -179,7 +186,7 @@ public class Store implements Observer {
 
 	private Vendor findVendorByName(String vendorName) {
 		if (Strings.isNullOrEmpty(vendorName)) return null;
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Vendor.class)
 				.equalTo("name", vendorName)
 				.findFirst();
@@ -187,7 +194,7 @@ public class Store implements Observer {
 
 	private Market findMarketByName(String marketName) {
 		if (Strings.isNullOrEmpty(marketName)) return null;
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Market.class)
 				.equalTo("name", marketName)
 				.findFirst();
@@ -195,7 +202,7 @@ public class Store implements Observer {
 
 	private Category findParentCategoryByName(String parentName) {
 		if (Strings.isNullOrEmpty(parentName)) return null;
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Category.class)
 				.isNull("parent")
 				.equalTo("name", parentName)
@@ -204,20 +211,20 @@ public class Store implements Observer {
 
 	private Category findCategoryByName(String name) {
 		if (Strings.isNullOrEmpty(name)) return null;
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Category.class)
 				.equalTo("name", name)
 				.findFirst();
 	}
 
 	public RealmResults<Category> loadAllCategories() {
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Category.class)
 				.findAll();
 	}
 
 	public List<String> loadParentCategoryNames() {
-		val parents = FleamarketApplication.realm()
+		val parents = realm()
 				.where(Category.class)
 				.isNull("parent")
 				.findAll();
@@ -226,7 +233,7 @@ public class Store implements Observer {
 	}
 
 	public List<String> loadCategoryNames() {
-		val parents = FleamarketApplication.realm()
+		val parents = realm()
 				.where(Category.class)
 				.isNotNull("parent")
 				.findAll();
@@ -235,19 +242,19 @@ public class Store implements Observer {
 	}
 
 	public RealmResults<Product> loadProducts() {
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Product.class)
 				.findAll();
 	}
 
 	public RealmResults<Market> loadMarkets() {
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Market.class)
 				.findAll();
 	}
 
 	public RealmResults<Vendor> loadVendors() {
-		return FleamarketApplication.realm()
+		return realm()
 				.where(Vendor.class)
 				.findAll();
 	}
@@ -260,23 +267,5 @@ public class Store implements Observer {
 	}
 
 	public static class StoreChangeEvent {
-	}
-
-	private interface RealmInsert {
-		void insert(Realm realm);
-	}
-
-	private boolean insertWith(RealmInsert realmInsert) {
-		Realm realm = FleamarketApplication.realm();
-		try {
-			realm.beginTransaction();
-			realmInsert.insert(realm);
-			realm.commitTransaction();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			realm.cancelTransaction();
-			return false;
-		}
 	}
 }
