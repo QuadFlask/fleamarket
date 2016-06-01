@@ -91,7 +91,7 @@ public class InputProductActivity extends BaseActivity {
 	}
 
 	@OnClick(R.id.btn_complete)
-	void addProduct() {
+	void addOrEditProduct() {
 		val categoryName = spCategory.getSelectedItem().toString();
 		val productName = edName.getText().toString();
 		val price = Long.parseLong(edPrice.getText().toString());

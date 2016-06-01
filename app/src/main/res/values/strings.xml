@@ -7,4 +7,7 @@
 	<string name="act_title_input_product_income">매출 추가</string>
 	<string name="act_title_input_product_out">매입 추가</string>
 	<string name="act_title_product_list">제품목록</string>
+	<string name="act_title_category_list">카테고리</string>
+	<string name="act_title_market_list">마켓</string>
+	<string name="act_title_vendor_list">구매처</string>
 </resources>

@@ -36,6 +36,24 @@
 			android:label="@string/act_title_product_list"
 			android:theme="@style/AppTheme.NoActionBar"
 			android:windowSoftInputMode="adjustPan"/>
+		<activity
+			android:name=".view.CategoryListActivity"
+			android:label="@string/act_title_category_list"
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustPan"
+		/>
+		<activity
+			android:name=".view.MarketListActivity"
+			android:label="@string/act_title_market_list"
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustPan"
+		/>
+		<activity
+			android:name=".view.VendorListActivity"
+			android:label="@string/act_title_vendor_list"
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustPan"
+		/>
 	</application>
 
 </manifest>

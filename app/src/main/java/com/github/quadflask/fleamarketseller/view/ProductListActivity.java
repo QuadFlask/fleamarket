@@ -98,7 +98,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 
 	@Override
 	protected int getContentViewResId() {
-		return R.layout.activity_list_product;
+		return R.layout.activity_product_list;
 	}
 
 	private static class ProductViewHolder extends RealmViewHolder {
