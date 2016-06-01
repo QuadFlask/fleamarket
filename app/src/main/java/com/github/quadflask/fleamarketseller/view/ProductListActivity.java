@@ -22,7 +22,7 @@ import lombok.val;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
-public class ProductListActivity extends BaseActivity implements OnClickEditProduct {
+public class ProductListActivity extends BaseActivity implements OnClickEditListener<Product> {
 	@BindView(R.id.ll_root)
 	LinearLayout llRoot;
 	@BindView(R.id.toolbar)
@@ -53,7 +53,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 				@Override
 				public ProductViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
 					ProductViewHolder productViewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
-					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEditProduct(productViewHolder.product));
+					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEdit(productViewHolder.product));
 					return productViewHolder;
 				}
 
@@ -86,7 +86,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 	}
 
 	@Override
-	public void onClickEditProduct(Product product) {
+	public void onClickEdit(Product product) {
 		Intent intent = new Intent(this, InputProductActivity.class);
 		intent.setAction(IntentConstant.ACTION_EDIT);
 		intent.putExtra(IntentConstant.EXTRA_PRODUCT, product.getName());
@@ -99,8 +99,8 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 	}
 
 	private static class ProductViewHolder extends RealmViewHolder {
-		LinearLayout root;
-		TextView name, category, date;
+		final LinearLayout root;
+		final TextView name, category, date;
 		Product product;
 
 		ProductViewHolder(View itemView) {
@@ -111,8 +111,4 @@ public class ProductListActivity extends BaseActivity implements OnClickEditProd
 			category = (TextView) itemView.findViewById(R.id.tv_product_category);
 		}
 	}
-}
-
-interface OnClickEditProduct {
-	void onClickEditProduct(Product product);
 }

@@ -154,6 +154,12 @@ public class Store implements Observer {
 	public void onCompleted() {
 	}
 
+	public RealmResults<Category> loadAllCategories() {
+		return FleamarketApplication.realm()
+				.where(Category.class)
+				.findAll();
+	}
+
 	public List<String> loadParentCategoryNames() {
 		val parents = FleamarketApplication.realm()
 				.where(Category.class)
