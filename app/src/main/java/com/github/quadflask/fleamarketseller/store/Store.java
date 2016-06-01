@@ -8,6 +8,7 @@ import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.model.Transaction;
 import com.github.quadflask.fleamarketseller.model.Vendor;
 import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.base.Strings;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 import lombok.val;
 import rx.Observer;
@@ -37,6 +39,7 @@ public class Store implements Observer {
 			if (!Strings.isNullOrEmpty(category.getParentName())
 					&& findParentCategoryByName(category.getParentName()) == null) {
 				if (!insertWith(realm -> realm.copyToRealm(Category.builder()
+						.id(nextKey(Category.class))
 						.date(new Date())
 						.parentName(null)
 						.name(category.getParentName())
@@ -51,6 +54,7 @@ public class Store implements Observer {
 			if (insertWith(realm -> {
 				if (category.getDate() == null)
 					category.setDate(new Date());
+				category.setId(nextKey(Category.class));
 				realm.copyToRealm(category);
 			})) {
 				emitStoreChange();
@@ -66,6 +70,7 @@ public class Store implements Observer {
 			if (insertWith(realm -> {
 				if (product.getDate() == null)
 					product.setDate(new Date());
+				product.setId(nextKey(Product.class));
 				realm.copyToRealm(product);
 			})) {
 				emitStoreChange();
@@ -82,6 +87,7 @@ public class Store implements Observer {
 			if (insertWith(realm -> {
 				if (transaction.getDate() == null)
 					transaction.setDate(new Date());
+				transaction.setId(nextKey(Transaction.class));
 				realm.copyToRealm(transaction);
 			})) {
 				emitStoreChange();
@@ -95,6 +101,7 @@ public class Store implements Observer {
 			if (insertWith(realm -> {
 				if (market.getDate() != null)
 					market.setDate(new Date());
+				market.setId(nextKey(Market.class));
 				realm.copyToRealm(market);
 			})) {
 				emitStoreChange();
@@ -139,6 +146,10 @@ public class Store implements Observer {
 				emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
 			}
 		}
+	}
+
+	private long nextKey(Class<? extends RealmModel> clazz) {
+		return PrimaryKeyFactory.getInstance().nextKey(clazz);
 	}
 
 	private void emitUiUpdate(UiUpdateEvent uiUpdateEvent) {

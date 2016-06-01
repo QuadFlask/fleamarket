@@ -4,6 +4,8 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,9 @@ import lombok.experimental.Builder;
 @Builder
 @AllArgsConstructor
 public class Transaction extends RealmObject {
+	@Required
+	@PrimaryKey
+	private Long id;
 	private Date date;
 	private Boolean isIncome;
 	private Product product;

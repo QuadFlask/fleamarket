@@ -6,6 +6,7 @@ import com.github.quadflask.fleamarketseller.actions.ActionCreator;
 import com.github.quadflask.fleamarketseller.actions.ActionCreatorModule;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.dispatcher.DispatcherModule;
+import com.github.quadflask.fleamarketseller.store.PrimaryKeyFactory;
 import com.github.quadflask.fleamarketseller.store.Store;
 import com.github.quadflask.fleamarketseller.store.StoreModule;
 
@@ -35,6 +36,7 @@ public class FleamarketApplication extends Application {
 	private void initDependencies() {
 		RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
 		Realm.setDefaultConfiguration(realmConfig);
+		PrimaryKeyFactory.getInstance().initialize(realm());
 		// delete all data
 		realm().beginTransaction();
 		realm().deleteAll();
