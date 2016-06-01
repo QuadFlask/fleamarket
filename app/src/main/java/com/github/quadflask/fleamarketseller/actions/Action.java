@@ -40,8 +40,17 @@ public class Action {
 		}
 	}
 
+	public static class CreateMarket {
+		public final Market market;
+
+		public CreateMarket(Market market) {
+			this.market = market;
+		}
+	}
+
 	public static class EditProduct {
 		public final String targetProductName;
+
 		public final Product product;
 
 		public EditProduct(String targetProductName, Product product) {
@@ -52,6 +61,7 @@ public class Action {
 
 	public static class EditCategory {
 		public final String targetCategoryName;
+
 		public final Category category;
 
 		public EditCategory(String targetCategoryName, Category category) {
@@ -60,10 +70,12 @@ public class Action {
 		}
 	}
 
-	public static class CreateMarket {
+	public static class EditMarket {
+		public final String targetMarketName;
 		public final Market market;
 
-		public CreateMarket(Market market) {
+		public EditMarket(String targetMarketName, Market market) {
+			this.targetMarketName = targetMarketName;
 			this.market = market;
 		}
 	}

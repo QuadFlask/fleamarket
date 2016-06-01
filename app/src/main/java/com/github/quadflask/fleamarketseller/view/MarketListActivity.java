@@ -78,7 +78,7 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 				.customView(R.layout.dialog_input_market, true)
 				.positiveText("추가")
 				.onPositive((dialog, which) -> {
-					View view = dialog.getContentView();
+					View view = dialog.getCustomView();
 					EditText edName = (EditText) view.findViewById(R.id.ed_name);
 					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
 
@@ -91,8 +91,30 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 	}
 
 	@Override
-	public void onClickEdit(Market market) {
-		// TODO.. open dialog
+	public void onClickEdit(final Market targetMarket) {
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title("수정")
+				.customView(R.layout.dialog_input_market, true)
+				.positiveText("완료")
+				.onPositive((_dialog, which) -> {
+					View view = _dialog.getCustomView();
+					EditText edName = (EditText) view.findViewById(R.id.ed_name);
+					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
+
+					String targetName = targetMarket.getName();
+					actionCreator().editMarket(targetName, Market.builder()
+							.name(edName.getText().toString())
+							.location(edLocation.getText().toString())
+							.build());
+				})
+				.show();
+
+		View customView = dialog.getCustomView();
+		EditText edName = (EditText) customView.findViewById(R.id.ed_name);
+		EditText edLocation = (EditText) customView.findViewById(R.id.ed_location);
+
+		edName.setText(targetMarket.getName());
+		edLocation.setText(targetMarket.getLocation());
 	}
 
 	@Override

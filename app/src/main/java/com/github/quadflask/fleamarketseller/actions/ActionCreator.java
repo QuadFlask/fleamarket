@@ -25,6 +25,10 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.CreateMarket(market));
 	}
 
+	public void newTransaction(Transaction transaction) {
+		dispatcher.dispatch(new Action.CreateTransaction(transaction));
+	}
+
 	public void editProduct(String oldName, Product product) {
 		dispatcher.dispatch(new Action.EditProduct(oldName, product));
 	}
@@ -33,7 +37,7 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.EditCategory(oldName, category));
 	}
 
-	public void newTransaction(Transaction transaction) {
-		dispatcher.dispatch(new Action.CreateTransaction(transaction));
+	public void editMarket(String oldName, Market market) {
+		dispatcher.dispatch(new Action.EditMarket(oldName, market));
 	}
 }

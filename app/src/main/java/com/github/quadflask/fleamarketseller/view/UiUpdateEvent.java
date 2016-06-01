@@ -54,4 +54,12 @@ public class UiUpdateEvent {
 			this.market = market;
 		}
 	}
+
+	public static class MarketUpdated extends UiUpdateEvent {
+		final Market market;
+
+		public MarketUpdated(Market market) {
+			this.market = market;
+		}
+	}
 }

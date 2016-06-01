@@ -126,6 +126,18 @@ public class Store implements Observer {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
 			}
+		} else if (action instanceof Action.EditMarket) {
+			val _action = (Action.EditMarket) action;
+			val editedMarket = _action.market;
+			val market = findMarketByName(_action.targetMarketName);
+
+			if (market != null) {
+				market.setName(editedMarket.getName());
+				market.setLocation(editedMarket.getLocation());
+
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
+			}
 		}
 	}
 
