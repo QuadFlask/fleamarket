@@ -85,7 +85,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
 			val editedProduct = _action.product;
-			Product product = findProductByName(_action.oldName);
+			Product product = findProductByName(_action.targetProductName);
 
 			if (product != null) {
 				product.setName(editedProduct.getName());

@@ -40,11 +40,11 @@ public class Action {
 	}
 
 	public static class EditProduct {
-		public final String oldName;
+		public final String targetProductName;
 		public final Product product;
 
-		public EditProduct(String oldName, Product product) {
-			this.oldName = oldName;
+		public EditProduct(String targetProductName, Product product) {
+			this.targetProductName = targetProductName;
 			this.product = product;
 		}
 	}
