@@ -52,18 +52,18 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 			adapter = new RealmBasedRecyclerViewAdapter<Product, ProductViewHolder>(this, products, true, false) {
 				@Override
 				public ProductViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					ProductViewHolder productViewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
-					productViewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEdit(productViewHolder.product));
-					return productViewHolder;
+					ProductViewHolder viewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
+					viewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEdit(viewHolder.product));
+					return viewHolder;
 				}
 
 				@Override
-				public void onBindRealmViewHolder(ProductViewHolder productViewHolder, int i) {
+				public void onBindRealmViewHolder(ProductViewHolder viewHolder, int i) {
 					Product product = realmResults.get(i);
-					productViewHolder.product = product;
-					productViewHolder.name.setText(product.getName());
-					productViewHolder.date.setText(product.getDate().toLocaleString());
-					productViewHolder.category.setText(product.getCategory().getName());
+					viewHolder.product = product;
+					viewHolder.name.setText(product.getName());
+					viewHolder.date.setText(product.getDate().toLocaleString());
+					viewHolder.category.setText(product.getCategory().getName());
 				}
 			};
 			rvList.setAdapter(adapter);

@@ -52,19 +52,19 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 			adapter = new RealmBasedRecyclerViewAdapter<Category, CategoryViewHolder>(this, categories, true, false) {
 				@Override
 				public CategoryViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					CategoryViewHolder categoryViewHolder = new CategoryViewHolder(inflater.inflate(R.layout.li_category, viewGroup, false));
-					categoryViewHolder.root.setOnClickListener(v -> CategoryListActivity.this.onClickEdit(categoryViewHolder.category));
-					return categoryViewHolder;
+					CategoryViewHolder viewHolder = new CategoryViewHolder(inflater.inflate(R.layout.li_category, viewGroup, false));
+					viewHolder.root.setOnClickListener(v -> CategoryListActivity.this.onClickEdit(viewHolder.category));
+					return viewHolder;
 				}
 
 				@Override
-				public void onBindRealmViewHolder(CategoryViewHolder categoryViewHolder, int i) {
+				public void onBindRealmViewHolder(CategoryViewHolder viewHolder, int i) {
 					val category = realmResults.get(i);
-					categoryViewHolder.category = category;
+					viewHolder.category = category;
 					if (category.getParent() != null)
-						categoryViewHolder.parentName.setText(category.getParent().getName());
-					else categoryViewHolder.parentName.setText("");
-					categoryViewHolder.name.setText(category.getName());
+						viewHolder.parentName.setText(category.getParent().getName());
+					else viewHolder.parentName.setText("");
+					viewHolder.name.setText(category.getName());
 				}
 			};
 			rvList.setAdapter(adapter);
