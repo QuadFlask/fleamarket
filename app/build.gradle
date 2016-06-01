@@ -25,6 +25,9 @@ android {
 		targetCompatibility 1.8
 		sourceCompatibility 1.8
 	}
+//	dataBinding { // not work with lombok??
+//		enabled = true
+//	}
 }
 
 dependencies {
@@ -44,6 +47,7 @@ dependencies {
 	compile 'com.google.dagger:dagger:2.0'
 	provided "org.projectlombok:lombok:1.12.6"
 	apt "org.projectlombok:lombok:1.12.6"
+	compile 'com.afollestad.material-dialogs:core:0.8.5.9'
 //	compile group: 'org.apache.poi', name: 'poi', version: '3.14'
 //	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.14'
 	testCompile 'junit:junit:4.12'
