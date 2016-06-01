@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.github.quadflask.fleamarketseller.FleamarketApplication;
 
@@ -19,6 +20,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Observer
 		super.onCreate(savedInstanceState);
 		setContentView(getContentViewResId());
 		bind = ButterKnife.bind(this);
+	}
+
+	protected void setToolbar(Toolbar toolbar) {
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		toolbar.setNavigationOnClickListener(v -> finish());
 	}
 
 	@Override

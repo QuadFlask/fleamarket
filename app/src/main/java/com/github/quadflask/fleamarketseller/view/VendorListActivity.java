@@ -1,9 +1,11 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import com.github.quadflask.fleamarketseller.R;
+
 public class VendorListActivity extends BaseActivity {
 	@Override
 	protected int getContentViewResId() {
-		return 0;
+		return R.layout.activity_vendor_list;
 	}
 
 	@Override

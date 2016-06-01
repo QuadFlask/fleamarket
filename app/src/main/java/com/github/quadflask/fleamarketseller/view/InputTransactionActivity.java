@@ -56,11 +56,7 @@ public class InputTransactionActivity extends BaseActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setSupportActionBar(toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		toolbar.setNavigationOnClickListener(v -> finish());
+		setToolbar(toolbar);
 
 		updateViewState(isSelling());
 		transactionBuilder = Transaction.builder().isIncome(isSelling());

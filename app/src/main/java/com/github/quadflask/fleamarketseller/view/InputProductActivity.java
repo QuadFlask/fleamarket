@@ -42,10 +42,7 @@ public class InputProductActivity extends BaseActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setSupportActionBar(toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		toolbar.setNavigationOnClickListener(v -> finish());
+		setToolbar(toolbar);
 
 		Intent intent = getIntent();
 		if (intent != null) {
