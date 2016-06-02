@@ -87,6 +87,7 @@ public class Store implements Observer {
 			val _action = (Action.CreateTransaction) action;
 			val transaction = _action.transaction;
 
+			transaction.setProduct(findProductByName(transaction.getProductName()));
 			transaction.setMarket(findMarketByName(transaction.getMarketName()));
 			transaction.setVendor(findVendorByName(transaction.getVendorName()));
 

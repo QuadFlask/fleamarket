@@ -74,14 +74,14 @@ public class InputTransactionActivity extends BaseActivity {
 	}
 
 	private void reloadData() {
-		spMarket.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Stream
-				.of(store().loadMarkets())
-				.map(Market::getName)
-				.collect(Collectors.toList())
-		));
 		spProduct.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Stream
 				.of(store().loadProducts())
 				.map(Product::getName)
+				.collect(Collectors.toList())
+		));
+		spMarket.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Stream
+				.of(store().loadMarkets())
+				.map(Market::getName)
 				.collect(Collectors.toList())
 		));
 		spVendor.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Stream
@@ -99,6 +99,7 @@ public class InputTransactionActivity extends BaseActivity {
 
 		actionCreator().newTransaction(
 				transactionBuilder
+						.productName(spProduct.getSelectedItem().toString())
 						.count(Long.parseLong(edCount.getText().toString()))
 						.price(Long.parseLong(edPrice.getText().toString()))
 						.build()
@@ -108,7 +109,7 @@ public class InputTransactionActivity extends BaseActivity {
 	@Override
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
 		if (uiUpdateEvent instanceof UiUpdateEvent.TransactionAdded) {
-			Snackbar.make(llRoot, "Product added", Snackbar.LENGTH_SHORT).show();
+			Snackbar.make(llRoot, "Transaction added", Snackbar.LENGTH_SHORT).show();
 		}
 	}
 
