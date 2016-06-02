@@ -79,4 +79,12 @@ public class Action {
 			this.market = market;
 		}
 	}
+
+	public static class DeleteCategory {
+		public final String categoryName;
+
+		public DeleteCategory(String categoryName) {
+			this.categoryName = categoryName;
+		}
+	}
 }

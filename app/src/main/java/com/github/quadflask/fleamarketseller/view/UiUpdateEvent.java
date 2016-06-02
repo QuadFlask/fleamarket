@@ -62,4 +62,7 @@ public class UiUpdateEvent {
 			this.market = market;
 		}
 	}
+
+	public static class CategoryDeleted extends UiUpdateEvent {
+	}
 }

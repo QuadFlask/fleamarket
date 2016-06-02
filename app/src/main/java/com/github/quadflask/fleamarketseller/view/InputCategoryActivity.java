@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Category;
 import com.google.common.base.Strings;
@@ -82,8 +85,34 @@ public class InputCategoryActivity extends BaseActivity {
 			edCategoryName.setText("");
 
 			Snackbar.make(llRoot, "Category added", Snackbar.LENGTH_SHORT).show();
+		} else if (event instanceof UiUpdateEvent.CategoryDeleted) {
+			new MaterialDialog.Builder(this)
+					.title("삭제 완료")
+					.content("카테고리가 삭제되었습니다")
+					.positiveText("확인")
+					.onPositive((dialog, which) -> finish())
+					.show();
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_delete, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		if (id == R.id.action_delete) {
+			actionCreator().deleteCategory(categoryName);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
 
 	private void reloadParentCategories() {
 		val categoryNames = store().loadParentCategoryNames();

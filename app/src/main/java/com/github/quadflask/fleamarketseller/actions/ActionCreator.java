@@ -40,4 +40,8 @@ public class ActionCreator {
 	public void editMarket(String oldName, Market market) {
 		dispatcher.dispatch(new Action.EditMarket(oldName, market));
 	}
+
+	public void deleteCategory(String categoryName) {
+		dispatcher.dispatch(new Action.DeleteCategory(categoryName));
+	}
 }

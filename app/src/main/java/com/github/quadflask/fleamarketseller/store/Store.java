@@ -153,6 +153,16 @@ public class Store implements Observer {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
 			}
+		} else if (action instanceof Action.DeleteCategory) {
+			val _action = (Action.DeleteCategory) action;
+			Category category = findCategoryByName(_action.categoryName);
+			if (category != null)
+				realm().executeTransactionAsync(realm -> {
+					category.deleteFromRealm();
+				}, () -> {
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.CategoryDeleted());
+				});
 		}
 	}
 
