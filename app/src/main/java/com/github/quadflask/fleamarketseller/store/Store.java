@@ -62,6 +62,7 @@ public class Store implements Observer {
 				if (category.getDate() == null)
 					category.setDate(new DateTime());
 				category.setId(nextKey(Category.class));
+				category.setColor(ColorFactory.nextColor());
 				realm.copyToRealm(category);
 			}, () -> {
 				emitStoreChange();
@@ -110,6 +111,7 @@ public class Store implements Observer {
 				if (market.getDate() != null)
 					market.setDate(new DateTime());
 				market.setId(nextKey(Market.class));
+				market.setColor(ColorFactory.nextColor());
 				realm.copyToRealm(market);
 			}, () -> {
 				emitStoreChange();

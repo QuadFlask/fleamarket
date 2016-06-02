@@ -23,4 +23,5 @@ public class Market extends RealmObject {
 	@Required
 	private String name;
 	private String location;
+	private int color;
 }

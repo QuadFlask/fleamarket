@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Category;
 
+import net.steamcrafted.materialiconlib.MaterialIconView;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -65,6 +67,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 						viewHolder.parentName.setText(category.getParent().getName());
 					else viewHolder.parentName.setText("");
 					viewHolder.name.setText(category.getName());
+					viewHolder.icon.setColor(category.getColor());
 				}
 			};
 			rvList.setAdapter(adapter);
@@ -95,6 +98,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 	}
 
 	private static class CategoryViewHolder extends RealmViewHolder {
+		final MaterialIconView icon;
 		final LinearLayout root;
 		final TextView name, parentName;
 		Category category;
@@ -102,6 +106,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 		CategoryViewHolder(View itemView) {
 			super(itemView);
 			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
+			icon = (MaterialIconView) itemView.findViewById(R.id.icon);
 			parentName = (TextView) itemView.findViewById(R.id.tv_category_parent_name);
 			name = (TextView) itemView.findViewById(R.id.tv_category_name);
 		}

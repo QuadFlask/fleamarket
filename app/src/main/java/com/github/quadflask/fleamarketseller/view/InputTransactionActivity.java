@@ -51,7 +51,7 @@ public class InputTransactionActivity extends BaseActivity {
 	@BindView(R.id.btn_complete)
 	Button button;
 
-	private Transaction.TransactionBuilder transactionBuilder;
+	private boolean isIncome = true;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,11 +59,10 @@ public class InputTransactionActivity extends BaseActivity {
 		setToolbar(toolbar);
 
 		updateViewState(isSelling());
-		transactionBuilder = Transaction.builder().isIncome(isSelling());
+		isIncome = isSelling();
 		rgBuyingOrSelling.setOnCheckedChangeListener((group, checkedId) -> {
-			boolean isSelling = isSelling(checkedId);
-			transactionBuilder.isIncome(isSelling);
-			updateViewState(isSelling);
+			isIncome = isSelling(checkedId);
+			updateViewState(isIncome);
 		});
 	}
 
@@ -93,17 +92,34 @@ public class InputTransactionActivity extends BaseActivity {
 
 	@OnClick(R.id.btn_complete)
 	void addTransaction() {
-		if (isSelling())
-			transactionBuilder.marketName(spMarket.getSelectedItem().toString());
-		else transactionBuilder.vendorName(spVendor.getSelectedItem().toString());
-
-		actionCreator().newTransaction(
-				transactionBuilder
-						.productName(spProduct.getSelectedItem().toString())
-						.count(Long.parseLong(edCount.getText().toString()))
-						.price(Long.parseLong(edPrice.getText().toString()))
-						.build()
-		);
+		Transaction transaction;
+		if (isSelling()) {
+			transaction = Transaction.builder()
+					.marketName(spMarket.getSelectedItem().toString())
+					.productName(spProduct.getSelectedItem().toString())
+					.count(Long.parseLong(edCount.getText().toString()))
+					.price(Long.parseLong(edPrice.getText().toString()))
+					.build();
+		} else {
+			transaction = Transaction.builder()
+					.vendorName(spVendor.getSelectedItem().toString())
+					.productName(spProduct.getSelectedItem().toString())
+					.count(Long.parseLong(edCount.getText().toString()))
+					.price(Long.parseLong(edPrice.getText().toString()))
+					.build();
+		}
+		actionCreator().newTransaction(transaction);
+//		if (isSelling())
+//			transactionBuilder.marketName(spMarket.getSelectedItem().toString());
+//		else transactionBuilder.vendorName(spVendor.getSelectedItem().toString());
+//
+//		actionCreator().newTransaction(
+//				transactionBuilder
+//						.productName(spProduct.getSelectedItem().toString())
+//						.count(Long.parseLong(edCount.getText().toString()))
+//						.price(Long.parseLong(edPrice.getText().toString()))
+//						.build()
+//		);
 	}
 
 	@Override

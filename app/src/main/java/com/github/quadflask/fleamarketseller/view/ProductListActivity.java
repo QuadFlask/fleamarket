@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
 
+import net.steamcrafted.materialiconlib.MaterialIconView;
+
 import org.joda.time.format.DateTimeFormat;
 
 import butterknife.BindView;
@@ -66,6 +68,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 					viewHolder.name.setText(product.getName());
 					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(product.getDate()));
 					viewHolder.category.setText(product.getCategory().getName());
+					viewHolder.icon.setColor(product.getCategory().getColor());
 				}
 			};
 			rvList.setAdapter(adapter);
@@ -101,6 +104,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 	}
 
 	private static class ProductViewHolder extends RealmViewHolder {
+		final MaterialIconView icon;
 		final LinearLayout root;
 		final TextView name, category, date;
 		Product product;
@@ -108,6 +112,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 		ProductViewHolder(View itemView) {
 			super(itemView);
 			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
+			icon = (MaterialIconView) itemView.findViewById(R.id.icon);
 			name = (TextView) itemView.findViewById(R.id.tv_product_name);
 			date = (TextView) itemView.findViewById(R.id.tv_date);
 			category = (TextView) itemView.findViewById(R.id.tv_product_category);

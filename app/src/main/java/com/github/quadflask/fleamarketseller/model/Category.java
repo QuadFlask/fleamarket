@@ -27,6 +27,8 @@ public class Category extends RealmObject implements Columnable, Comparable {
 
 	private Category parent;
 
+	private int color;
+
 	@Ignore
 	private String parentName;
 

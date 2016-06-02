@@ -21,7 +21,6 @@ public class Transaction extends RealmObject {
 	private Long id;
 	private DateTime date;
 	private Boolean isIncome;
-	@Required
 	private Product product;
 	private Market market;
 	private Vendor vendor;
