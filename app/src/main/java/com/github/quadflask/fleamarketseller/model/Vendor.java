@@ -1,6 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -14,7 +14,7 @@ public class Vendor extends RealmObject {
 	@Required
 	@PrimaryKey
 	private Long id;
-	private Date date;
+	private DateTime date;
 	private String name;
 	private String location;
 	private String phoneNumber;

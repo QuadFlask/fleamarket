@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
+import org.joda.time.format.DateTimeFormat;
+
 import butterknife.BindView;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -49,7 +51,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 				public void onBindRealmViewHolder(TransactionViewHolder viewHolder, int i) {
 					Transaction transaction = realmResults.get(i);
 					viewHolder.transaction = transaction;
-					viewHolder.tvDate.setText(transaction.getDate().toLocaleString());
+					viewHolder.tvDate.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(transaction.getDate()));
 					viewHolder.tv_product_name.setText(transaction.getProduct().getName());
 					viewHolder.tv_category.setText(transaction.getProduct().getCategory().getName());
 

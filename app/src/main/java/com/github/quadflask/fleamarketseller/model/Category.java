@@ -1,6 +1,7 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -20,7 +21,7 @@ public class Category extends RealmObject implements Columnable, Comparable {
 	@PrimaryKey
 	private Long id;
 	@Required
-	private Date date;
+	private DateTime date;
 	@Required
 	private String name;
 
@@ -40,8 +41,8 @@ public class Category extends RealmObject implements Columnable, Comparable {
 	@Override
 	public String[] getData() {
 		if (parent != null)
-			return new String[]{date.toLocaleString(), name, parent.toString()};
-		return new String[]{date.toLocaleString(), name, ""};
+			return new String[]{DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date), name, parent.toString()};
+		return new String[]{DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date), name, ""};
 	}
 
 	@Override

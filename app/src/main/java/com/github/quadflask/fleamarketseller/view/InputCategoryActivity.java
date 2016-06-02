@@ -21,8 +21,6 @@ import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Category;
 import com.google.common.base.Strings;
 
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import lombok.val;
@@ -149,7 +147,6 @@ public class InputCategoryActivity extends BaseActivity {
 			} else {
 				actionCreator().newCategory(Category
 						.builder()
-						.date(new Date())
 						.name(categoryName)
 						.parentName(parentCategoryName)
 						.build()

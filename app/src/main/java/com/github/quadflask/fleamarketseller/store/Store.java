@@ -12,7 +12,8 @@ import com.github.quadflask.fleamarketseller.model.Vendor;
 import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.base.Strings;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import io.realm.Realm;
@@ -48,7 +49,7 @@ public class Store implements Observer {
 				realm().executeTransactionAsync(
 						realm -> realm.copyToRealm(Category.builder()
 								.id(nextKey(Category.class))
-								.date(new Date())
+								.date(new DateTime())
 								.parentName(null)
 								.name(category.getParentName())
 								.build()),
@@ -59,7 +60,7 @@ public class Store implements Observer {
 
 			realm().executeTransactionAsync(realm -> {
 				if (category.getDate() == null)
-					category.setDate(new Date());
+					category.setDate(new DateTime());
 				category.setId(nextKey(Category.class));
 				realm.copyToRealm(category);
 			}, () -> {
@@ -75,7 +76,7 @@ public class Store implements Observer {
 
 			realm().executeTransactionAsync(realm -> {
 				if (product.getDate() == null)
-					product.setDate(new Date());
+					product.setDate(new DateTime());
 				product.setId(nextKey(Product.class));
 				realm.copyToRealm(product);
 			}, () -> {
@@ -93,7 +94,7 @@ public class Store implements Observer {
 
 			realm().executeTransactionAsync(realm -> {
 				if (transaction.getDate() == null)
-					transaction.setDate(new Date());
+					transaction.setDate(new DateTime());
 				transaction.setId(nextKey(Transaction.class));
 				realm.copyToRealm(transaction);
 			}, () -> {
@@ -107,7 +108,7 @@ public class Store implements Observer {
 
 			realm().executeTransactionAsync(realm -> {
 				if (market.getDate() != null)
-					market.setDate(new Date());
+					market.setDate(new DateTime());
 				market.setId(nextKey(Market.class));
 				realm.copyToRealm(market);
 			}, () -> {

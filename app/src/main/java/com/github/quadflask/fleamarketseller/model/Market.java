@@ -1,6 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -19,7 +19,7 @@ public class Market extends RealmObject {
 	@PrimaryKey
 	private Long id;
 	@Required
-	private Date date;
+	private DateTime date;
 	@Required
 	private String name;
 	private String location;

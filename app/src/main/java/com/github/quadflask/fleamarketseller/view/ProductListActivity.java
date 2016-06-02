@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
 
+import org.joda.time.format.DateTimeFormat;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -62,7 +64,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 					Product product = realmResults.get(i);
 					viewHolder.product = product;
 					viewHolder.name.setText(product.getName());
-					viewHolder.date.setText(product.getDate().toLocaleString());
+					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(product.getDate()));
 					viewHolder.category.setText(product.getCategory().getName());
 				}
 			};
