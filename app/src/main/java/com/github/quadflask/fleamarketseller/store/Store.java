@@ -260,6 +260,12 @@ public class Store implements Observer {
 				.findAll();
 	}
 
+	public RealmResults<Transaction> loadTransactions() {
+		return realm()
+				.where(Transaction.class)
+				.findAll();
+	}
+
 	private List<String> toCategoryNames(RealmResults<Category> parents) {
 		return Stream
 				.of(parents)
