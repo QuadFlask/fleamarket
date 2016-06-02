@@ -44,4 +44,8 @@ public class ActionCreator {
 	public void deleteCategory(String categoryName) {
 		dispatcher.dispatch(new Action.DeleteCategory(categoryName));
 	}
+
+	public void deleteProduct(String productName) {
+		dispatcher.dispatch(new Action.DeleteProduct(productName));
+	}
 }

@@ -65,4 +65,7 @@ public class UiUpdateEvent {
 
 	public static class CategoryDeleted extends UiUpdateEvent {
 	}
+
+	public static class ProductDeleted extends UiUpdateEvent {
+	}
 }

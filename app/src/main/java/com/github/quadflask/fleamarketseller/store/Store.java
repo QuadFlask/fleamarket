@@ -158,10 +158,21 @@ public class Store implements Observer {
 			Category category = findCategoryByName(_action.categoryName);
 			if (category != null)
 				realm().executeTransactionAsync(realm -> {
+					// TODO if delete parent category, should delete cascade
 					category.deleteFromRealm();
 				}, () -> {
 					emitStoreChange();
 					emitUiUpdate(new UiUpdateEvent.CategoryDeleted());
+				});
+		} else if (action instanceof Action.DeleteProduct) {
+			val _action = (Action.DeleteProduct) action;
+			Product product = findProductByName(_action.productName);
+			if (product != null)
+				realm().executeTransactionAsync(realm -> {
+					product.deleteFromRealm();
+				}, () -> {
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.ProductDeleted());
 				});
 		}
 	}

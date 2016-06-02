@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
 
@@ -84,6 +87,13 @@ public class InputProductActivity extends BaseActivity {
 		} else if (event instanceof UiUpdateEvent.ProductUpdated) {
 			Toast.makeText(this, "수정완료", Toast.LENGTH_SHORT).show();
 			finish();
+		} else if (event instanceof UiUpdateEvent.ProductDeleted) {
+			new MaterialDialog.Builder(this)
+					.title("삭제 완료")
+					.content("제품이 삭제되었습니다")
+					.positiveText("확인")
+					.onPositive((dialog, which) -> finish())
+					.show();
 		}
 	}
 
@@ -109,5 +119,24 @@ public class InputProductActivity extends BaseActivity {
 					.price(price)
 					.build());
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		if (IntentConstant.ACTION_EDIT.equals(action))
+			getMenuInflater().inflate(R.menu.menu_delete, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		if (id == R.id.action_delete) {
+			actionCreator().deleteProduct(productName);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

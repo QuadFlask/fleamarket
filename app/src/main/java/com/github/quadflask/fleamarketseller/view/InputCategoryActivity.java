@@ -97,7 +97,8 @@ public class InputCategoryActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_delete, menu);
+		if (IntentConstant.ACTION_EDIT.equals(action))
+			getMenuInflater().inflate(R.menu.menu_delete, menu);
 		return true;
 	}
 
@@ -112,7 +113,6 @@ public class InputCategoryActivity extends BaseActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
-
 
 	private void reloadParentCategories() {
 		val categoryNames = store().loadParentCategoryNames();

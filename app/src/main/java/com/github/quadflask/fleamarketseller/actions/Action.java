@@ -87,4 +87,12 @@ public class Action {
 			this.categoryName = categoryName;
 		}
 	}
+
+	public static class DeleteProduct {
+		public final String productName;
+
+		public DeleteProduct(String productName) {
+			this.productName = productName;
+		}
+	}
 }
