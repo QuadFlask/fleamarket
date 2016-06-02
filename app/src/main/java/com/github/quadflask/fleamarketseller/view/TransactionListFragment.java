@@ -1,5 +1,7 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -24,6 +26,23 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 
 	private RealmBasedRecyclerViewAdapter<Transaction, TransactionViewHolder> adapter;
 
+	private boolean isIncome = true;
+
+	public TransactionListFragment() {
+	}
+
+	public static TransactionListFragment newInstance(boolean isIncome) {
+		TransactionListFragment transactionListFragment = new TransactionListFragment();
+		transactionListFragment.isIncome = isIncome;
+		return transactionListFragment;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		isIncome = getArguments().getBoolean(IntentConstant.EXTRA_ISINCOME);
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
+
 	@Override
 	protected int getContentViewResId() {
 		return R.layout.fragment_transaction_list;
@@ -36,7 +55,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	}
 
 	private void reloadTransactionList() {
-		val transactions = store().loadTransactions();
+		val transactions = store().loadTransactionsByIncome(isIncome);
 
 		if (adapter == null && getActivity() != null) {
 			adapter = new RealmBasedRecyclerViewAdapter<Transaction, TransactionViewHolder>(getActivity(), transactions, true, false) {
@@ -59,7 +78,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 						viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
 					else viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
 
-					if (transaction.getPrice() > 0) viewHolder.tv_price.setTextColor(0x3333ff);
+					if (transaction.getIsIncome()) viewHolder.tv_price.setTextColor(0x3333ff);
 					else viewHolder.tv_price.setTextColor(0xff3333);
 					viewHolder.tv_price.setText(transaction.getPrice().toString());
 				}
@@ -70,7 +89,6 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 
 	@Override
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
-
 	}
 
 	@Override

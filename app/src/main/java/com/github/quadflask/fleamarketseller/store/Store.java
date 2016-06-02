@@ -288,6 +288,13 @@ public class Store implements Observer {
 				.findAll();
 	}
 
+	public RealmResults<Transaction> loadTransactionsByIncome(boolean isIncome) {
+		return realm()
+				.where(Transaction.class)
+				.equalTo("isIncome", isIncome)
+				.findAll();
+	}
+
 	private List<String> toCategoryNames(RealmResults<Category> parents) {
 		return Stream
 				.of(parents)

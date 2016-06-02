@@ -92,7 +92,13 @@ public class MainActivity extends BaseActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			return PlaceholderFragment.newInstance(position + 1);
+			switch (position) {
+				case 0:
+					return TransactionListFragment.newInstance(true);
+				case 1:
+					return TransactionListFragment.newInstance(false);
+			}
+			return PlaceholderFragment.newInstance();
 		}
 
 		@Override
@@ -115,13 +121,8 @@ public class MainActivity extends BaseActivity {
 	}
 
 	public static class PlaceholderFragment extends Fragment {
-		private static final String ARG_SECTION_NUMBER = "section_number";
-
-		public static PlaceholderFragment newInstance(int sectionNumber) {
+		public static PlaceholderFragment newInstance() {
 			PlaceholderFragment fragment = new PlaceholderFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-			fragment.setArguments(args);
 			return fragment;
 		}
 
