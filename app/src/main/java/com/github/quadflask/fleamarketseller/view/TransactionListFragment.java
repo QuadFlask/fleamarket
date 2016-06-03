@@ -73,6 +73,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 					viewHolder.tvDate.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(transaction.getDate()));
 					viewHolder.tv_product_name.setText(transaction.getProduct().getName());
 					viewHolder.tv_category.setText(transaction.getProduct().getCategory().getName());
+					viewHolder.tv_category.setTextColor(transaction.getProduct().getCategory().getColor());
 
 					if (transaction.getIsIncome())
 						viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
