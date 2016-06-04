@@ -48,9 +48,10 @@ public class Store implements Observer {
 				realm().executeTransactionAsync(
 						realm -> realm.copyToRealm(Category.builder()
 								.id(nextKey(Category.class))
-								.date(new Date())
-								.parentName(null)
 								.name(category.getParentName())
+								.date(new Date())
+								.color(ColorFactory.nextColor())
+								.parentName(null)
 								.build()),
 						onInsertCommonError);
 			}
@@ -64,9 +65,9 @@ public class Store implements Observer {
 //				category.setColor(ColorFactory.nextColor());
 
 				realm.copyToRealm(Category.builder()
+						.id(nextKey(Category.class))
 						.name(category.getName())
 						.date(new Date())
-						.id(nextKey(Category.class))
 						.color(ColorFactory.nextColor())
 						.parent(findParentCategoryByName(realm, category.getParentName()))
 						.build());
