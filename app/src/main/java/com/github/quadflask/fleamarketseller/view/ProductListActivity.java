@@ -53,7 +53,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 	}
 
 	private void reloadProducts() {
-		val products = store().loadProducts().sort("category");
+		val products = store().loadProducts().sort("date");
 		if (adapter == null) {
 			adapter = new RealmBasedRecyclerViewAdapter<Product, ProductViewHolder>(this, products, true, false) {
 				@Override
