@@ -15,6 +15,7 @@ import com.github.quadflask.fleamarketseller.model.Product;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import butterknife.BindView;
@@ -66,7 +67,8 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 					Product product = realmResults.get(i);
 					viewHolder.product = product;
 					viewHolder.name.setText(product.getName());
-					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(product.getDate()));
+					val date = new DateTime(product.getDate().getTime());
+					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date));
 					viewHolder.category.setText(product.getCategory().getName());
 					viewHolder.icon.setColor(product.getCategory().getColor());
 				}

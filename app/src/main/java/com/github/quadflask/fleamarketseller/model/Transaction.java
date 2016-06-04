@@ -1,6 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -19,7 +19,7 @@ public class Transaction extends RealmObject {
 	@Required
 	@PrimaryKey
 	private Long id;
-	private DateTime date;
+	private Date date;
 	private Boolean isIncome;
 	private Product product;
 	private Market market;
@@ -27,6 +27,9 @@ public class Transaction extends RealmObject {
 	private Long count;
 	private Long price;
 	private String text;
+
+	public Transaction() {
+	}
 
 	@Ignore
 	private String productName;

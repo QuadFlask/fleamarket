@@ -3,6 +3,8 @@ package com.github.quadflask.fleamarketseller.model;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -11,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Builder;
+import lombok.val;
 
 @Getter
 @Setter
@@ -21,7 +24,7 @@ public class Category extends RealmObject implements Columnable, Comparable {
 	@PrimaryKey
 	private Long id;
 	@Required
-	private DateTime date;
+	private Date date;
 	@Required
 	private String name;
 
@@ -42,6 +45,7 @@ public class Category extends RealmObject implements Columnable, Comparable {
 
 	@Override
 	public String[] getData() {
+		val date = new DateTime(getDate().getTime());
 		if (parent != null)
 			return new String[]{DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date), name, parent.toString()};
 		return new String[]{DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date), name, ""};

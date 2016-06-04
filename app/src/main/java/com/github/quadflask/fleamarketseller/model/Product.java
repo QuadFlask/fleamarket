@@ -1,6 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -20,7 +20,7 @@ public class Product extends RealmObject implements Comparable {
 	@PrimaryKey
 	private Long id;
 	@Required
-	private DateTime date;
+	private Date date;
 	@Required
 	private String name;
 
