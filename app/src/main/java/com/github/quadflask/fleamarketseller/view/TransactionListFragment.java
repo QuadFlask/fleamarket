@@ -40,7 +40,8 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		isIncome = getArguments().getBoolean(IntentConstant.EXTRA_ISINCOME);
+		if (getArguments() != null)
+			isIncome = getArguments().getBoolean(IntentConstant.EXTRA_ISINCOME);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 

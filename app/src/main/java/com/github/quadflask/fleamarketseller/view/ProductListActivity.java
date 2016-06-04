@@ -3,6 +3,7 @@ package com.github.quadflask.fleamarketseller.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,8 +29,8 @@ import lombok.val;
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
 public class ProductListActivity extends BaseActivity implements OnClickEditListener<Product> {
-	@BindView(R.id.ll_root)
-	LinearLayout llRoot;
+	@BindView(R.id.main_content)
+	CoordinatorLayout llRoot;
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 	@BindView(R.id.fab)
