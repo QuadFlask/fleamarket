@@ -52,8 +52,8 @@ public class InputCategoryActivity extends BaseActivity {
 		setToolbar(toolbar);
 
 		Intent intent = getIntent();
-		if (intent != null) {
-			if (intent.getAction().equals(IntentConstant.ACTION_EDIT)) {
+		if (intent != null && intent.getAction() != null) {
+			if (IntentConstant.ACTION_EDIT.equals(intent.getAction())) {
 				action = IntentConstant.ACTION_EDIT;
 				categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
 				btnComplete.setText("수정하기");

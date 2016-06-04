@@ -64,9 +64,10 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 				public void onBindRealmViewHolder(CategoryViewHolder viewHolder, int i) {
 					val category = realmResults.get(i);
 					viewHolder.category = category;
-					if (category.getParent() != null)
+					if (category.getParent() != null) {
 						viewHolder.parentName.setText(category.getParent().getName());
-					else viewHolder.parentName.setText("");
+						viewHolder.parentName.setTextColor(category.getParent().getColor());
+					} else viewHolder.parentName.setText("");
 					viewHolder.name.setText(category.getName());
 					viewHolder.icon.setColor(category.getColor());
 				}

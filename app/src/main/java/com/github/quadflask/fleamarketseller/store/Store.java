@@ -58,11 +58,18 @@ public class Store implements Observer {
 			category.setParent(findParentCategoryByName(category.getParentName()));
 
 			realm().executeTransactionAsync(realm -> {
-				if (category.getDate() == null)
-					category.setDate(new Date());
-				category.setId(nextKey(Category.class));
-				category.setColor(ColorFactory.nextColor());
-				realm.copyToRealm(category);
+//				if (category.getDate() == null)
+//					category.setDate(new Date());
+//				category.setId(nextKey(Category.class));
+//				category.setColor(ColorFactory.nextColor());
+
+				realm.copyToRealm(Category.builder()
+						.name(category.getName())
+						.date(new Date())
+						.id(nextKey(Category.class))
+						.color(ColorFactory.nextColor())
+						.parent(findParentCategoryByName(realm, category.getParentName()))
+						.build());
 			}, () -> {
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
@@ -157,25 +164,25 @@ public class Store implements Observer {
 			}
 		} else if (action instanceof Action.DeleteCategory) {
 			val _action = (Action.DeleteCategory) action;
-			Category category = findCategoryByName(_action.categoryName);
-			if (category != null)
-				realm().executeTransactionAsync(realm -> {
-					// TODO if delete parent category, should delete cascade
+			realm().executeTransactionAsync(realm -> {
+				// TODO if delete parent category, should delete cascade
+				Category category = findCategoryByName(_action.categoryName);
+				if (category != null)
 					category.deleteFromRealm();
-				}, () -> {
-					emitStoreChange();
-					emitUiUpdate(new UiUpdateEvent.CategoryDeleted());
-				});
+			}, () -> {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.CategoryDeleted());
+			});
 		} else if (action instanceof Action.DeleteProduct) {
 			val _action = (Action.DeleteProduct) action;
-			Product product = findProductByName(_action.productName);
-			if (product != null)
-				realm().executeTransactionAsync(realm -> {
+			realm().executeTransactionAsync(realm -> {
+				Product product = findProductByName(_action.productName);
+				if (product != null)
 					product.deleteFromRealm();
-				}, () -> {
-					emitStoreChange();
-					emitUiUpdate(new UiUpdateEvent.ProductDeleted());
-				});
+			}, () -> {
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.ProductDeleted());
+			});
 		}
 	}
 
@@ -224,13 +231,17 @@ public class Store implements Observer {
 				.findFirst();
 	}
 
-	private Category findParentCategoryByName(String parentName) {
+	private Category findParentCategoryByName(Realm realm, String parentName) {
 		if (Strings.isNullOrEmpty(parentName)) return null;
-		return realm()
+		return realm
 				.where(Category.class)
 				.isNull("parent")
 				.equalTo("name", parentName)
 				.findFirst();
+	}
+
+	private Category findParentCategoryByName(String parentName) {
+		return findParentCategoryByName(realm(), parentName);
 	}
 
 	private Category findCategoryByName(String name) {

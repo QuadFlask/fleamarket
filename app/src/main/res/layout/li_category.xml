@@ -15,7 +15,7 @@
 		android:background="@android:color/transparent"
 		android:scaleType="center"
 		app:materialIcon="label_outline"
-		app:materialIconColor="#000"
+		app:materialIconColor="#FF000000"
 		app:materialIconSize="24dp"
 	/>
 
