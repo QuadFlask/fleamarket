@@ -68,9 +68,11 @@ public class InputCategoryActivity extends BaseActivity {
 					final Category parent = category.getParent();
 					if (parent != null)
 						acParentCategory.setText(parent.getName());
-					else isEditingParent = true;
+					else {
+						isEditingParent = true;
+						llParentCategoryContainer.setVisibility(View.GONE);
+					}
 					btnComplete.setText("수정하기");
-					llParentCategoryContainer.setVisibility(View.GONE);
 					getSupportActionBar().setTitle("카테고리 수정");
 				} else {
 					Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
