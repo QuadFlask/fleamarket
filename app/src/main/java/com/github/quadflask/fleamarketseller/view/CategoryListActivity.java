@@ -103,6 +103,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 	private static class CategoryViewHolder extends RealmViewHolder {
 		@LayoutRes
 		static final int RES_ID = R.layout.li_category;
+
 		final MaterialIconView icon;
 		final LinearLayout root;
 		final TextView name, parentName;

@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity {
 
 	@OnClick(R.id.fab)
 	void openInputProduct() {
-		startActivity(new Intent(this, InputProductActivity.class));
+		startActivity(new Intent(this, InputTransactionActivity.class));
 	}
 
 	@Override

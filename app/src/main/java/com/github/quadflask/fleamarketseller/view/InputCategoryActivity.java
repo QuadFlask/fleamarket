@@ -96,6 +96,10 @@ public class InputCategoryActivity extends BaseActivity {
 
 			edCategoryName.setText("");
 
+			// TODO should remain parent category which selected before.
+//					acParentCategory.setText(category.getParent().getName());
+//					spParentCategory.setSelection(categoryNames.indexOf(category.getParent().getName()));
+
 			Snackbar.make(llRoot, "키테고리가 추가되었습니다", Snackbar.LENGTH_SHORT).show();
 		} else if (event instanceof UiUpdateEvent.CategoryUpdated) {
 			reloadParentCategories();
