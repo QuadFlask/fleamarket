@@ -96,6 +96,7 @@ public class InputTransactionActivity extends BaseActivity {
 		Transaction transaction;
 		if (isSelling()) {
 			transaction = Transaction.builder()
+					.isIncome(isIncome)
 					.marketName(spMarket.getSelectedItem().toString())
 					.productName(spProduct.getSelectedItem().toString())
 					.count(Long.parseLong(edCount.getText().toString()))
@@ -103,6 +104,7 @@ public class InputTransactionActivity extends BaseActivity {
 					.build();
 		} else {
 			transaction = Transaction.builder()
+					.isIncome(isIncome)
 					.vendorName(spVendor.getSelectedItem().toString())
 					.productName(spProduct.getSelectedItem().toString())
 					.count(Long.parseLong(edCount.getText().toString()))
@@ -146,10 +148,10 @@ public class InputTransactionActivity extends BaseActivity {
 	private void updateViewState(boolean isChecked) {
 		if (isChecked) {
 			llVendorContainer.setVisibility(View.GONE);
-			llMarketContainer.setVerticalGravity(View.VISIBLE);
+			llMarketContainer.setVisibility(View.VISIBLE);
 		} else {
 			llVendorContainer.setVisibility(View.VISIBLE);
-			llMarketContainer.setVerticalGravity(View.GONE);
+			llMarketContainer.setVisibility(View.GONE);
 		}
 	}
 }

@@ -40,12 +40,6 @@ public class FleamarketApplication extends Application {
 		Realm.setDefaultConfiguration(realmConfig);
 		PrimaryKeyFactory.getInstance().initialize(realm());
 
-		// delete all data
-//		realm().beginTransaction();
-//		realm().deleteAll();
-//		realm().commitTransaction();
-		//
-
 		DaggerFleamarketApplicationComponent
 				.builder()
 				.dispatcherModule(new DispatcherModule())

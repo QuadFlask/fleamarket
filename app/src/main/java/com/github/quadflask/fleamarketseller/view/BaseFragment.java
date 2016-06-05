@@ -19,7 +19,11 @@ public abstract class BaseFragment extends Fragment implements Observer<UiUpdate
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(getContentViewResId(), container, false);
 		bind = ButterKnife.bind(this, rootView);
+		onBindView();
 		return rootView;
+	}
+
+	protected void onBindView() {
 	}
 
 	@Override

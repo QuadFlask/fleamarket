@@ -38,6 +38,7 @@ public class MainActivity extends BaseActivity {
 
 		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 		tabLayout.setupWithViewPager(mViewPager);
+		mViewPager.setOffscreenPageLimit(3);
 	}
 
 	@OnClick(R.id.fab)
