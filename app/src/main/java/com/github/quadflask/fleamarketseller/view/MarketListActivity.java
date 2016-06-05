@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Market;
+import com.google.common.base.Strings;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -83,10 +85,12 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 					EditText edName = (EditText) view.findViewById(R.id.ed_name);
 					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
 
-					actionCreator().newMarket(Market.builder()
-							.name(edName.getText().toString())
-							.location(edLocation.getText().toString())
-							.build());
+					if (!Strings.isNullOrEmpty(edName.getText().toString())) {
+						actionCreator().newMarket(Market.builder()
+								.name(edName.getText().toString())
+								.location(edLocation.getText().toString())
+								.build());
+					} else Toast.makeText(this, "이름이 비어있습니다", Toast.LENGTH_SHORT).show();
 				})
 				.show();
 	}

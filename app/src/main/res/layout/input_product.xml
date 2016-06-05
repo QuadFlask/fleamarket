@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
 	android:id="@+id/ll_root"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:fitsSystemWindows="true">
 
 	<android.support.design.widget.AppBarLayout
 		android:id="@+id/appbar"
@@ -26,7 +26,8 @@
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:isScrollContainer="false">
+		android:isScrollContainer="false"
+		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -103,4 +104,4 @@
 		</LinearLayout>
 	</ScrollView>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

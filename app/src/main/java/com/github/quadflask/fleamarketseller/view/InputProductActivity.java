@@ -3,6 +3,7 @@ package com.github.quadflask.fleamarketseller.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,7 +27,7 @@ import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
 public class InputProductActivity extends BaseActivity {
 	@BindView(R.id.ll_root)
-	LinearLayout llRoot;
+	CoordinatorLayout llRoot;
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 	@BindView(R.id.sp_category)

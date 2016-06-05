@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -29,7 +30,7 @@ import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 public class InputTransactionActivity extends BaseActivity {
 
 	@BindView(R.id.ll_root)
-	LinearLayout llRoot;
+	CoordinatorLayout llRoot;
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 	@BindView(R.id.ll_vendor_container)
