@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -30,6 +31,8 @@ public class Product extends RealmObject implements Comparable {
 
 	@Ignore
 	private String categoryName;
+	@Ignore
+	private String formattedDate = "unkonwn";
 
 	public Product() {
 	}
@@ -47,5 +50,12 @@ public class Product extends RealmObject implements Comparable {
 				return product.getDate().compareTo(getDate());
 			else return compareName;
 		} else return compareCategory;
+	}
+
+	public String getFormattedDate() {
+		if (date != null && formattedDate == null) {
+			formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+			return formattedDate;
+		} else return formattedDate;
 	}
 }

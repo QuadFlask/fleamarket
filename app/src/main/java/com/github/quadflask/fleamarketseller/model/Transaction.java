@@ -1,8 +1,6 @@
 package com.github.quadflask.fleamarketseller.model;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -45,8 +43,7 @@ public class Transaction extends RealmObject {
 
 	public String getFormattedDate() {
 		if (date != null && formattedDate == null) {
-			DateTime date = new DateTime(this.date.getTime());
-			formattedDate = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm").print(date);
+			formattedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(date);
 			return formattedDate;
 		} else return formattedDate;
 	}

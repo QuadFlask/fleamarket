@@ -1,6 +1,7 @@
 package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -57,7 +58,7 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 			adapter = new RealmBasedRecyclerViewAdapter<Market, MarketViewHolder>(this, markets, true, false) {
 				@Override
 				public MarketViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					MarketViewHolder viewHolder = new MarketViewHolder(inflater.inflate(R.layout.li_market, viewGroup, false));
+					MarketViewHolder viewHolder = new MarketViewHolder(inflater.inflate(MarketViewHolder.RES_ID, viewGroup, false));
 					viewHolder.root.setOnClickListener(v -> MarketListActivity.this.onClickEdit(viewHolder.market));
 					return viewHolder;
 				}
@@ -124,7 +125,6 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 
 	@Override
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
-
 	}
 
 	@Override
@@ -133,6 +133,9 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 	}
 
 	private static class MarketViewHolder extends RealmViewHolder {
+		@LayoutRes
+		static final int RES_ID = R.layout.li_market;
+
 		final LinearLayout root;
 		final TextView name, location;
 		Market market;
