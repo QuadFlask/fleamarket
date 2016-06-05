@@ -1,7 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,11 @@ import android.widget.TextView;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-
 import butterknife.BindView;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmViewHolder;
-import lombok.val;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
@@ -63,39 +59,43 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	}
 
 	private void reloadTransactionList() {
-		val transactions = store().loadTransactionsByIncome(isIncome);
-		Log.e("TransactionListFragment.reloadTransactionList", "" + transactions.size());
+		store().loadTransactionsByIncome(isIncome)
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(transactions -> {
+					if (adapter == null && getActivity() != null) {
+						adapter = new RealmBasedRecyclerViewAdapter<Transaction, TransactionViewHolder>(getActivity(), transactions, true, false) {
+							@Override
+							public TransactionViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
+								TransactionViewHolder viewHolder = new TransactionViewHolder(inflater.inflate(R.layout.li_transaction, viewGroup, false));
+								viewHolder.root.setOnClickListener(v -> TransactionListFragment.this.onClickEdit(viewHolder.transaction));
+								return viewHolder;
+							}
 
-		if (adapter == null && getActivity() != null) {
-			adapter = new RealmBasedRecyclerViewAdapter<Transaction, TransactionViewHolder>(getActivity(), transactions, true, false) {
-				@Override
-				public TransactionViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					TransactionViewHolder viewHolder = new TransactionViewHolder(inflater.inflate(R.layout.li_transaction, viewGroup, false));
-					viewHolder.root.setOnClickListener(v -> TransactionListFragment.this.onClickEdit(viewHolder.transaction));
-					return viewHolder;
-				}
+							@Override
+							public void onBindRealmViewHolder(TransactionViewHolder viewHolder, int i) {
+								Transaction transaction = realmResults.get(i);
+								viewHolder.transaction = transaction;
+								viewHolder.tvDate.setText(transaction.getFormattedDate());
+								viewHolder.tv_product_name.setText(transaction.getProduct().getName());
+								viewHolder.tv_category.setText(transaction.getProduct().getCategory().getName());
+								viewHolder.tv_category.setTextColor(transaction.getProduct().getCategory().getColor());
 
-				@Override
-				public void onBindRealmViewHolder(TransactionViewHolder viewHolder, int i) {
-					Transaction transaction = realmResults.get(i);
-					viewHolder.transaction = transaction;
-					val date = new DateTime(transaction.getDate().getTime());
-					viewHolder.tvDate.setText(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm").print(date));
-					viewHolder.tv_product_name.setText(transaction.getProduct().getName());
-					viewHolder.tv_category.setText(transaction.getProduct().getCategory().getName());
-					viewHolder.tv_category.setTextColor(transaction.getProduct().getCategory().getColor());
+								if (transaction.getIsIncome())
+									viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
+								else
+									viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
 
-					if (transaction.getIsIncome())
-						viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
-					else viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
+								if (transaction.getIsIncome())
+									viewHolder.tv_price.setTextColor(0xff5555ff);
+								else viewHolder.tv_price.setTextColor(0xffff5555);
+								viewHolder.tv_price.setText(transaction.getPrice().toString() + "원");
+							}
+						};
+						rvList.setAdapter(adapter);
+					} else adapter.updateRealmResults(transactions);
 
-					if (transaction.getIsIncome()) viewHolder.tv_price.setTextColor(0xff5555ff);
-					else viewHolder.tv_price.setTextColor(0xffff5555);
-					viewHolder.tv_price.setText(transaction.getPrice().toString()+"원");
-				}
-			};
-			rvList.setAdapter(adapter);
-		} else adapter.updateRealmResults(transactions);
+					rvList.setRefreshing(false);
+				});
 	}
 
 	@Override
@@ -109,7 +109,6 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	@Override
 	public void onRefresh() {
 		reloadTransactionList();
-		rvList.setRefreshing(false);
 	}
 
 	private static class TransactionViewHolder extends RealmViewHolder {

@@ -19,6 +19,7 @@ import io.realm.Realm;
 import io.realm.RealmModel;
 import io.realm.RealmResults;
 import lombok.val;
+import rx.Observable;
 import rx.Observer;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.realm;
@@ -308,11 +309,12 @@ public class Store implements Observer {
 				.findAll();
 	}
 
-	public RealmResults<Transaction> loadTransactionsByIncome(boolean isIncome) {
+	public Observable<RealmResults<Transaction>> loadTransactionsByIncome(boolean isIncome) {
 		return realm()
 				.where(Transaction.class)
 				.equalTo("isIncome", isIncome)
-				.findAll();
+				.findAll()
+				.asObservable();
 	}
 
 	private List<String> toCategoryNames(RealmResults<Category> parents) {
