@@ -117,7 +117,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
 			icon = (MaterialIconView) itemView.findViewById(R.id.icon);
 			name = (TextView) itemView.findViewById(R.id.tv_product_name);
-			date = (TextView) itemView.findViewById(R.id.tv_date);
+			date = (TextView) itemView.findViewById(R.id.tv_product_created);
 			category = (TextView) itemView.findViewById(R.id.tv_product_category);
 		}
 	}

@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import rx.Observer;
 
 public abstract class BaseActivity extends AppCompatActivity implements Observer<UiUpdateEvent> {
 	private Unbinder bind;
+	private Boolean isEditMode = null;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,4 +61,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Observer
 
 	@LayoutRes
 	protected abstract int getContentViewResId();
+
+	protected boolean isEditMode() {
+		if (isEditMode == null) {
+			isEditMode = false;
+			Intent intent = getIntent();
+			if (intent != null && intent.getAction() != null)
+				isEditMode = (IntentConstant.ACTION_EDIT.equals(intent.getAction()));
+		}
+		return isEditMode;
+	}
 }

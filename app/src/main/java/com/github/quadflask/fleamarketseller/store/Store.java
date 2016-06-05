@@ -71,7 +71,6 @@ public class Store implements Observer {
 			val _action = (Action.CreateProduct) action;
 			val product = _action.product;
 
-			product.setCategory(findCategoryByName(product.getCategoryName()));
 			product.setId(nextKey(Product.class));
 			product.setDate(new Date());
 
@@ -204,7 +203,7 @@ public class Store implements Observer {
 	public void onCompleted() {
 	}
 
-	private Product findProductByName(String name) {
+	public Product findProductByName(String name) {
 		return findProductByName(realm(), name);
 	}
 
@@ -245,7 +244,6 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(categoryName)) return null;
 		return realm
 				.where(Category.class)
-				.isNull("parent")
 				.equalTo("name", categoryName)
 				.findFirst();
 	}

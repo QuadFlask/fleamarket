@@ -39,8 +39,8 @@ public class InputProductActivity extends BaseActivity {
 	@BindView(R.id.btn_complete)
 	Button btnComplete;
 
-	private String action = "";
 	private String productName;
+	private Product product;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,11 +48,18 @@ public class InputProductActivity extends BaseActivity {
 		setToolbar(toolbar);
 
 		Intent intent = getIntent();
-		if (intent != null) {
-			if (intent.getAction().equals(IntentConstant.ACTION_EDIT)) {
-				action = IntentConstant.ACTION_EDIT;
-				productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
+		if (isEditMode()) {
+			productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
+
+			product = store().findProductByName(productName);
+			if (product != null) {
+				edName.setText(product.getName());
+				edPrice.setText(product.getPrice().toString());
 				btnComplete.setText("수정하기");
+				getSupportActionBar().setTitle("제품 수정");
+			} else {
+				Toast.makeText(this, "'{product}' 제품을 찾지 못했습니다".replace("{product}", productName), Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		}
 	}
@@ -66,6 +73,10 @@ public class InputProductActivity extends BaseActivity {
 	private void reloadCategories() {
 		val categoryNames = store().loadCategoryNames();
 		spCategory.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryNames));
+
+		if (isEditMode()) {
+			spCategory.setSelection(categoryNames.indexOf(product.getCategory().getName()));
+		}
 	}
 
 	@Override
@@ -75,13 +86,11 @@ public class InputProductActivity extends BaseActivity {
 
 	@Override
 	public void onNext(UiUpdateEvent event) {
-		if (event instanceof UiUpdateEvent.CategoryAdded) {
-			val _event = (UiUpdateEvent.CategoryAdded) event;
-			val parent = _event.addedCategory.getParent();
-
+		if (event instanceof UiUpdateEvent.ProductAdded) {
 			reloadCategories();
 
 			edName.setText("");
+			edPrice.setText("");
 
 			Snackbar.make(llRoot, "추가됨", Snackbar.LENGTH_SHORT).show();
 		} else if (event instanceof UiUpdateEvent.ProductUpdated) {
@@ -103,7 +112,7 @@ public class InputProductActivity extends BaseActivity {
 		val productName = edName.getText().toString();
 		val price = Long.parseLong(edPrice.getText().toString());
 
-		if (action.equals(IntentConstant.ACTION_EDIT)) {
+		if (isEditMode()) {
 			String oldName = this.productName;
 			actionCreator().editProduct(oldName, Product
 					.builder()
@@ -123,7 +132,7 @@ public class InputProductActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (IntentConstant.ACTION_EDIT.equals(action))
+		if (isEditMode())
 			getMenuInflater().inflate(R.menu.menu_delete, menu);
 		return true;
 	}

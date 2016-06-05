@@ -46,7 +46,6 @@ public class InputCategoryActivity extends BaseActivity {
 	@BindView(R.id.ll_parent_category_container)
 	LinearLayout llParentCategoryContainer;
 
-	private String action = "";
 	private String categoryName;
 	private Category category;
 	private boolean isEditingParent = false;
@@ -57,27 +56,24 @@ public class InputCategoryActivity extends BaseActivity {
 		setToolbar(toolbar);
 
 		Intent intent = getIntent();
-		if (intent != null && intent.getAction() != null) {
-			if (IntentConstant.ACTION_EDIT.equals(intent.getAction())) {
-				action = IntentConstant.ACTION_EDIT;
-				categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
+		if (isEditMode()) {
+			categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
 
-				category = store().findCategoryByName(categoryName);
-				if (category != null) {
-					edCategoryName.setText(categoryName);
-					final Category parent = category.getParent();
-					if (parent != null)
-						acParentCategory.setText(parent.getName());
-					else {
-						isEditingParent = true;
-						llParentCategoryContainer.setVisibility(View.GONE);
-					}
-					btnComplete.setText("수정하기");
-					getSupportActionBar().setTitle("카테고리 수정");
-				} else {
-					Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
-					finish();
+			category = store().findCategoryByName(categoryName);
+			if (category != null) {
+				edCategoryName.setText(categoryName);
+				final Category parent = category.getParent();
+				if (parent != null)
+					acParentCategory.setText(parent.getName());
+				else {
+					isEditingParent = true;
+					llParentCategoryContainer.setVisibility(View.GONE);
 				}
+				btnComplete.setText("수정하기");
+				getSupportActionBar().setTitle("카테고리 수정");
+			} else {
+				Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		}
 	}
@@ -117,7 +113,7 @@ public class InputCategoryActivity extends BaseActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if (IntentConstant.ACTION_EDIT.equals(action))
+		if (isEditMode())
 			getMenuInflater().inflate(R.menu.menu_delete, menu);
 		return true;
 	}
@@ -153,7 +149,7 @@ public class InputCategoryActivity extends BaseActivity {
 			}
 		});
 
-		if (IntentConstant.ACTION_EDIT.equals(action)) {
+		if (isEditMode()) {
 			if (category.getParent() != null) {
 				acParentCategory.setText(category.getParent().getName());
 				spParentCategory.setSelection(categoryNames.indexOf(category.getParent().getName()));
@@ -167,7 +163,7 @@ public class InputCategoryActivity extends BaseActivity {
 		val categoryName = edCategoryName.getText().toString();
 
 		if (!Strings.isNullOrEmpty(categoryName)) {
-			if (action.equals(IntentConstant.ACTION_EDIT)) {
+			if (isEditMode()) {
 				val targetCategoryName = this.categoryName;
 				actionCreator().editCategory(targetCategoryName, Category
 						.builder()
