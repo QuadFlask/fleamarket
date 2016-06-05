@@ -25,11 +25,11 @@
 			android:theme="@style/AppTheme.NoActionBar"/>
 		<activity
 			android:name=".view.InputProductActivity"
-			android:label="@string/act_title_input_product_income"
+			android:label="@string/act_title_input_product"
 			android:theme="@style/AppTheme.NoActionBar"/>
 		<activity
 			android:name=".view.InputTransactionActivity"
-			android:label="@string/act_title_input_product_out"
+			android:label="@string/act_title_input_transaction"
 			android:theme="@style/AppTheme.NoActionBar"/>
 		<activity
 			android:name=".view.ProductListActivity"
