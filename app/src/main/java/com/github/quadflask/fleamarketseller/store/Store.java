@@ -41,34 +41,30 @@ public class Store implements Observer {
 		if (action instanceof Action.CreateCategory) {
 			val _action = (Action.CreateCategory) action;
 			val category = _action.category;
+			val parentName = category.getParentName();
 
-			if (!Strings.isNullOrEmpty(category.getParentName())
-					&& findParentCategoryByName(category.getParentName()) == null) {
+			if (!Strings.isNullOrEmpty(parentName)
+					&& findParentCategoryByName(parentName) == null) {
 
-				realm().executeTransactionAsync(
+				realm().executeTransaction(
 						realm -> realm.copyToRealm(Category.builder()
 								.id(nextKey(Category.class))
-								.name(category.getParentName())
+								.name(parentName)
 								.date(new Date())
 								.color(ColorFactory.nextColor())
 								.parentName(null)
-								.build()),
-						onInsertCommonError);
+								.build()));
 			}
+			category.setId(nextKey(Category.class));
+			category.setDate(new Date());
+			category.setColor(ColorFactory.nextColor());
+			category.setParent(findParentCategoryByName(parentName));
 
-			category.setParent(findParentCategoryByName(category.getParentName()));
+			realm().executeTransaction(realm -> {
+				Category persist = realm.copyToRealm(category);
 
-			realm().executeTransactionAsync(realm -> {
-				realm.copyToRealm(Category.builder()
-						.id(nextKey(Category.class))
-						.name(category.getName())
-						.date(new Date())
-						.color(ColorFactory.nextColor())
-						.parent(findParentCategoryByName(realm, category.getParentName()))
-						.build());
-			}, () -> {
 				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.CategoryAdded(category));
+				emitUiUpdate(new UiUpdateEvent.CategoryAdded(persist));
 			});
 
 		} else if (action instanceof Action.CreateProduct) {
@@ -76,16 +72,17 @@ public class Store implements Observer {
 			val product = _action.product;
 
 			product.setCategory(findCategoryByName(product.getCategoryName()));
+			product.setId(nextKey(Product.class));
+			product.setDate(new Date());
 
-			realm().executeTransactionAsync(realm -> {
-				if (product.getDate() == null)
-					product.setDate(new Date());
-				product.setId(nextKey(Product.class));
-				realm.copyToRealm(product);
-			}, () -> {
+			realm().executeTransaction(realm -> {
+				product.setCategory(findCategoryByName(realm, product.getCategoryName()));
+
+				Product persist = realm.copyToRealm(product);
+
 				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.ProductAdded(product));
-			}, onInsertCommonError);
+				emitUiUpdate(new UiUpdateEvent.ProductAdded(persist));
+			});
 
 		} else if (action instanceof Action.CreateTransaction) {
 			val _action = (Action.CreateTransaction) action;
@@ -94,31 +91,29 @@ public class Store implements Observer {
 			transaction.setProduct(findProductByName(transaction.getProductName()));
 			transaction.setMarket(findMarketByName(transaction.getMarketName()));
 			transaction.setVendor(findVendorByName(transaction.getVendorName()));
+			transaction.setId(nextKey(Transaction.class));
+			transaction.setDate(new Date());
 
-			realm().executeTransactionAsync(realm -> {
-				if (transaction.getDate() == null)
-					transaction.setDate(new Date());
-				transaction.setId(nextKey(Transaction.class));
-				realm.copyToRealm(transaction);
-			}, () -> {
+			realm().executeTransaction(realm -> {
+				Transaction persist = realm.copyToRealm(transaction);
+
 				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.TransactionAdded(transaction));
-			}, onInsertCommonError);
+				emitUiUpdate(new UiUpdateEvent.TransactionAdded(persist));
+			});
 
 		} else if (action instanceof Action.CreateMarket) {
 			val _action = (Action.CreateMarket) action;
 			val market = _action.market;
 
-			realm().executeTransactionAsync(realm -> {
-				if (market.getDate() != null)
-					market.setDate(new Date());
+			realm().executeTransaction(realm -> {
+				market.setDate(new Date());
 				market.setId(nextKey(Market.class));
 				market.setColor(ColorFactory.nextColor());
 				realm.copyToRealm(market);
-			}, () -> {
+
 				emitStoreChange();
 				emitUiUpdate(new UiUpdateEvent.MarketAdded(market));
-			}, onInsertCommonError);
+			});
 
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
@@ -182,6 +177,7 @@ public class Store implements Observer {
 		}
 	}
 
+
 	private long nextKey(Class<? extends RealmModel> clazz) {
 		return PrimaryKeyFactory.getInstance().nextKey(clazz);
 	}
@@ -233,6 +229,15 @@ public class Store implements Observer {
 				.where(Category.class)
 				.isNull("parent")
 				.equalTo("name", parentName)
+				.findFirst();
+	}
+
+	private Category findCategoryByName(Realm realm, String categoryName) {
+		if (Strings.isNullOrEmpty(categoryName)) return null;
+		return realm
+				.where(Category.class)
+				.isNull("parent")
+				.equalTo("name", categoryName)
 				.findFirst();
 	}
 
