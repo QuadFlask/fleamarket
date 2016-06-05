@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
@@ -56,7 +57,18 @@ public class InputCategoryActivity extends BaseActivity {
 			if (IntentConstant.ACTION_EDIT.equals(intent.getAction())) {
 				action = IntentConstant.ACTION_EDIT;
 				categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
-				btnComplete.setText("수정하기");
+
+				final Category category = store().findCategoryByName(categoryName);
+				if (category != null) {
+					edCategoryName.setText(categoryName);
+					final Category parent = category.getParent();
+					if (parent != null)
+						acParentCategory.setText(parent.getName());
+					btnComplete.setText("수정하기");
+				} else {
+					Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
+					finish();
+				}
 			}
 		}
 	}

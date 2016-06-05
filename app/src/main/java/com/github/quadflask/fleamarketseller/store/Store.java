@@ -59,11 +59,6 @@ public class Store implements Observer {
 			category.setParent(findParentCategoryByName(category.getParentName()));
 
 			realm().executeTransactionAsync(realm -> {
-//				if (category.getDate() == null)
-//					category.setDate(new Date());
-//				category.setId(nextKey(Category.class));
-//				category.setColor(ColorFactory.nextColor());
-
 				realm.copyToRealm(Category.builder()
 						.id(nextKey(Category.class))
 						.name(category.getName())
@@ -245,7 +240,7 @@ public class Store implements Observer {
 		return findParentCategoryByName(realm(), parentName);
 	}
 
-	private Category findCategoryByName(String name) {
+	public Category findCategoryByName(String name) {
 		if (Strings.isNullOrEmpty(name)) return null;
 		return realm()
 				.where(Category.class)
