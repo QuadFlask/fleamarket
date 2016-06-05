@@ -43,9 +43,13 @@ public class InputCategoryActivity extends BaseActivity {
 	EditText edCategoryName;
 	@BindView(R.id.btn_complete)
 	Button btnComplete;
+	@BindView(R.id.ll_parent_category_container)
+	LinearLayout llParentCategoryContainer;
 
 	private String action = "";
 	private String categoryName;
+	private Category category;
+	private boolean isEditingParent = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,13 +62,16 @@ public class InputCategoryActivity extends BaseActivity {
 				action = IntentConstant.ACTION_EDIT;
 				categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
 
-				final Category category = store().findCategoryByName(categoryName);
+				category = store().findCategoryByName(categoryName);
 				if (category != null) {
 					edCategoryName.setText(categoryName);
 					final Category parent = category.getParent();
 					if (parent != null)
 						acParentCategory.setText(parent.getName());
+					else isEditingParent = true;
 					btnComplete.setText("수정하기");
+					llParentCategoryContainer.setVisibility(View.GONE);
+					getSupportActionBar().setTitle("카테고리 수정");
 				} else {
 					Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
 					finish();
@@ -87,14 +94,15 @@ public class InputCategoryActivity extends BaseActivity {
 	@Override
 	public void onNext(UiUpdateEvent event) {
 		if (event instanceof UiUpdateEvent.CategoryAdded) {
-			val _event = (UiUpdateEvent.CategoryAdded) event;
-			val parent = _event.addedCategory.getParent();
-
 			reloadParentCategories();
 
 			edCategoryName.setText("");
 
-			Snackbar.make(llRoot, "Category added", Snackbar.LENGTH_SHORT).show();
+			Snackbar.make(llRoot, "키테고리가 추가되었습니다", Snackbar.LENGTH_SHORT).show();
+		} else if (event instanceof UiUpdateEvent.CategoryUpdated) {
+			reloadParentCategories();
+
+			Snackbar.make(llRoot, "카테고리가 수정되었습니다", Snackbar.LENGTH_SHORT).show();
 		} else if (event instanceof UiUpdateEvent.CategoryDeleted) {
 			new MaterialDialog.Builder(this)
 					.title("삭제 완료")
@@ -125,6 +133,8 @@ public class InputCategoryActivity extends BaseActivity {
 	}
 
 	private void reloadParentCategories() {
+		if (isEditingParent) return;
+
 		val categoryNames = store().loadParentCategoryNames();
 		final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryNames);
 		final ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, categoryNames);
@@ -140,11 +150,18 @@ public class InputCategoryActivity extends BaseActivity {
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
+
+		if (IntentConstant.ACTION_EDIT.equals(action)) {
+			if (category.getParent() != null) {
+				acParentCategory.setText(category.getParent().getName());
+				spParentCategory.setSelection(categoryNames.indexOf(category.getParent().getName()));
+			}
+		}
 	}
 
 	@OnClick(R.id.btn_complete)
 	void onClickCompleteBtn() {
-		val parentCategoryName = acParentCategory.getText().toString();
+		String parentCategoryName = isEditingParent ? null : acParentCategory.getText().toString();
 		val categoryName = edCategoryName.getText().toString();
 
 		if (!Strings.isNullOrEmpty(categoryName)) {

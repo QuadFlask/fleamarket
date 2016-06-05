@@ -121,13 +121,15 @@ public class Store implements Observer {
 			Product product = findProductByName(_action.targetProductName);
 
 			if (product != null) {
-				product.setName(editedProduct.getName());
-				product.setPrice(editedProduct.getPrice());
-				product.setText(editedProduct.getText());
-				product.setCategory(findCategoryByName(editedProduct.getCategoryName()));
+				realm().executeTransaction(realm -> {
+					product.setName(editedProduct.getName());
+					product.setPrice(editedProduct.getPrice());
+					product.setText(editedProduct.getText());
+					product.setCategory(findCategoryByName(editedProduct.getCategoryName()));
 
-				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.ProductUpdated(product));
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.ProductUpdated(product));
+				});
 			}
 		} else if (action instanceof Action.EditCategory) {
 			val _action = (Action.EditCategory) action;
@@ -135,11 +137,13 @@ public class Store implements Observer {
 			Category category = findCategoryByName(_action.targetCategoryName);
 
 			if (category != null) {
-				category.setName(editedCategory.getName());
-				category.setParent(findCategoryByName(editedCategory.getParentName()));
+				realm().executeTransaction(realm -> {
+					category.setName(editedCategory.getName());
+					category.setParent(findCategoryByName(editedCategory.getParentName()));
 
-				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.CategoryUpdated(category));
+				});
 			}
 		} else if (action instanceof Action.EditMarket) {
 			val _action = (Action.EditMarket) action;
@@ -147,17 +151,19 @@ public class Store implements Observer {
 			val market = findMarketByName(_action.targetMarketName);
 
 			if (market != null) {
-				market.setName(editedMarket.getName());
-				market.setLocation(editedMarket.getLocation());
+				realm().executeTransaction(realm -> {
+					market.setName(editedMarket.getName());
+					market.setLocation(editedMarket.getLocation());
 
-				emitStoreChange();
-				emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
+				});
 			}
 		} else if (action instanceof Action.DeleteCategory) {
 			val _action = (Action.DeleteCategory) action;
 			realm().executeTransactionAsync(realm -> {
 				// TODO if delete parent category, should delete cascade
-				Category category = findCategoryByName(_action.categoryName);
+				Category category = findCategoryByName(realm, _action.categoryName);
 				if (category != null)
 					category.deleteFromRealm();
 			}, () -> {
@@ -167,7 +173,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.DeleteProduct) {
 			val _action = (Action.DeleteProduct) action;
 			realm().executeTransactionAsync(realm -> {
-				Product product = findProductByName(_action.productName);
+				Product product = findProductByName(realm, _action.productName);
 				if (product != null)
 					product.deleteFromRealm();
 			}, () -> {
@@ -176,7 +182,6 @@ public class Store implements Observer {
 			});
 		}
 	}
-
 
 	private long nextKey(Class<? extends RealmModel> clazz) {
 		return PrimaryKeyFactory.getInstance().nextKey(clazz);
@@ -200,6 +205,10 @@ public class Store implements Observer {
 	}
 
 	private Product findProductByName(String name) {
+		return findProductByName(realm(), name);
+	}
+
+	private Product findProductByName(Realm realm, String name) {
 		if (Strings.isNullOrEmpty(name)) return null;
 		return realm()
 				.where(Product.class)
