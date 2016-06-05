@@ -19,16 +19,29 @@
 		app:materialIconSize="24dp"
 	/>
 
-	<TextView
-		android:id="@+id/tv_product_name"
+	<LinearLayout
 		android:layout_width="0dp"
 		android:layout_height="48dp"
 		android:layout_weight="0.6"
-		android:gravity="center_vertical"
-		android:paddingLeft="8dp"
-		android:text="product name"
-		android:textColor="@color/textColorPrimary"
-		android:textSize="20sp"/>
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/tv_product_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center_vertical"
+			android:paddingLeft="8dp"
+			android:text="product name"
+			android:textColor="@color/textColorPrimary"
+			android:textSize="20sp"/>
+		<TextView
+			android:id="@+id/tv_product_category"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="4dp"
+			android:paddingLeft="8dp"
+			android:text="parent > category"/>
+	</LinearLayout>
 	<LinearLayout
 		android:layout_width="0dp"
 		android:layout_height="48dp"
@@ -37,12 +50,12 @@
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@+id/tv_product_category"
+			android:id="@+id/tv_product_price"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="4dp"
 			android:paddingRight="4dp"
-			android:text="parent > category"
+			android:text="00000"
 			android:textAlignment="textEnd"/>
 
 		<TextView

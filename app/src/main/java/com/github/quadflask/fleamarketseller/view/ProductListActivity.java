@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,8 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+
+import java.text.MessageFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,7 +61,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 			adapter = new RealmBasedRecyclerViewAdapter<Product, ProductViewHolder>(this, products, true, false) {
 				@Override
 				public ProductViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					ProductViewHolder viewHolder = new ProductViewHolder(inflater.inflate(R.layout.li_product, viewGroup, false));
+					ProductViewHolder viewHolder = new ProductViewHolder(inflater.inflate(ProductViewHolder.RES_ID, viewGroup, false));
 					viewHolder.root.setOnClickListener(v -> ProductListActivity.this.onClickEdit(viewHolder.product));
 					return viewHolder;
 				}
@@ -69,9 +72,10 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 					viewHolder.product = product;
 					viewHolder.name.setText(product.getName());
 					val date = new DateTime(product.getDate().getTime());
-					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy. M. dd hh:mm").print(date));
-					viewHolder.category.setText(product.getCategory().getName());
+					viewHolder.date.setText(DateTimeFormat.forPattern("yyyy-MM-dd").print(date));
+					viewHolder.category.setText(MessageFormat.format("{0} > {1}", product.getCategory().getParent().getName(), product.getCategory().getName()));
 					viewHolder.icon.setColor(product.getCategory().getColor());
+					viewHolder.price.setText(product.getPrice() + "원");
 				}
 			};
 			rvList.setAdapter(adapter);
@@ -107,9 +111,12 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 	}
 
 	private static class ProductViewHolder extends RealmViewHolder {
+		@LayoutRes
+		static final int RES_ID = R.layout.li_product;
+
 		final MaterialIconView icon;
 		final LinearLayout root;
-		final TextView name, category, date;
+		final TextView name, category, date, price;
 		Product product;
 
 		ProductViewHolder(View itemView) {
@@ -119,6 +126,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 			name = (TextView) itemView.findViewById(R.id.tv_product_name);
 			date = (TextView) itemView.findViewById(R.id.tv_product_created);
 			category = (TextView) itemView.findViewById(R.id.tv_product_category);
+			price = (TextView) itemView.findViewById(R.id.tv_product_price);
 		}
 	}
 }

@@ -162,6 +162,7 @@ public class InputCategoryActivity extends BaseActivity {
 		String parentCategoryName = isEditingParent ? null : acParentCategory.getText().toString();
 		val categoryName = edCategoryName.getText().toString();
 
+		// TODO validate category name <-> parent name not same
 		if (!Strings.isNullOrEmpty(categoryName)) {
 			if (isEditMode()) {
 				val targetCategoryName = this.categoryName;

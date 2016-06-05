@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -55,7 +56,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 			adapter = new RealmBasedRecyclerViewAdapter<Category, CategoryViewHolder>(this, categories, true, false) {
 				@Override
 				public CategoryViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-					CategoryViewHolder viewHolder = new CategoryViewHolder(inflater.inflate(R.layout.li_category, viewGroup, false));
+					CategoryViewHolder viewHolder = new CategoryViewHolder(inflater.inflate(CategoryViewHolder.RES_ID, viewGroup, false));
 					viewHolder.root.setOnClickListener(v -> CategoryListActivity.this.onClickEdit(viewHolder.category));
 					return viewHolder;
 				}
@@ -100,6 +101,8 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 	}
 
 	private static class CategoryViewHolder extends RealmViewHolder {
+		@LayoutRes
+		static final int RES_ID = R.layout.li_category;
 		final MaterialIconView icon;
 		final LinearLayout root;
 		final TextView name, parentName;

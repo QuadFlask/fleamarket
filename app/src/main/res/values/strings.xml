@@ -4,7 +4,7 @@
 	<string name="action_add_category">카테고리 추가</string>
 	<string name="section_format">Hello World from section: %1$d</string>
 	<string name="act_title_input_category">카테고리 추가</string>
-	<string name="act_title_input_product_income">매출 추가</string>
+	<string name="act_title_input_product_income">제품 추가</string>
 	<string name="act_title_input_product_out">매입 추가</string>
 	<string name="act_title_product_list">제품목록</string>
 	<string name="act_title_category_list">카테고리</string>
