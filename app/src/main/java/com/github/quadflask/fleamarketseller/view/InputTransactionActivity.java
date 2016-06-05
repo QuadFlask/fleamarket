@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -59,8 +60,13 @@ public class InputTransactionActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setToolbar(toolbar);
 
-		updateViewState(isSelling());
-		isIncome = isSelling();
+		Intent intent = getIntent();
+		if (intent != null && intent.getAction() != null)
+			if (IntentConstant.EXTRA_ISINCOME.equals(intent.getAction()))
+				isIncome = intent.getBooleanExtra(IntentConstant.EXTRA_ISINCOME, isIncome);
+
+		updateViewState(isIncome);
+		if (isIncome) getSupportActionBar().setTitle("매출 추가");
 		rgBuyingOrSelling.setOnCheckedChangeListener((group, checkedId) -> {
 			isIncome = isSelling(checkedId);
 			updateViewState(isIncome);
@@ -112,17 +118,6 @@ public class InputTransactionActivity extends BaseActivity {
 					.build();
 		}
 		actionCreator().newTransaction(transaction);
-//		if (isSelling())
-//			transactionBuilder.marketName(spMarket.getSelectedItem().toString());
-//		else transactionBuilder.vendorName(spVendor.getSelectedItem().toString());
-//
-//		actionCreator().newTransaction(
-//				transactionBuilder
-//						.productName(spProduct.getSelectedItem().toString())
-//						.count(Long.parseLong(edCount.getText().toString()))
-//						.price(Long.parseLong(edPrice.getText().toString()))
-//						.build()
-//		);
 	}
 
 	@Override

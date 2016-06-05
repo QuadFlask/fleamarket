@@ -43,7 +43,17 @@ public class MainActivity extends BaseActivity {
 
 	@OnClick(R.id.fab)
 	void openInputProduct() {
-		startActivity(new Intent(this, InputTransactionActivity.class));
+		if (mViewPager.getCurrentItem() == 0) {
+			final Intent intent = new Intent(this, InputTransactionActivity.class);
+			intent.putExtra(IntentConstant.EXTRA_ISINCOME, true);
+			startActivity(intent);
+		} else if (mViewPager.getCurrentItem() == 1) {
+			final Intent intent = new Intent(this, InputTransactionActivity.class);
+			intent.putExtra(IntentConstant.EXTRA_ISINCOME, false);
+			startActivity(intent);
+		} else if (mViewPager.getCurrentItem() == 2) {
+			// TODO show aggregation view
+		}
 	}
 
 	@Override
@@ -111,9 +121,9 @@ public class MainActivity extends BaseActivity {
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 				case 0:
-					return "매입";
-				case 1:
 					return "매출";
+				case 1:
+					return "매입";
 				case 2:
 					return "결산";
 			}

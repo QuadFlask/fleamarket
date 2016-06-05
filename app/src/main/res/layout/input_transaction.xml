@@ -41,19 +41,19 @@
 					android:layout_height="56dp"
 					android:orientation="horizontal">
 					<RadioButton
-						android:id="@+id/rb_buying"
-						android:layout_width="0dp"
-						android:layout_height="56dp"
-						android:layout_weight="0.5"
-						android:text="매입"
-					/>
-					<RadioButton
 						android:id="@+id/rb_selling"
 						android:layout_width="0dp"
 						android:layout_height="56dp"
 						android:layout_weight="0.5"
 						android:checked="true"
 						android:text="매출"
+					/>
+					<RadioButton
+						android:id="@+id/rb_buying"
+						android:layout_width="0dp"
+						android:layout_height="56dp"
+						android:layout_weight="0.5"
+						android:text="매입"
 					/>
 				</RadioGroup>
 			</LinearLayout>
