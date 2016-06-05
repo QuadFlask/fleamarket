@@ -40,11 +40,14 @@ public class Transaction extends RealmObject {
 	private String marketName;
 	@Ignore
 	private String vendorName;
+	@Ignore
+	private String formattedDate = "unknown";
 
 	public String getFormattedDate() {
-		if (date != null) {
+		if (date != null && formattedDate == null) {
 			DateTime date = new DateTime(this.date.getTime());
-			return DateTimeFormat.forPattern("yyyy-MM-dd hh:mm").print(date);
-		} else return "unknown";
+			formattedDate = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm").print(date);
+			return formattedDate;
+		} else return formattedDate;
 	}
 }
