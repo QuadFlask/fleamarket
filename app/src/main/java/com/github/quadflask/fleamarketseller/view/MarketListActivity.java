@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Market;
-import com.github.quadflask.fleamarketseller.store.ModelValidationException;
 import com.google.common.base.Strings;
 
 import butterknife.BindView;
@@ -93,13 +92,11 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 								.location(edLocation.getText().toString())
 								.build();
 
-						try {
-							store().checkValid(newMarket);
-
-							actionCreator().newMarket(newMarket);
-						} catch (ModelValidationException e) {
-							Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-						}
+						store()
+								.checkValidAsObservable(newMarket)
+								.subscribe(
+										v -> actionCreator().newMarket(newMarket),
+										e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
 					} else Toast.makeText(this, "이름이 비어있습니다", Toast.LENGTH_SHORT).show();
 				})
 				.show();
@@ -116,18 +113,16 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 					EditText edName = (EditText) view.findViewById(R.id.ed_name);
 					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
 
-					Market editedMarket = Market.builder()
+					val editedMarket = Market.builder()
 							.id(targetMarket.getId())
 							.name(edName.getText().toString())
 							.location(edLocation.getText().toString())
 							.build();
-					try {
-						store().checkValid(editedMarket);
 
-						actionCreator().editMarket(editedMarket);
-					} catch (ModelValidationException e) {
-						Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-					}
+					store().checkValidAsObservable(editedMarket).subscribe(
+							v -> actionCreator().editMarket(editedMarket),
+							e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+					);
 				})
 				.show();
 

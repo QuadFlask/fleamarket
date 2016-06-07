@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
-import com.github.quadflask.fleamarketseller.store.ModelValidationException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -112,28 +111,26 @@ public class InputProductActivity extends BaseActivity {
 		val productName = edName.getText().toString();
 		val price = Long.parseLong(edPrice.getText().toString());
 
-		Product newProduct = Product
+		val newProduct = Product
 				.builder()
 				.categoryName(categoryName)
 				.name(productName)
 				.price(price)
 				.build();
 
-		try {
-			store().checkValid(newProduct);
-
-			if (isEditMode()) {
-				newProduct.setId(product.getId());
-				actionCreator().editProduct(newProduct);
-			} else
-				actionCreator().newProduct(newProduct);
-		} catch (ModelValidationException e) {
-			new MaterialDialog.Builder(this)
-					.title("실패")
-					.content(e.getMessage())
-					.positiveText("확인")
-					.show();
-		}
+		store().checkValidAsObservable(newProduct).subscribe(
+				v -> {
+					if (isEditMode()) {
+						newProduct.setId(product.getId());
+						actionCreator().editProduct(newProduct);
+					} else
+						actionCreator().newProduct(newProduct);
+				},
+				e -> new MaterialDialog.Builder(this)
+						.title("실패")
+						.content(e.getMessage())
+						.positiveText("확인")
+						.show());
 	}
 
 	@Override

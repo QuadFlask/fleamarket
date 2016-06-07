@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Category;
-import com.github.quadflask.fleamarketseller.store.ModelValidationException;
 import com.google.common.base.Strings;
 
 import butterknife.BindView;
@@ -168,27 +167,25 @@ public class InputCategoryActivity extends BaseActivity {
 		val inputCategoryName = edCategoryName.getText().toString();
 
 		if (!Strings.isNullOrEmpty(inputCategoryName)) {
-			Category newCategory = Category
+			val newCategory = Category
 					.builder()
 					.name(inputCategoryName)
 					.parentName(parentCategoryName)
 					.build();
 
-			try {
-				store().checkValid(newCategory);
-
-				if (isEditMode()) {
-					newCategory.setId(category.getId());
-					actionCreator().editCategory(newCategory);
-				} else
-					actionCreator().newCategory(newCategory);
-			} catch (ModelValidationException e) {
-				new MaterialDialog.Builder(this)
-						.title("실패")
-						.content(e.getMessage())
-						.positiveText("확인")
-						.show();
-			}
+			store().checkValidAsObservable(newCategory).subscribe(
+					v -> {
+						if (isEditMode()) {
+							newCategory.setId(category.getId());
+							actionCreator().editCategory(newCategory);
+						} else
+							actionCreator().newCategory(newCategory);
+					},
+					e -> new MaterialDialog.Builder(this)
+							.title("실패")
+							.content(e.getMessage())
+							.positiveText("확인")
+							.show());
 		}
 	}
 }

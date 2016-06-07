@@ -21,6 +21,7 @@ import io.realm.RealmResults;
 import lombok.val;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.realm;
 
@@ -360,7 +361,7 @@ public class Store implements Observer {
 				.collect(Collectors.toList());
 	}
 
-	public void checkValid(Category category) {
+	private void checkValid(Category category) {
 		if (category == null) throw new ModelValidationException("카테고리가 없습니다");
 		if (Strings.isNullOrEmpty(category.getName()))
 			throw new ModelValidationException("이름이 없습니다");
@@ -379,7 +380,7 @@ public class Store implements Observer {
 		}
 	}
 
-	public void checkValid(Product product) {
+	private void checkValid(Product product) {
 		if (product == null) throw new ModelValidationException("제품이 없습니다");
 		if (Strings.isNullOrEmpty(product.getName()))
 			throw new ModelValidationException("이름이 없습니다");
@@ -400,7 +401,7 @@ public class Store implements Observer {
 		}
 	}
 
-	public void checkValid(Market market) {
+	private void checkValid(Market market) {
 		if (market == null) throw new ModelValidationException("마켓이 없습니다");
 		if (Strings.isNullOrEmpty(market.getName()))
 			throw new ModelValidationException("이름이 없습니다");
@@ -417,6 +418,51 @@ public class Store implements Observer {
 			if (marketByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
 		}
+	}
+
+	public Observable<Category> checkValidAsObservable(final Category category) {
+		return Observable.create(new Observable.OnSubscribe<Category>() {
+			@Override
+			public void call(Subscriber<? super Category> subscriber) {
+				try {
+					checkValid(category);
+					subscriber.onNext(category);
+					subscriber.onCompleted();
+				} catch (ModelValidationException e) {
+					subscriber.onError(e);
+				}
+			}
+		});
+	}
+
+	public Observable<Product> checkValidAsObservable(final Product product) {
+		return Observable.create(new Observable.OnSubscribe<Product>() {
+			@Override
+			public void call(Subscriber<? super Product> subscriber) {
+				try {
+					checkValid(product);
+					subscriber.onNext(product);
+					subscriber.onCompleted();
+				} catch (ModelValidationException e) {
+					subscriber.onError(e);
+				}
+			}
+		});
+	}
+
+	public Observable<Market> checkValidAsObservable(Market market) {
+		return Observable.create(new Observable.OnSubscribe<Market>() {
+			@Override
+			public void call(Subscriber<? super Market> subscriber) {
+				try {
+					checkValid(market);
+					subscriber.onNext(market);
+					subscriber.onCompleted();
+				} catch (ModelValidationException e) {
+					subscriber.onError(e);
+				}
+			}
+		});
 	}
 
 	public static class StoreChangeEvent {
