@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Category;
+import com.github.quadflask.fleamarketseller.store.ModelValidationException;
 import com.google.common.base.Strings;
 
 import butterknife.BindView;
@@ -47,7 +48,6 @@ public class InputCategoryActivity extends BaseActivity {
 	@BindView(R.id.ll_parent_category_container)
 	LinearLayout llParentCategoryContainer;
 
-	private String categoryName;
 	private Category category;
 	private boolean isEditingParent = false;
 
@@ -58,11 +58,11 @@ public class InputCategoryActivity extends BaseActivity {
 
 		Intent intent = getIntent();
 		if (isEditMode()) {
-			categoryName = intent.getStringExtra(IntentConstant.EXTRA_CATEGORY);
+			val categoryId = intent.getLongExtra(IntentConstant.EXTRA_CATEGORY, -1L);
 
-			category = store().findCategoryByName(categoryName);
+			category = store().findCategoryById(categoryId);
 			if (category != null) {
-				edCategoryName.setText(categoryName);
+				edCategoryName.setText(category.getName());
 				final Category parent = category.getParent();
 				if (parent != null)
 					acParentCategory.setText(parent.getName());
@@ -73,7 +73,7 @@ public class InputCategoryActivity extends BaseActivity {
 				btnComplete.setText("수정하기");
 				getSupportActionBar().setTitle("카테고리 수정");
 			} else {
-				Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", categoryName), Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "'{category}' 카테고리를 찾지 못했습니다".replace("{category}", category.getName()), Toast.LENGTH_SHORT).show();
 				finish();
 			}
 		}
@@ -128,7 +128,7 @@ public class InputCategoryActivity extends BaseActivity {
 		int id = item.getItemId();
 
 		if (id == R.id.action_delete) {
-			actionCreator().deleteCategory(categoryName);
+			actionCreator().deleteCategory(category.getId());
 			return true;
 		}
 
@@ -165,25 +165,30 @@ public class InputCategoryActivity extends BaseActivity {
 	@OnClick(R.id.btn_complete)
 	void onClickCompleteBtn() {
 		String parentCategoryName = isEditingParent ? null : acParentCategory.getText().toString();
-		val categoryName = edCategoryName.getText().toString();
+		val inputCategoryName = edCategoryName.getText().toString();
 
 		// TODO validate category name <-> parent name not same
-		if (!Strings.isNullOrEmpty(categoryName)) {
-			if (isEditMode()) {
-				val targetCategoryName = this.categoryName;
-				actionCreator().editCategory(targetCategoryName, Category
-						.builder()
-						.name(categoryName)
-						.parentName(parentCategoryName)
-						.build()
-				);
-			} else {
-				actionCreator().newCategory(Category
-						.builder()
-						.name(categoryName)
-						.parentName(parentCategoryName)
-						.build()
-				);
+		if (!Strings.isNullOrEmpty(inputCategoryName)) {
+			Category newCategory = Category
+					.builder()
+					.name(inputCategoryName)
+					.parentName(parentCategoryName)
+					.build();
+
+			try {
+				store().checkValid(newCategory);
+
+				if (isEditMode()) {
+					newCategory.setId(category.getId());
+					actionCreator().editCategory(newCategory);
+				} else
+					actionCreator().newCategory(newCategory);
+			} catch (ModelValidationException e) {
+				new MaterialDialog.Builder(this)
+						.title("실패")
+						.content(e.getMessage())
+						.positiveText("확인")
+						.show();
 			}
 		}
 	}

@@ -60,12 +60,9 @@ public class Action {
 	}
 
 	public static class EditCategory {
-		public final String targetCategoryName;
-
 		public final Category category;
 
-		public EditCategory(String targetCategoryName, Category category) {
-			this.targetCategoryName = targetCategoryName;
+		public EditCategory(Category category) {
 			this.category = category;
 		}
 	}
@@ -81,10 +78,10 @@ public class Action {
 	}
 
 	public static class DeleteCategory {
-		public final String categoryName;
+		public final Long categoryId;
 
-		public DeleteCategory(String categoryName) {
-			this.categoryName = categoryName;
+		public DeleteCategory(Long categoryId) {
+			this.categoryId = categoryId;
 		}
 	}
 

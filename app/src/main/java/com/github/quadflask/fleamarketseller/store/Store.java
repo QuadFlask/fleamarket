@@ -134,7 +134,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.EditCategory) {
 			val _action = (Action.EditCategory) action;
 			val editedCategory = _action.category;
-			Category category = findCategoryByName(_action.targetCategoryName);
+			Category category = findCategoryById(editedCategory.getId());
 
 			if (category != null) {
 				realm().executeTransaction(realm -> {
@@ -163,7 +163,7 @@ public class Store implements Observer {
 			val _action = (Action.DeleteCategory) action;
 			realm().executeTransactionAsync(realm -> {
 				// TODO if delete parent category, should delete cascade
-				Category category = findCategoryByName(realm, _action.categoryName);
+				Category category = findCategoryById(realm, _action.categoryId);
 				if (category != null)
 					category.deleteFromRealm();
 			}, () -> {
@@ -253,6 +253,18 @@ public class Store implements Observer {
 		return findParentCategoryByName(realm(), parentName);
 	}
 
+	public Category findCategoryById(long id) {
+		return findCategoryById(realm(), id);
+	}
+
+	public Category findCategoryById(Realm realm, long id) {
+		if (id < 0) return null;
+		return realm
+				.where(Category.class)
+				.equalTo("id", id)
+				.findFirst();
+	}
+
 	public Category findCategoryByName(String name) {
 		if (Strings.isNullOrEmpty(name)) return null;
 		return realm()
@@ -322,6 +334,21 @@ public class Store implements Observer {
 				.of(parents)
 				.map(Category::getName)
 				.collect(Collectors.toList());
+	}
+
+	public void checkValid(Category category) {
+		if (category == null) throw new ModelValidationException("카테고리가 없습니다");
+		if (Strings.isNullOrEmpty(category.getName()))
+			throw new ModelValidationException("이름이 없습니다");
+		Category categoryByName = findCategoryByName(category.getName());
+		boolean isEdit = category.getId() == null;
+		if (isEdit && categoryByName != null) {
+			if (!categoryByName.getId().equals(category.getId()))
+				throw new ModelValidationException("수정할 카테고리와 일치하지 않습니다");
+		} else if (categoryByName == null)
+			throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
+		else return;
+		throw new ModelValidationException("알 수 없는 에러");
 	}
 
 	public static class StoreChangeEvent {

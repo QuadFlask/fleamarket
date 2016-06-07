@@ -33,16 +33,16 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.EditProduct(oldName, product));
 	}
 
-	public void editCategory(String oldName, Category category) {
-		dispatcher.dispatch(new Action.EditCategory(oldName, category));
+	public void editCategory(Category category) {
+		dispatcher.dispatch(new Action.EditCategory(category));
 	}
 
 	public void editMarket(String oldName, Market market) {
 		dispatcher.dispatch(new Action.EditMarket(oldName, market));
 	}
 
-	public void deleteCategory(String categoryName) {
-		dispatcher.dispatch(new Action.DeleteCategory(categoryName));
+	public void deleteCategory(Long categoryId) {
+		dispatcher.dispatch(new Action.DeleteCategory(categoryId));
 	}
 
 	public void deleteProduct(String productName) {
