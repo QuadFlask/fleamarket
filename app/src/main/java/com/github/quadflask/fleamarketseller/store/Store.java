@@ -118,7 +118,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
 			val editedProduct = _action.product;
-			Product product = findProductByName(_action.targetProductName);
+			Product product = findProductById(editedProduct.getId());
 
 			if (product != null) {
 				realm().executeTransaction(realm -> {
@@ -173,7 +173,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.DeleteProduct) {
 			val _action = (Action.DeleteProduct) action;
 			realm().executeTransactionAsync(realm -> {
-				Product product = findProductByName(realm, _action.productName);
+				Product product = findProductById(realm, _action.productId);
 				if (product != null)
 					product.deleteFromRealm();
 			}, () -> {
@@ -213,6 +213,18 @@ public class Store implements Observer {
 		return realm()
 				.where(Product.class)
 				.equalTo("name", name)
+				.findFirst();
+	}
+
+	public Product findProductById(Long id) {
+		return findProductById(realm(), id);
+	}
+
+	private Product findProductById(Realm realm, Long id) {
+		if (id == null || id < 0) return null;
+		return realm
+				.where(Product.class)
+				.equalTo("id", id)
 				.findFirst();
 	}
 
@@ -257,8 +269,8 @@ public class Store implements Observer {
 		return findCategoryById(realm(), id);
 	}
 
-	public Category findCategoryById(Realm realm, long id) {
-		if (id < 0) return null;
+	public Category findCategoryById(Realm realm, Long id) {
+		if (id == null || id < 0) return null;
 		return realm
 				.where(Category.class)
 				.equalTo("id", id)
@@ -341,12 +353,29 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(category.getName()))
 			throw new ModelValidationException("이름이 없습니다");
 		Category categoryByName = findCategoryByName(category.getName());
-		boolean isEdit = category.getId() == null;
+		boolean isEdit = category.getId() != null;
 		if (isEdit && categoryByName != null) {
 			if (!categoryByName.getId().equals(category.getId()))
 				throw new ModelValidationException("수정할 카테고리와 일치하지 않습니다");
 		} else if (categoryByName == null)
 			throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
+		else return;
+		throw new ModelValidationException("알 수 없는 에러");
+	}
+
+	public void checkValid(Product product) {
+		if (product == null) throw new ModelValidationException("제품이 없습니다");
+		if (Strings.isNullOrEmpty(product.getName()))
+			throw new ModelValidationException("이름이 없습니다");
+		if (product.getCategoryName() == null)
+			throw new ModelValidationException("카테고리가 없습니다");
+		Product productByName = findProductByName(product.getName());
+		boolean isEdit = product.getId() != null;
+		if (isEdit && productByName != null) {
+			if (!productByName.getId().equals(product.getId()))
+				throw new ModelValidationException("수정할 제품과 일치하지 않습니다");
+		} else if (productByName == null)
+			throw new ModelValidationException("수정할 원본 제품이 없습니다");
 		else return;
 		throw new ModelValidationException("알 수 없는 에러");
 	}

@@ -29,8 +29,8 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.CreateTransaction(transaction));
 	}
 
-	public void editProduct(String oldName, Product product) {
-		dispatcher.dispatch(new Action.EditProduct(oldName, product));
+	public void editProduct(Product product) {
+		dispatcher.dispatch(new Action.EditProduct(product));
 	}
 
 	public void editCategory(Category category) {
@@ -45,7 +45,7 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.DeleteCategory(categoryId));
 	}
 
-	public void deleteProduct(String productName) {
-		dispatcher.dispatch(new Action.DeleteProduct(productName));
+	public void deleteProduct(Long productId) {
+		dispatcher.dispatch(new Action.DeleteProduct(productId));
 	}
 }

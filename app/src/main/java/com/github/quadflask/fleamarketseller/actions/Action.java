@@ -49,12 +49,9 @@ public class Action {
 	}
 
 	public static class EditProduct {
-		public final String targetProductName;
-
 		public final Product product;
 
-		public EditProduct(String targetProductName, Product product) {
-			this.targetProductName = targetProductName;
+		public EditProduct(Product product) {
 			this.product = product;
 		}
 	}
@@ -86,10 +83,10 @@ public class Action {
 	}
 
 	public static class DeleteProduct {
-		public final String productName;
+		public final Long productId;
 
-		public DeleteProduct(String productName) {
-			this.productName = productName;
+		public DeleteProduct(Long productId) {
+			this.productId = productId;
 		}
 	}
 }

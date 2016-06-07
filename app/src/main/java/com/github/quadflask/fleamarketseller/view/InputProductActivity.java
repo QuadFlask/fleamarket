@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.store.ModelValidationException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,7 +40,6 @@ public class InputProductActivity extends BaseActivity {
 	@BindView(R.id.btn_complete)
 	Button btnComplete;
 
-	private String productName;
 	private Product product;
 
 	@Override
@@ -49,16 +49,16 @@ public class InputProductActivity extends BaseActivity {
 
 		Intent intent = getIntent();
 		if (isEditMode()) {
-			productName = intent.getStringExtra(IntentConstant.EXTRA_PRODUCT);
+			val productId = intent.getLongExtra(IntentConstant.EXTRA_PRODUCT, -1L);
 
-			product = store().findProductByName(productName);
+			product = store().findProductById(productId);
 			if (product != null) {
 				edName.setText(product.getName());
 				edPrice.setText(product.getPrice().toString());
 				btnComplete.setText("수정하기");
 				getSupportActionBar().setTitle("제품 수정");
 			} else {
-				Toast.makeText(this, "'{product}' 제품을 찾지 못했습니다".replace("{product}", productName), Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "id='{product}' 제품을 찾지 못했습니다".replace("{product}", "" + productId), Toast.LENGTH_SHORT).show();
 				finish();
 			}
 		}
@@ -112,21 +112,28 @@ public class InputProductActivity extends BaseActivity {
 		val productName = edName.getText().toString();
 		val price = Long.parseLong(edPrice.getText().toString());
 
-		if (isEditMode()) {
-			String oldName = this.productName;
-			actionCreator().editProduct(oldName, Product
-					.builder()
-					.categoryName(categoryName)
-					.name(productName)
-					.price(price)
-					.build());
-		} else {
-			actionCreator().newProduct(Product
-					.builder()
-					.categoryName(categoryName)
-					.name(productName)
-					.price(price)
-					.build());
+		Product newProduct = Product
+				.builder()
+				.categoryName(categoryName)
+				.name(productName)
+				.price(price)
+				.build();
+
+		try {
+			store().checkValid(newProduct);
+
+			if (isEditMode()) {
+				newProduct.setId(product.getId());
+				actionCreator().editProduct(newProduct);
+			} else {
+				actionCreator().newProduct(newProduct);
+			}
+		} catch (ModelValidationException e) {
+			new MaterialDialog.Builder(this)
+					.title("실패")
+					.content(e.getMessage())
+					.positiveText("확인")
+					.show();
 		}
 	}
 
@@ -142,7 +149,7 @@ public class InputProductActivity extends BaseActivity {
 		int id = item.getItemId();
 
 		if (id == R.id.action_delete) {
-			actionCreator().deleteProduct(productName);
+			actionCreator().deleteProduct(product.getId());
 			return true;
 		}
 

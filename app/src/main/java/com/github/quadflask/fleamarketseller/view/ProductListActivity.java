@@ -97,7 +97,7 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 	public void onClickEdit(Product product) {
 		Intent intent = new Intent(this, InputProductActivity.class);
 		intent.setAction(IntentConstant.ACTION_EDIT);
-		intent.putExtra(IntentConstant.EXTRA_PRODUCT, product.getName());
+		intent.putExtra(IntentConstant.EXTRA_PRODUCT, product.getId());
 		startActivity(intent);
 	}
 
