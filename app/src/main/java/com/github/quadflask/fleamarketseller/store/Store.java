@@ -354,13 +354,16 @@ public class Store implements Observer {
 			throw new ModelValidationException("이름이 없습니다");
 		Category categoryByName = findCategoryByName(category.getName());
 		boolean isEdit = category.getId() != null;
-		if (isEdit && categoryByName != null) {
-			if (!categoryByName.getId().equals(category.getId()))
+
+		if (isEdit) {
+			if (categoryByName == null)
+				throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
+			else if (!categoryByName.getId().equals(category.getId()))
 				throw new ModelValidationException("수정할 카테고리와 일치하지 않습니다");
-		} else if (categoryByName == null)
-			throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
-		else return;
-		throw new ModelValidationException("알 수 없는 에러");
+		} else {
+			if (categoryByName != null)
+				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		}
 	}
 
 	public void checkValid(Product product) {
@@ -371,13 +374,16 @@ public class Store implements Observer {
 			throw new ModelValidationException("카테고리가 없습니다");
 		Product productByName = findProductByName(product.getName());
 		boolean isEdit = product.getId() != null;
-		if (isEdit && productByName != null) {
-			if (!productByName.getId().equals(product.getId()))
+
+		if (isEdit) {
+			if (productByName == null)
+				throw new ModelValidationException("수정할 원본 제품이 없습니다");
+			else if (!productByName.getId().equals(product.getId()))
 				throw new ModelValidationException("수정할 제품과 일치하지 않습니다");
-		} else if (productByName == null)
-			throw new ModelValidationException("수정할 원본 제품이 없습니다");
-		else return;
-		throw new ModelValidationException("알 수 없는 에러");
+		} else {
+			if (productByName != null)
+				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		}
 	}
 
 	public static class StoreChangeEvent {
