@@ -91,7 +91,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 	public void onClickEdit(Category category) {
 		Intent intent = new Intent(this, InputCategoryActivity.class);
 		intent.setAction(IntentConstant.ACTION_EDIT);
-		intent.putExtra(IntentConstant.EXTRA_CATEGORY, category.getName());
+		intent.putExtra(IntentConstant.EXTRA_CATEGORY, category.getId());
 		startActivity(intent);
 	}
 
