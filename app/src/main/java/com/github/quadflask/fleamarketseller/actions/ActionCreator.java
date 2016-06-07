@@ -37,8 +37,8 @@ public class ActionCreator {
 		dispatcher.dispatch(new Action.EditCategory(category));
 	}
 
-	public void editMarket(String oldName, Market market) {
-		dispatcher.dispatch(new Action.EditMarket(oldName, market));
+	public void editMarket(Market market) {
+		dispatcher.dispatch(new Action.EditMarket(market));
 	}
 
 	public void deleteCategory(Long categoryId) {

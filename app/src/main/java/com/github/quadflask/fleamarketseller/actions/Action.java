@@ -65,11 +65,9 @@ public class Action {
 	}
 
 	public static class EditMarket {
-		public final String targetMarketName;
 		public final Market market;
 
-		public EditMarket(String targetMarketName, Market market) {
-			this.targetMarketName = targetMarketName;
+		public EditMarket(Market market) {
 			this.market = market;
 		}
 	}

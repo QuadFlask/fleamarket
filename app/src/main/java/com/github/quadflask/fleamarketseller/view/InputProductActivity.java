@@ -125,9 +125,8 @@ public class InputProductActivity extends BaseActivity {
 			if (isEditMode()) {
 				newProduct.setId(product.getId());
 				actionCreator().editProduct(newProduct);
-			} else {
+			} else
 				actionCreator().newProduct(newProduct);
-			}
 		} catch (ModelValidationException e) {
 			new MaterialDialog.Builder(this)
 					.title("실패")

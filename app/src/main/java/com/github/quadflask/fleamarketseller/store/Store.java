@@ -148,7 +148,7 @@ public class Store implements Observer {
 		} else if (action instanceof Action.EditMarket) {
 			val _action = (Action.EditMarket) action;
 			val editedMarket = _action.market;
-			val market = findMarketByName(_action.targetMarketName);
+			val market = findMarketById(editedMarket.getId());
 
 			if (market != null) {
 				realm().executeTransaction(realm -> {
@@ -285,6 +285,18 @@ public class Store implements Observer {
 				.findFirst();
 	}
 
+	private Market findMarketById(Long id) {
+		return findMarketById(realm(), id);
+	}
+
+	private Market findMarketById(Realm realm, Long id) {
+		if (id == null || id < 0) return null;
+		return realm
+				.where(Market.class)
+				.equalTo("id", id)
+				.findFirst();
+	}
+
 	public RealmResults<Category> loadAllCategories() {
 		return realm()
 				.where(Category.class)
@@ -352,6 +364,7 @@ public class Store implements Observer {
 		if (category == null) throw new ModelValidationException("카테고리가 없습니다");
 		if (Strings.isNullOrEmpty(category.getName()))
 			throw new ModelValidationException("이름이 없습니다");
+
 		Category categoryByName = findCategoryByName(category.getName());
 		boolean isEdit = category.getId() != null;
 
@@ -372,6 +385,7 @@ public class Store implements Observer {
 			throw new ModelValidationException("이름이 없습니다");
 		if (product.getCategoryName() == null)
 			throw new ModelValidationException("카테고리가 없습니다");
+
 		Product productByName = findProductByName(product.getName());
 		boolean isEdit = product.getId() != null;
 
@@ -382,6 +396,25 @@ public class Store implements Observer {
 				throw new ModelValidationException("수정할 제품과 일치하지 않습니다");
 		} else {
 			if (productByName != null)
+				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		}
+	}
+
+	public void checkValid(Market market) {
+		if (market == null) throw new ModelValidationException("마켓이 없습니다");
+		if (Strings.isNullOrEmpty(market.getName()))
+			throw new ModelValidationException("이름이 없습니다");
+
+		Product marketByName = findProductByName(market.getName());
+		boolean isEdit = market.getId() != null;
+
+		if (isEdit) {
+			if (marketByName == null)
+				throw new ModelValidationException("수정할 원본 마켓이 없습니다");
+			else if (!marketByName.getId().equals(market.getId()))
+				throw new ModelValidationException("수정할 마켓과 일치하지 않습니다");
+		} else {
+			if (marketByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
 		}
 	}
