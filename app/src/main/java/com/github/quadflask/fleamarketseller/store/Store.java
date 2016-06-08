@@ -116,6 +116,19 @@ public class Store implements Observer {
 				emitUiUpdate(new UiUpdateEvent.MarketAdded(market));
 			});
 
+		} else if (action instanceof Action.CreateVendor) {
+			val _action = (Action.CreateVendor) action;
+			val vendor = _action.vendor;
+
+			realm().executeTransaction(realm -> {
+				vendor.setDate(new Date());
+				vendor.setId(nextKey(Vendor.class));
+				realm.copyToRealm(vendor);
+
+				emitStoreChange();
+				emitUiUpdate(new UiUpdateEvent.VendorAdded(vendor));
+			});
+
 		} else if (action instanceof Action.EditProduct) {
 			val _action = (Action.EditProduct) action;
 			val editedProduct = _action.product;
@@ -158,6 +171,20 @@ public class Store implements Observer {
 
 					emitStoreChange();
 					emitUiUpdate(new UiUpdateEvent.MarketUpdated(market));
+				});
+			}
+		} else if (action instanceof Action.EditVendor) {
+			val _action = (Action.EditVendor) action;
+			val editedVendor = _action.vendor;
+			val vendor = findVendorById(editedVendor.getId());
+
+			if (vendor != null) {
+				realm().executeTransaction(realm -> {
+					vendor.setName(editedVendor.getName());
+					vendor.setLocation(editedVendor.getLocation());
+
+					emitStoreChange();
+					emitUiUpdate(new UiUpdateEvent.VendorUpdated(vendor));
 				});
 			}
 		} else if (action instanceof Action.DeleteCategory) {
@@ -274,6 +301,14 @@ public class Store implements Observer {
 		if (id == null || id < 0) return null;
 		return realm
 				.where(Category.class)
+				.equalTo("id", id)
+				.findFirst();
+	}
+
+	private Vendor findVendorById(Long id) {
+		if (id == null || id < 0) return null;
+		return realm()
+				.where(Vendor.class)
 				.equalTo("id", id)
 				.findFirst();
 	}

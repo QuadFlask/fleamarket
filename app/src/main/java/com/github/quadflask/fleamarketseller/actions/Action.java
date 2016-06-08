@@ -96,4 +96,12 @@ public class Action {
 			this.vendor = vendor;
 		}
 	}
+
+	public static class EditVendor {
+		public final Vendor vendor;
+
+		public EditVendor(Vendor vendor) {
+			this.vendor = vendor;
+		}
+	}
 }

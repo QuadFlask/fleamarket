@@ -4,6 +4,7 @@ import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
+import com.github.quadflask.fleamarketseller.model.Vendor;
 
 public class UiUpdateEvent {
 
@@ -67,5 +68,23 @@ public class UiUpdateEvent {
 	}
 
 	public static class ProductDeleted extends UiUpdateEvent {
+	}
+
+	public static class VendorAdded extends UiUpdateEvent {
+		final Vendor vendor;
+
+		public VendorAdded(Vendor vendor) {
+			super();
+			this.vendor = vendor;
+		}
+	}
+
+	public static class VendorUpdated extends UiUpdateEvent {
+		final Vendor vendor;
+
+		public VendorUpdated(Vendor vendor) {
+			super();
+			this.vendor = vendor;
+		}
 	}
 }

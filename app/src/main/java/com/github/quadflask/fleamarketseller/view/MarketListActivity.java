@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +137,13 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 
 	@Override
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
+		if (uiUpdateEvent instanceof UiUpdateEvent.MarketAdded) {
+			reloadMarkets();
+			Snackbar.make(llRoot, "마켓이 추가되었습니다", Snackbar.LENGTH_SHORT).show();
+		} else if (uiUpdateEvent instanceof UiUpdateEvent.MarketUpdated) {
+			reloadMarkets();
+			Snackbar.make(llRoot, "마켓이 수정되었습니다", Snackbar.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

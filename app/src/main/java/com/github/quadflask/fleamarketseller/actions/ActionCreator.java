@@ -53,4 +53,8 @@ public class ActionCreator {
 	public void newVendor(Vendor vendor) {
 		dispatcher.dispatch(new Action.CreateVendor(vendor));
 	}
+
+	public void editVendor(Vendor vendor) {
+		dispatcher.dispatch(new Action.EditVendor(vendor));
+	}
 }

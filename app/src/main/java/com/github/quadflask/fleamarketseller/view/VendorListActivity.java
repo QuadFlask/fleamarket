@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,12 +109,46 @@ public class VendorListActivity extends BaseActivity implements OnClickEditListe
 	}
 
 	@Override
-	public void onNext(UiUpdateEvent uiUpdateEvent) {
+	public void onClickEdit(final Vendor targetVendor) {
+		MaterialDialog dialog = new MaterialDialog.Builder(this)
+				.title("수정")
+				.customView(R.layout.dialog_input_vendor, true)
+				.positiveText("완료")
+				.onPositive((_dialog, which) -> {
+					View view = _dialog.getCustomView();
+					EditText edName = (EditText) view.findViewById(R.id.ed_name);
+					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
+
+					val editedVendor = Vendor.builder()
+							.id(targetVendor.getId())
+							.name(edName.getText().toString())
+							.location(edLocation.getText().toString())
+							.build();
+
+					store().checkValidAsObservable(editedVendor).subscribe(
+							v -> actionCreator().editVendor(editedVendor),
+							e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+					);
+				})
+				.show();
+
+		View customView = dialog.getCustomView();
+		EditText edName = (EditText) customView.findViewById(R.id.ed_name);
+		EditText edLocation = (EditText) customView.findViewById(R.id.ed_location);
+
+		edName.setText(targetVendor.getName());
+		edLocation.setText(targetVendor.getLocation());
 	}
 
 	@Override
-	public void onClickEdit(Vendor vendor) {
-
+	public void onNext(UiUpdateEvent uiUpdateEvent) {
+		if (uiUpdateEvent instanceof UiUpdateEvent.MarketAdded) {
+			reloadVendors();
+			Snackbar.make(llRoot, "매입처가 추가되었습니다", Snackbar.LENGTH_SHORT).show();
+		} else if (uiUpdateEvent instanceof UiUpdateEvent.MarketUpdated) {
+			reloadVendors();
+			Snackbar.make(llRoot, "매입처가 수정되었습니다", Snackbar.LENGTH_SHORT).show();
+		}
 	}
 
 	private static class VendorViewHolder extends RealmViewHolder {
