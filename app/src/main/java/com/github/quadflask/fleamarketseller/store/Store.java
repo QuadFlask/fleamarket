@@ -401,17 +401,18 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(category.getName()))
 			throw new ModelValidationException("이름이 없습니다");
 
-		Category categoryByName = findCategoryByName(category.getName());
-		boolean isEdit = category.getId() != null;
+		boolean isCreate = category.getId() == null;
 
-		if (isEdit) {
-			if (categoryByName == null)
-				throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
-			else if (!categoryByName.getId().equals(category.getId()))
-				throw new ModelValidationException("수정할 카테고리와 일치하지 않습니다");
-		} else {
+		if (isCreate) {
+			Category categoryByName = findCategoryByName(category.getName());
 			if (categoryByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		} else {
+			Category categoryById = findCategoryById(category.getId());
+			if (categoryById == null)
+				throw new ModelValidationException("수정할 원본 카테고리가 없습니다");
+			else if (!categoryById.getId().equals(category.getId()))
+				throw new ModelValidationException("수정할 카테고리와 일치하지 않습니다");
 		}
 	}
 
@@ -422,17 +423,18 @@ public class Store implements Observer {
 		if (product.getCategoryName() == null)
 			throw new ModelValidationException("카테고리가 없습니다");
 
-		Product productByName = findProductByName(product.getName());
-		boolean isEdit = product.getId() != null;
+		boolean isCreate = product.getId() == null;
 
-		if (isEdit) {
-			if (productByName == null)
-				throw new ModelValidationException("수정할 원본 제품이 없습니다");
-			else if (!productByName.getId().equals(product.getId()))
-				throw new ModelValidationException("수정할 제품과 일치하지 않습니다");
-		} else {
+		if (isCreate) {
+			Product productByName = findProductByName(product.getName());
 			if (productByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		} else {
+			Product productById = findProductById(product.getId());
+			if (productById == null)
+				throw new ModelValidationException("수정할 원본 제품이 없습니다");
+			else if (!productById.getId().equals(product.getId()))
+				throw new ModelValidationException("수정할 제품과 일치하지 않습니다");
 		}
 	}
 
@@ -441,17 +443,18 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(market.getName()))
 			throw new ModelValidationException("이름이 없습니다");
 
-		Market marketByName = findMarketByName(market.getName());
-		boolean isEdit = market.getId() != null;
+		boolean isCreate = market.getId() == null;
 
-		if (isEdit) {
-			if (marketByName == null)
-				throw new ModelValidationException("수정할 원본 마켓이 없습니다");
-			else if (!marketByName.getId().equals(market.getId()))
-				throw new ModelValidationException("수정할 마켓과 일치하지 않습니다");
-		} else {
+		if (isCreate) {
+			Market marketByName = findMarketByName(market.getName());
 			if (marketByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		} else {
+			Market marketById = findMarketById(market.getId());
+			if (marketById == null)
+				throw new ModelValidationException("수정할 원본 마켓이 없습니다");
+			else if (!marketById.getId().equals(market.getId()))
+				throw new ModelValidationException("수정할 마켓과 일치하지 않습니다");
 		}
 	}
 
@@ -460,17 +463,18 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(vendor.getName()))
 			throw new ModelValidationException("이름이 없습니다");
 
-		Vendor vendorByName = findVendorByName(vendor.getName());
-		boolean isEdit = vendor.getId() != null;
+		final boolean isCreate = vendor.getId() == null;
 
-		if (isEdit) {
-			if (vendorByName == null)
-				throw new ModelValidationException("수정할 원본 매입처가 없습니다");
-			else if (!vendorByName.getId().equals(vendor.getId()))
-				throw new ModelValidationException("수정할 매입처와 일치하지 않습니다");
-		} else {
+		if (isCreate) {
+			Vendor vendorByName = findVendorByName(vendor.getName());
 			if (vendorByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		} else {
+			Vendor vendorById = findVendorById(vendor.getId());
+			if (vendorById == null)
+				throw new ModelValidationException("수정할 원본 매입처가 없습니다");
+			else if (!vendorById.getId().equals(vendor.getId()))
+				throw new ModelValidationException("수정할 매입처와 일치하지 않습니다");
 		}
 	}
 
