@@ -9,11 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.quadflask.fleamarketseller.R;
 
@@ -108,8 +105,10 @@ public class MainActivity extends BaseActivity {
 					return TransactionListFragment.newInstance(true);
 				case 1:
 					return TransactionListFragment.newInstance(false);
+				case 2:
+					return AggregateFragment.newInstance();
 			}
-			return PlaceholderFragment.newInstance();
+			throw new IndexOutOfBoundsException();
 		}
 
 		@Override
@@ -128,23 +127,6 @@ public class MainActivity extends BaseActivity {
 					return "결산";
 			}
 			return null;
-		}
-	}
-
-	public static class PlaceholderFragment extends Fragment {
-		public static PlaceholderFragment newInstance() {
-			PlaceholderFragment fragment = new PlaceholderFragment();
-			return fragment;
-		}
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-		                         Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-			return rootView;
 		}
 	}
 }

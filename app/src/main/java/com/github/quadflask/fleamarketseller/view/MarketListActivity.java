@@ -114,7 +114,7 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 					EditText edName = (EditText) view.findViewById(R.id.ed_name);
 					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
 
-					val editedMarket = Market.builder()
+					final Market editedMarket = Market.builder()
 							.id(targetMarket.getId())
 							.name(edName.getText().toString())
 							.location(edLocation.getText().toString())

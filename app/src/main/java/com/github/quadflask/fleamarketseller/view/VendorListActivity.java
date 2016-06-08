@@ -119,7 +119,7 @@ public class VendorListActivity extends BaseActivity implements OnClickEditListe
 					EditText edName = (EditText) view.findViewById(R.id.ed_name);
 					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
 
-					val editedVendor = Vendor.builder()
+					final Vendor editedVendor = Vendor.builder()
 							.id(targetVendor.getId())
 							.name(edName.getText().toString())
 							.location(edLocation.getText().toString())
