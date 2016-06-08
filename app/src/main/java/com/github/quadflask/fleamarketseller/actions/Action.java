@@ -4,6 +4,7 @@ import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
+import com.github.quadflask.fleamarketseller.model.Vendor;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +86,14 @@ public class Action {
 
 		public DeleteProduct(Long productId) {
 			this.productId = productId;
+		}
+	}
+
+	public static class CreateVendor {
+		public final Vendor vendor;
+
+		public CreateVendor(Vendor vendor) {
+			this.vendor = vendor;
 		}
 	}
 }

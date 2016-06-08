@@ -5,6 +5,7 @@ import com.github.quadflask.fleamarketseller.model.Category;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
+import com.github.quadflask.fleamarketseller.model.Vendor;
 
 public class ActionCreator {
 	Dispatcher dispatcher;
@@ -47,5 +48,9 @@ public class ActionCreator {
 
 	public void deleteProduct(Long productId) {
 		dispatcher.dispatch(new Action.DeleteProduct(productId));
+	}
+
+	public void newVendor(Vendor vendor) {
+		dispatcher.dispatch(new Action.CreateVendor(vendor));
 	}
 }

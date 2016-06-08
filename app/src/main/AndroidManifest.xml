@@ -22,15 +22,18 @@
 		<activity
 			android:name=".view.InputCategoryActivity"
 			android:label="@string/act_title_input_category"
-			android:theme="@style/AppTheme.NoActionBar"/>
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".view.InputProductActivity"
 			android:label="@string/act_title_input_product"
-			android:theme="@style/AppTheme.NoActionBar"/>
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".view.InputTransactionActivity"
 			android:label="@string/act_title_input_transaction"
-			android:theme="@style/AppTheme.NoActionBar"/>
+			android:theme="@style/AppTheme.NoActionBar"
+			android:windowSoftInputMode="adjustResize"/>
 		<activity
 			android:name=".view.ProductListActivity"
 			android:label="@string/act_title_product_list"

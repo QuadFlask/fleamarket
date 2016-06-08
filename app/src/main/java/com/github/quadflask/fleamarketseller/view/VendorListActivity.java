@@ -7,18 +7,28 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
-import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Vendor;
+import com.google.common.base.Strings;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmViewHolder;
+import lombok.val;
 
-public class VendorListActivity extends BaseActivity {
+import static com.github.quadflask.fleamarketseller.FleamarketApplication.actionCreator;
+import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
+
+public class VendorListActivity extends BaseActivity implements OnClickEditListener<Vendor> {
 	@BindView(R.id.main_content)
 	CoordinatorLayout llRoot;
 	@BindView(R.id.toolbar)
@@ -28,7 +38,7 @@ public class VendorListActivity extends BaseActivity {
 	@BindView(R.id.rv_list)
 	RealmRecyclerView rvList;
 
-	private RealmBasedRecyclerViewAdapter<Market, VendorViewHolder> adapter;
+	private RealmBasedRecyclerViewAdapter<Vendor, VendorViewHolder> adapter;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,47 +53,53 @@ public class VendorListActivity extends BaseActivity {
 	}
 
 	private void reloadVendors() {
-//		val markets = store().loadMarkets();
-//		if (adapter == null) {
-//			adapter = new RealmBasedRecyclerViewAdapter<Market, MarketListActivity.MarketViewHolder>(this, markets, true, false) {
-//				@Override
-//				public MarketListActivity.MarketViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-//					MarketListActivity.MarketViewHolder viewHolder = new MarketListActivity.MarketViewHolder(inflater.inflate(MarketListActivity.MarketViewHolder.RES_ID, viewGroup, false));
-//					viewHolder.root.setOnClickListener(v -> MarketListActivity.this.onClickEdit(viewHolder.market));
-//					return viewHolder;
-//				}
-//
-//				@Override
-//				public void onBindRealmViewHolder(MarketListActivity.MarketViewHolder viewHolder, int i) {
-//					val market = realmResults.get(i);
-//					viewHolder.market = market;
-//					viewHolder.name.setText(market.getName());
-//					viewHolder.location.setText(market.getLocation());
-//				}
-//			};
-//			rvList.setAdapter(adapter);
-//		} else adapter.updateRealmResults(markets);
+		val vendors = store().loadVendors();
+		if (adapter == null) {
+			adapter = new RealmBasedRecyclerViewAdapter<Vendor, VendorViewHolder>(this, vendors, true, false) {
+				@Override
+				public VendorListActivity.VendorViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
+					VendorListActivity.VendorViewHolder viewHolder = new VendorListActivity.VendorViewHolder(inflater.inflate(VendorListActivity.VendorViewHolder.RES_ID, viewGroup, false));
+					viewHolder.root.setOnClickListener(v -> VendorListActivity.this.onClickEdit(viewHolder.vendor));
+					return viewHolder;
+				}
+
+				@Override
+				public void onBindRealmViewHolder(VendorListActivity.VendorViewHolder viewHolder, int i) {
+					val vendor = realmResults.get(i);
+					viewHolder.vendor = vendor;
+					viewHolder.name.setText(vendor.getName());
+					viewHolder.location.setText(vendor.getLocation());
+				}
+			};
+			rvList.setAdapter(adapter);
+		} else adapter.updateRealmResults(vendors);
 	}
 
 	@OnClick(R.id.fab)
-	void addMarket() {
-//		new MaterialDialog.Builder(this)
-//				.title("마켓 추가")
-//				.customView(R.layout.dialog_input_market, true)
-//				.positiveText("추가")
-//				.onPositive((dialog, which) -> {
-//					View view = dialog.getCustomView();
-//					EditText edName = (EditText) view.findViewById(R.id.ed_name);
-//					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
-//
-//					if (!Strings.isNullOrEmpty(edName.getText().toString())) {
-//						actionCreator().newMarket(Market.builder()
-//								.name(edName.getText().toString())
-//								.location(edLocation.getText().toString())
-//								.build());
-//					} else Toast.makeText(this, "이름이 비어있습니다", Toast.LENGTH_SHORT).show();
-//				})
-//				.show();
+	void addVendor() {
+		new MaterialDialog.Builder(this)
+				.title("매입처 추가")
+				.customView(R.layout.dialog_input_vendor, true)
+				.positiveText("추가")
+				.onPositive((dialog, which) -> {
+					View view = dialog.getCustomView();
+					EditText edName = (EditText) view.findViewById(R.id.ed_name);
+					EditText edLocation = (EditText) view.findViewById(R.id.ed_location);
+
+					if (!Strings.isNullOrEmpty(edName.getText().toString())) {
+						final Vendor newVendor = Vendor.builder()
+								.name(edName.getText().toString())
+								.location(edLocation.getText().toString())
+								.build();
+
+						store()
+								.checkValidAsObservable(newVendor)
+								.subscribe(
+										v -> actionCreator().newVendor(newVendor),
+										e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+					} else Toast.makeText(this, "이름이 비어있습니다", Toast.LENGTH_SHORT).show();
+				})
+				.show();
 	}
 
 	@Override
@@ -95,16 +111,25 @@ public class VendorListActivity extends BaseActivity {
 	public void onNext(UiUpdateEvent uiUpdateEvent) {
 	}
 
+	@Override
+	public void onClickEdit(Vendor vendor) {
+
+	}
+
 	private static class VendorViewHolder extends RealmViewHolder {
 		@LayoutRes
-		static final int RES_ID = 0;
+		static final int RES_ID = R.layout.li_vendor;
 
-//		final LinearLayout root;
+		final LinearLayout root;
+		final TextView name, location;
 
 		Vendor vendor;
 
 		public VendorViewHolder(View itemView) {
 			super(itemView);
+			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
+			name = (TextView) itemView.findViewById(R.id.tv_name);
+			location = (TextView) itemView.findViewById(R.id.tv_location);
 		}
 	}
 }

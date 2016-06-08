@@ -406,7 +406,7 @@ public class Store implements Observer {
 		if (Strings.isNullOrEmpty(market.getName()))
 			throw new ModelValidationException("이름이 없습니다");
 
-		Product marketByName = findProductByName(market.getName());
+		Market marketByName = findMarketByName(market.getName());
 		boolean isEdit = market.getId() != null;
 
 		if (isEdit) {
@@ -416,6 +416,25 @@ public class Store implements Observer {
 				throw new ModelValidationException("수정할 마켓과 일치하지 않습니다");
 		} else {
 			if (marketByName != null)
+				throw new ModelValidationException("이미 같은 이름이 존재합니다");
+		}
+	}
+
+	private void checkValid(Vendor vendor) {
+		if (vendor == null) throw new ModelValidationException("매입처가 없습니다");
+		if (Strings.isNullOrEmpty(vendor.getName()))
+			throw new ModelValidationException("이름이 없습니다");
+
+		Vendor vendorByName = findVendorByName(vendor.getName());
+		boolean isEdit = vendor.getId() != null;
+
+		if (isEdit) {
+			if (vendorByName == null)
+				throw new ModelValidationException("수정할 원본 매입처가 없습니다");
+			else if (!vendorByName.getId().equals(vendor.getId()))
+				throw new ModelValidationException("수정할 매입처와 일치하지 않습니다");
+		} else {
+			if (vendorByName != null)
 				throw new ModelValidationException("이미 같은 이름이 존재합니다");
 		}
 	}
@@ -457,6 +476,21 @@ public class Store implements Observer {
 				try {
 					checkValid(market);
 					subscriber.onNext(market);
+					subscriber.onCompleted();
+				} catch (ModelValidationException e) {
+					subscriber.onError(e);
+				}
+			}
+		});
+	}
+
+	public Observable<Vendor> checkValidAsObservable(Vendor vendor) {
+		return Observable.create(new Observable.OnSubscribe<Vendor>() {
+			@Override
+			public void call(Subscriber<? super Vendor> subscriber) {
+				try {
+					checkValid(vendor);
+					subscriber.onNext(vendor);
 					subscriber.onCompleted();
 				} catch (ModelValidationException e) {
 					subscriber.onError(e);
