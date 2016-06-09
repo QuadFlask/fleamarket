@@ -39,7 +39,7 @@ public class Transaction extends RealmObject {
 	@Ignore
 	private String vendorName;
 	@Ignore
-	private String formattedDate = "unknown";
+	private String formattedDate;
 
 	public String getFormattedDate() {
 		if (date != null && formattedDate == null) {

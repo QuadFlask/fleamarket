@@ -66,7 +66,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 						adapter = new RealmBasedRecyclerViewAdapter<Transaction, TransactionViewHolder>(getActivity(), transactions, true, false) {
 							@Override
 							public TransactionViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int i) {
-								TransactionViewHolder viewHolder = new TransactionViewHolder(inflater.inflate(R.layout.li_transaction, viewGroup, false));
+								TransactionViewHolder viewHolder = new TransactionViewHolder(inflater.inflate(TransactionViewHolder.RES_ID, viewGroup, false));
 								viewHolder.root.setOnClickListener(v -> TransactionListFragment.this.onClickEdit(viewHolder.transaction));
 								return viewHolder;
 							}
@@ -112,6 +112,8 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	}
 
 	private static class TransactionViewHolder extends RealmViewHolder {
+		static final int RES_ID = R.layout.li_transaction;
+
 		final RelativeLayout root;
 		final TextView tvDate, tv_category, tv_product_name, tv_vendor_or_market, tv_price;
 		Transaction transaction;

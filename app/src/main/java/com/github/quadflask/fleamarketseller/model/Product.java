@@ -32,7 +32,7 @@ public class Product extends RealmObject implements Comparable {
 	@Ignore
 	private String categoryName;
 	@Ignore
-	private String formattedDate = "unkonwn";
+	private String formattedDate;
 
 	public Product() {
 	}
