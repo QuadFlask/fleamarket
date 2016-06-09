@@ -50,6 +50,8 @@ public class InputTransactionActivity extends BaseActivity {
 	EditText edCount;
 	@BindView(R.id.ed_price)
 	EditText edPrice;
+	@BindView(R.id.ed_text)
+	EditText edText;
 	@BindView(R.id.btn_complete)
 	Button button;
 
@@ -107,6 +109,7 @@ public class InputTransactionActivity extends BaseActivity {
 					.productName(spProduct.getSelectedItem().toString())
 					.count(Long.parseLong(edCount.getText().toString()))
 					.price(Long.parseLong(edPrice.getText().toString()))
+					.text(edText.getText().toString())
 					.build();
 		} else {
 			transaction = Transaction.builder()
@@ -115,6 +118,7 @@ public class InputTransactionActivity extends BaseActivity {
 					.productName(spProduct.getSelectedItem().toString())
 					.count(Long.parseLong(edCount.getText().toString()))
 					.price(Long.parseLong(edPrice.getText().toString()))
+					.text(edText.getText().toString())
 					.build();
 		}
 		actionCreator().newTransaction(transaction);

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/rl_root"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="64dp"
+	android:orientation="vertical"
+	android:padding="12dp">
+
+	<TextView
+		android:id="@+id/tv_date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="4dp"
+		android:text="2016.05.24"
+	/>
+
+	<TextView
+		android:id="@+id/tv_product_name"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@+id/tv_date"
+		android:layout_weight="0.5"
+		android:paddingLeft="10dp"
+		android:text="product name"
+		android:textColor="#000"
+		android:textSize="18sp"
+	/>
+
+	<TextView
+		android:id="@+id/tv_vendor_or_market"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/tv_date"
+		android:layout_toRightOf="@+id/tv_date"
+		android:paddingLeft="10dp"
+		android:text="market name"
+	/>
+
+	<LinearLayout
+		android:id="@+id/ll_price_container"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true">
+		<TextView
+			android:id="@+id/tv_price"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="10,000"
+			android:textColor="#f42"
+			android:textSize="18sp"
+			android:textStyle="bold"
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="원"
+		/>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/tv_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_below="@+id/ll_price_container"
+		android:layout_weight="0.5"
+		android:maxLength="8"
+		android:text="text"
+	/>
+
+</RelativeLayout>

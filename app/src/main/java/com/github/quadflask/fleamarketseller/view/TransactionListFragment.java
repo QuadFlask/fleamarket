@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
@@ -77,8 +78,6 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 								viewHolder.transaction = transaction;
 								viewHolder.tvDate.setText(transaction.getFormattedDate());
 								viewHolder.tv_product_name.setText(transaction.getProduct().getName());
-								viewHolder.tv_category.setText(transaction.getProduct().getCategory().getName());
-								viewHolder.tv_category.setTextColor(transaction.getProduct().getCategory().getColor());
 
 								if (transaction.getIsIncome())
 									viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
@@ -86,9 +85,9 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 									viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
 
 								if (transaction.getIsIncome())
-									viewHolder.tv_price.setTextColor(0xff5555ff);
-								else viewHolder.tv_price.setTextColor(0xffff5555);
-								viewHolder.tv_price.setText(transaction.getPrice().toString() + "원");
+									viewHolder.tv_price.setTextColor(0xff2244ff);
+								else viewHolder.tv_price.setTextColor(0xffff4422);
+								viewHolder.tv_price.setText(transaction.getPrice().toString());
 							}
 						};
 						rvList.setAdapter(adapter);
@@ -104,6 +103,25 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 
 	@Override
 	public void onClickEdit(Transaction transaction) {
+		final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+				.title("매출 상세")
+				.customView(R.layout.dialog_transaction_details, true)
+				.positiveText("확인")
+				.show();
+
+		final View customView = dialog.getCustomView();
+
+		TextView tvDate = (TextView) customView.findViewById(R.id.tv_date);
+		TextView tvMarketName = (TextView) customView.findViewById(R.id.tv_market_name);
+		TextView tvProductName = (TextView) customView.findViewById(R.id.tv_product_name);
+		TextView tvPrice = (TextView) customView.findViewById(R.id.tv_price);
+		TextView tvText = (TextView) customView.findViewById(R.id.tv_text);
+
+		tvDate.setText(transaction.getFormattedDate());
+		tvMarketName.setText(transaction.getMarket().getName());
+		tvProductName.setText(transaction.getProduct().getName());
+		tvPrice.setText(transaction.getProduct().getPrice().toString());
+		tvText.setText(transaction.getText());
 	}
 
 	@Override
@@ -112,17 +130,16 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	}
 
 	private static class TransactionViewHolder extends RealmViewHolder {
-		static final int RES_ID = R.layout.li_transaction;
+		static final int RES_ID = R.layout.li_transaction2;
 
 		final RelativeLayout root;
-		final TextView tvDate, tv_category, tv_product_name, tv_vendor_or_market, tv_price;
+		final TextView tvDate, tv_product_name, tv_vendor_or_market, tv_price;
 		Transaction transaction;
 
 		TransactionViewHolder(View itemView) {
 			super(itemView);
 			root = (RelativeLayout) itemView.findViewById(R.id.rl_root);
 			tvDate = (TextView) itemView.findViewById(R.id.tv_date);
-			tv_category = (TextView) itemView.findViewById(R.id.tv_category);
 			tv_product_name = (TextView) itemView.findViewById(R.id.tv_product_name);
 			tv_vendor_or_market = (TextView) itemView.findViewById(R.id.tv_vendor_or_market);
 			tv_price = (TextView) itemView.findViewById(R.id.tv_price);
