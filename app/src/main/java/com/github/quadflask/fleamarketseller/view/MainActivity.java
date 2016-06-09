@@ -43,17 +43,20 @@ public class MainActivity extends BaseActivity {
 
 	@OnClick(R.id.fab)
 	void openInputProduct() {
-		if (viewPager.getCurrentItem() == 0) {
+		final int currentItem = viewPager.getCurrentItem();
+		final BaseFragment item = (BaseFragment) sectionsPagerAdapter.getItem(currentItem);
+		item.onFabClick(fab);
+
+		if (currentItem == 0) {
 			final Intent intent = new Intent(this, InputTransactionActivity.class);
 			intent.putExtra(IntentConstant.EXTRA_ISINCOME, true);
 			startActivity(intent);
-		} else if (viewPager.getCurrentItem() == 1) {
+		} else if (currentItem == 1) {
 			final Intent intent = new Intent(this, InputTransactionActivity.class);
 			intent.putExtra(IntentConstant.EXTRA_ISINCOME, false);
 			startActivity(intent);
-		} else if (viewPager.getCurrentItem() == 2) {
-			final AggregateFragment item = (AggregateFragment) sectionsPagerAdapter.getItem(2);
-			item.onFabClick(fab);
+		} else if (currentItem == 2) {
+
 		}
 	}
 

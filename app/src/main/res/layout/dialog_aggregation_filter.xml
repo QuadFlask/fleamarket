@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="기간"
+		android:textColor="#80000000"
+		android:textSize="14sp"/>
+
+	<Button
+		android:id="@+id/btn_open_date_range_selector"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="2016.05.01 ~ 05.24"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="term size"
+		android:textColor="#80000000"
+		android:textSize="14sp"/>
+
+	<!--date / month / quoter / year / total-->
+	<Spinner
+		android:id="@+id/sp_term_type"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="market"
+		android:textColor="#80000000"
+		android:textSize="14sp"/>
+
+	<!--market list-->
+	<Spinner
+		android:id="@+id/sp_market"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="category"
+		android:textColor="#80000000"
+		android:textSize="14sp"/>
+
+	<!--category list-->
+	<Spinner
+		android:id="@+id/sp_category"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="product"
+		android:textColor="#80000000"
+		android:textSize="14sp"/>
+
+	<!--product list-->
+	<Spinner
+		android:id="@+id/sp_product"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+</LinearLayout>
