@@ -31,6 +31,30 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:text="market"/>
+
+	<!--market list-->
+	<Spinner
+		android:id="@+id/sp_market"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="category"/>
+
+	<!--category list-->
+	<Spinner
+		android:id="@+id/sp_category"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</Spinner>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:text="vendor"/>
 
 	<!--vendor list-->

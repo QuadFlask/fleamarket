@@ -33,11 +33,6 @@ public class Store implements Observer {
 		this.dispatcher = dispatcher;
 	}
 
-	Realm.Transaction.OnError onInsertCommonError = error -> {
-		// TODO
-		// emitUiUpdate(new UiUpdateEvent.CategoryAddFail(category));
-	};
-
 	@Override
 	public void onNext(final Object action) {
 		if (action instanceof Action.CreateCategory) {

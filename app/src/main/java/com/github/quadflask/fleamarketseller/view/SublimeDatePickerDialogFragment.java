@@ -95,7 +95,6 @@ public class SublimeDatePickerDialogFragment extends DialogFragment {
 		                             int hourOfDay, int minute,
 		                             SublimeRecurrencePicker.RecurrenceOption recurrenceOption,
 		                             String recurrenceRule);
-
 	}
 
 	interface OnDateSetListener {

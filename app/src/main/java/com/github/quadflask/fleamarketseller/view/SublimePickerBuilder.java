@@ -7,6 +7,8 @@ import android.support.v4.app.DialogFragment;
 
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 
+import java.util.Calendar;
+
 public class SublimePickerBuilder {
 
 	public static SublimePickerBuilder.Builder builder() {
@@ -33,6 +35,11 @@ public class SublimePickerBuilder {
 
 		public SublimePickerBuilder.Builder canPickDateRange(boolean flag) {
 			options.setCanPickDateRange(flag);
+			return this;
+		}
+
+		public Builder dateParam(Calendar firstDate, Calendar secondDate) {
+			options.setDateParams(firstDate, secondDate);
 			return this;
 		}
 

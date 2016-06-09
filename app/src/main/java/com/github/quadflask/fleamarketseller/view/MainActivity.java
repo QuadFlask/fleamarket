@@ -22,34 +22,38 @@ public class MainActivity extends BaseActivity {
 	@BindView(R.id.toolbar)
 	Toolbar toolbar;
 	@BindView(R.id.container)
-	ViewPager mViewPager;
+	ViewPager viewPager;
 	@BindView(R.id.tabs)
 	TabLayout tabLayout;
 	@BindView(R.id.fab)
 	FloatingActionButton fab;
+
+	SectionsPagerAdapter sectionsPagerAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setSupportActionBar(toolbar);
 
-		mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
-		tabLayout.setupWithViewPager(mViewPager);
-		mViewPager.setOffscreenPageLimit(3);
+		sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		viewPager.setAdapter(sectionsPagerAdapter);
+		tabLayout.setupWithViewPager(viewPager);
+		viewPager.setOffscreenPageLimit(3);
 	}
 
 	@OnClick(R.id.fab)
 	void openInputProduct() {
-		if (mViewPager.getCurrentItem() == 0) {
+		if (viewPager.getCurrentItem() == 0) {
 			final Intent intent = new Intent(this, InputTransactionActivity.class);
 			intent.putExtra(IntentConstant.EXTRA_ISINCOME, true);
 			startActivity(intent);
-		} else if (mViewPager.getCurrentItem() == 1) {
+		} else if (viewPager.getCurrentItem() == 1) {
 			final Intent intent = new Intent(this, InputTransactionActivity.class);
 			intent.putExtra(IntentConstant.EXTRA_ISINCOME, false);
 			startActivity(intent);
-		} else if (mViewPager.getCurrentItem() == 2) {
-			// TODO show aggregation view
+		} else if (viewPager.getCurrentItem() == 2) {
+			final AggregateFragment item = (AggregateFragment) sectionsPagerAdapter.getItem(2);
+			item.onFabClick(fab);
 		}
 	}
 
