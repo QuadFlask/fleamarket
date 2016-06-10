@@ -535,7 +535,7 @@ public class Store implements Observer {
 		});
 	}
 
-	public Observable<List<Transaction>> runQuery(final AggregationQuery query) {
+	public Observable<List<Transaction.TransactionSummary>> runQuery(final AggregationQuery query) {
 		RealmQuery<Transaction> realmQuery = realm()
 				.where(Transaction.class)
 				.between("date", query.getFirstDate().getTime(), query.getSecondDate().getTime());

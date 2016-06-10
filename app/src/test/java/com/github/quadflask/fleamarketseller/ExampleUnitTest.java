@@ -51,8 +51,8 @@ public class ExampleUnitTest {
 
 	@Test
 	public void testGroupByYear() {
-		final List<Transaction> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_YEAR);
-		final Iterator<Transaction> iterator = aggregatedTransactions.iterator();
+		final List<Transaction.TransactionSummary> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_YEAR);
+		final Iterator<Transaction.TransactionSummary> iterator = aggregatedTransactions.iterator();
 
 		assertEquals(2, aggregatedTransactions.size());
 		assertEquals("3", iterator.next().getPrice().toString());
@@ -61,8 +61,8 @@ public class ExampleUnitTest {
 
 	@Test
 	public void testGroupByQuarter() {
-		final List<Transaction> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_QUARTER);
-		final Iterator<Transaction> iterator = aggregatedTransactions.iterator();
+		final List<Transaction.TransactionSummary> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_QUARTER);
+		final Iterator<Transaction.TransactionSummary> iterator = aggregatedTransactions.iterator();
 
 		assertEquals(4, aggregatedTransactions.size());
 		assertEquals("1", iterator.next().getPrice().toString());
@@ -73,8 +73,8 @@ public class ExampleUnitTest {
 
 	@Test
 	public void testGroupByMonth() {
-		final List<Transaction> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_MONTH);
-		final Iterator<Transaction> iterator = aggregatedTransactions.iterator();
+		final List<Transaction.TransactionSummary> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_MONTH);
+		final Iterator<Transaction.TransactionSummary> iterator = aggregatedTransactions.iterator();
 
 		assertEquals(9, aggregatedTransactions.size());
 
@@ -91,8 +91,8 @@ public class ExampleUnitTest {
 
 	@Test
 	public void testGroupByDay() {
-		final List<Transaction> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_DAY);
-		final Iterator<Transaction> iterator = aggregatedTransactions.iterator();
+		final List<Transaction.TransactionSummary> aggregatedTransactions = AggregationProcessor.aggregate(data, AggregationQuery.OPTION_BY_DAY);
+		final Iterator<Transaction.TransactionSummary> iterator = aggregatedTransactions.iterator();
 
 		assertEquals(18, aggregatedTransactions.size());
 

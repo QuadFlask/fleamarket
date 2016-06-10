@@ -14,26 +14,29 @@ import java.util.Map;
 public class AggregationProcessor {
 	private static final Comparator<String> STRING_REVERSE_COMPARATOR = (lhs, rhs) -> -1 * lhs.compareTo(rhs);
 
-	public static List<Transaction> aggregate(List<Transaction> transactions, String condition) {
+	public static List<Transaction.TransactionSummary> aggregate(List<Transaction> transactions, String condition) {
 		return aggregateAndReduceGroups(Stream
 				.of(transactions)
 				.collect(Collectors
 						.groupingBy(createDateTermGrouper(condition))));
 	}
 
-	private static List<Transaction> aggregateAndReduceGroups(Map<String, List<Transaction>> groupedMap) {
+	private static List<Transaction.TransactionSummary> aggregateAndReduceGroups(Map<String, List<Transaction>> groupedMap) {
 		return Stream
 				.of(groupedMap.keySet())
 				.sorted(STRING_REVERSE_COMPARATOR)
 				.map(key -> Stream
 						.of(groupedMap.get(key))
-						.reduce(Transaction
+						.reduce(Transaction.TransactionSummary
 										.builder()
 										.text(key)
 										.price(0L)
+										.count(0L)
+										.details(groupedMap.get(key))
 										.build(),
 								(value1, value2) -> {
 									value1.setPrice(value1.getPrice() + value2.getPrice());
+									value1.setCount(value1.getCount() + value2.getCount());
 									return value1;
 								}))
 				.collect(Collectors.toList());

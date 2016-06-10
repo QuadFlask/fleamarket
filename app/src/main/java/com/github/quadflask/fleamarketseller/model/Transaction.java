@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -46,5 +47,20 @@ public class Transaction extends RealmObject {
 			formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
 			return formattedDate;
 		} else return formattedDate;
+	}
+
+	@Getter
+	@Setter
+	@Builder
+	public static class TransactionSummary {
+		private Date date;
+		private Boolean isIncome;
+		private Product product;
+		private Market market;
+		private Vendor vendor;
+		private Long count;
+		private Long price;
+		private String text;
+		private List<Transaction> details;
 	}
 }

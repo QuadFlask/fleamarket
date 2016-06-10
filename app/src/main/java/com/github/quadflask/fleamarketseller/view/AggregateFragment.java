@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.annimon.stream.Collectors;
@@ -26,11 +28,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
+import io.realm.RealmViewHolder;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
-public class AggregateFragment extends BaseFragment implements OnClickEditListener<Transaction> {
+public class AggregateFragment extends BaseFragment implements OnClickEditListener<Transaction.TransactionSummary> {
 	@BindView(R.id.rv_list)
 	RecyclerView rvList;
 
@@ -142,7 +145,7 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 		spProduct.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, productNames));
 	}
 
-	private void updateTransactions(List<Transaction> transactions) {
+	private void updateTransactions(List<Transaction.TransactionSummary> transactions) {
 		if (adapter == null && getActivity() != null) {
 			adapter = new RecyclerViewAdapterForTransaction(getActivity());
 			adapter.updateData(transactions);
@@ -158,12 +161,12 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 	}
 
 	@Override
-	public void onClickEdit(Transaction transaction) {
-
+	public void onClickEdit(Transaction.TransactionSummary transaction) {
+		// TODO show transaction list dialog...
 	}
 
-	private class RecyclerViewAdapterForTransaction extends RecyclerView.Adapter<TransactionListFragment.TransactionViewHolder> {
-		private List<Transaction> transactions;
+	private class RecyclerViewAdapterForTransaction extends RecyclerView.Adapter<TransactionSummaryViewHolder> {
+		private List<Transaction.TransactionSummary> transactions;
 		private final LayoutInflater inflater;
 
 		public RecyclerViewAdapterForTransaction(Context context) {
@@ -171,17 +174,16 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 		}
 
 		@Override
-		public TransactionListFragment.TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-			TransactionListFragment.TransactionViewHolder viewHolder = new TransactionListFragment.TransactionViewHolder(inflater.inflate(TransactionListFragment.TransactionViewHolder.RES_ID, parent, false));
+		public TransactionSummaryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+			TransactionSummaryViewHolder viewHolder = new TransactionSummaryViewHolder(inflater.inflate(TransactionSummaryViewHolder.RES_ID, parent, false));
 			viewHolder.root.setOnClickListener(v -> AggregateFragment.this.onClickEdit(viewHolder.transaction));
 			return viewHolder;
 		}
 
 		@Override
-		public void onBindViewHolder(TransactionListFragment.TransactionViewHolder viewHolder, int position) {
-			Transaction transaction = transactions.get(position);
+		public void onBindViewHolder(TransactionSummaryViewHolder viewHolder, int position) {
+			Transaction.TransactionSummary transaction = transactions.get(position);
 			viewHolder.transaction = transaction;
-			viewHolder.tvDate.setText(transaction.getFormattedDate());
 			viewHolder.tv_product_name.setText(transaction.getProduct().getName());
 
 			if (transaction.getIsIncome())
@@ -201,8 +203,26 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 			return 0;
 		}
 
-		public void updateData(List<Transaction> transactions) {
+		public void updateData(List<Transaction.TransactionSummary> transactions) {
 			this.transactions = transactions;
+		}
+	}
+
+	static class TransactionSummaryViewHolder extends RealmViewHolder {
+		static final int RES_ID = R.layout.li_transaction2;
+
+		final RelativeLayout root;
+		final TextView tvDate, tv_product_name, tv_vendor_or_market, tv_price, tvText;
+		Transaction.TransactionSummary transaction;
+
+		TransactionSummaryViewHolder(View itemView) {
+			super(itemView);
+			root = (RelativeLayout) itemView.findViewById(R.id.rl_root);
+			tvDate = (TextView) itemView.findViewById(R.id.tv_date);
+			tv_product_name = (TextView) itemView.findViewById(R.id.tv_product_name);
+			tv_vendor_or_market = (TextView) itemView.findViewById(R.id.tv_vendor_or_market);
+			tv_price = (TextView) itemView.findViewById(R.id.tv_price);
+			tvText = (TextView) itemView.findViewById(R.id.tv_text);
 		}
 	}
 }
