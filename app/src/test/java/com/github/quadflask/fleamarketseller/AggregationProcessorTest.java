@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class AggregationProcessorTest {
 	List<Transaction> data;
 
 	@Before

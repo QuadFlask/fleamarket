@@ -541,19 +541,17 @@ public class Store implements Observer {
 				.between("date", query.getFirstDate().getTime(), query.getSecondDate().getTime());
 
 		if (!AggregationQuery.OPTION_TOTAL.equals(query.getMarketName()))
-			realmQuery = realmQuery.equalTo("market.name", query.getMarketName());
+			realmQuery.equalTo("market.name", query.getMarketName());
 		if (!AggregationQuery.OPTION_TOTAL.equals(query.getCategoryName()))
-			realmQuery = realmQuery.equalTo("category.name", query.getCategoryName());
+			realmQuery.equalTo("category.name", query.getCategoryName());
 		if (!AggregationQuery.OPTION_TOTAL.equals(query.getProductName()))
-			realmQuery = realmQuery.equalTo("product.name", query.getProductName());
-
-		final String groupByTerm = query.getGroupByTerm();
+			realmQuery.equalTo("product.name", query.getProductName());
 
 		return realmQuery
 				.findAllAsync()
 				.asObservable()
 				.map(transactions -> Lists.newArrayList(transactions.iterator()))
-				.map(transactions -> AggregationProcessor.aggregate(transactions, groupByTerm));
+				.map(transactions -> AggregationProcessor.aggregate(transactions, query.getGroupByTerm()));
 	}
 
 	public static class StoreChangeEvent {
