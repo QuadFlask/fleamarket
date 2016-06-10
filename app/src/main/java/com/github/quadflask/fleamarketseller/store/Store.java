@@ -2,7 +2,6 @@ package com.github.quadflask.fleamarketseller.store;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import com.annimon.stream.function.Function;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
@@ -14,7 +13,6 @@ import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -538,7 +536,7 @@ public class Store implements Observer {
 		});
 	}
 
-	public Observable runQuery(final AggregationQuery query) {
+	public Observable<List<Transaction>> runQuery(final AggregationQuery query) {
 		RealmQuery<Transaction> realmQuery = realm()
 				.where(Transaction.class)
 				.between("date", query.getFirstDate().getTime(), query.getSecondDate().getTime());
@@ -551,37 +549,12 @@ public class Store implements Observer {
 			realmQuery = realmQuery.equalTo("product.name", query.getProductName());
 
 		final String groupByTerm = query.getGroupByTerm();
-		final Function<Transaction, String> dateTermsGrouper = createDateTermGrouper(groupByTerm);
 
 		return realmQuery
 				.findAllAsync()
 				.asObservable()
 				.map((Func1<RealmResults<Transaction>, List<Transaction>>) transactions -> Lists.newArrayList(transactions.iterator()))
-				.map(transactions -> Stream
-						.of(transactions)
-						.collect(Collectors.groupingBy(dateTermsGrouper))
-						.get(groupByTerm));
-	}
-
-	private Function<Transaction, String> createDateTermGrouper(String groupByTerm) {
-		return t -> {
-			final Date date = t.getDate();
-
-			switch (groupByTerm) {
-				case AggregationQuery.OPTION_TOTAL:
-					return "total";
-				case AggregationQuery.OPTION_BY_DAY:
-					return new SimpleDateFormat("YYMMDD").format(date);
-				case AggregationQuery.OPTION_BY_MONTH:
-					return new SimpleDateFormat("YYMM").format(date);
-				case AggregationQuery.OPTION_BY_QUARTER:
-					return new SimpleDateFormat("YY").format(date) + (date.getMonth() / 3);
-				case AggregationQuery.OPTION_BY_YEAR:
-					return new SimpleDateFormat("YY").format(date);
-			}
-
-			return "unknown";
-		};
+				.map(transactions -> AggregationProcessor.aggregate(transactions, groupByTerm));
 	}
 
 	public static class StoreChangeEvent {
