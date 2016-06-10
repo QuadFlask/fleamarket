@@ -13,16 +13,21 @@ import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.store.AggregationQuery;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import lombok.experimental.Builder;
+import butterknife.BindView;
+import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
 public class AggregateFragment extends BaseFragment {
+	@BindView(R.id.rv_list)
+	RealmRecyclerView rvList;
 
 	private Calendar firstDate;
 	private Calendar secondDate;
@@ -50,9 +55,9 @@ public class AggregateFragment extends BaseFragment {
 	@Override
 	public void onFabClick(FloatingActionButton fab) {
 		final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-				.title("매출 상세")
+				.title("필터")
 				.customView(R.layout.dialog_aggregation_filter, true)
-				.positiveText("확인")
+				.positiveText("적용")
 				.onPositive((dialog1, which) -> {
 					final View customView = dialog1.getCustomView();
 
@@ -61,14 +66,21 @@ public class AggregateFragment extends BaseFragment {
 					Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
 					Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
 
-					final AggregationQuery query = AggregationQuery.builder()
-							.firstDate(firstDate)
-							.secondDate(secondDate)
-							.groupByTerm(spTermType.getSelectedItem().toString())
-							.marketName(spMarket.getSelectedItem().toString())
-							.categoryName(spCategory.getSelectedItem().toString())
-							.productName(spProduct.getSelectedItem().toString())
-							.build();
+					store().runQuery(
+							AggregationQuery.builder()
+									.firstDate(firstDate)
+									.secondDate(secondDate)
+									.groupByTerm(spTermType.getSelectedItem().toString())
+									.marketName(spMarket.getSelectedItem().toString())
+									.categoryName(spCategory.getSelectedItem().toString())
+									.productName(spProduct.getSelectedItem().toString())
+									.build())
+							.observeOn(AndroidSchedulers.mainThread())
+							.subscribe(
+									transactions -> {
+
+									}, e -> {
+									});
 				})
 				.show();
 
@@ -95,24 +107,24 @@ public class AggregateFragment extends BaseFragment {
 				.build()
 				.show(getActivity()));
 
-		spTermType.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, new String[]{"전체", "일별", "달별", "분기별", "년별"}));
+		spTermType.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, new String[]{
+				AggregationQuery.OPTION_TOTAL,
+				AggregationQuery.OPTION_BY_DAY,
+				AggregationQuery.OPTION_BY_MONTH,
+				AggregationQuery.OPTION_BY_QUARTER,
+				AggregationQuery.OPTION_BY_YEAR}));
 
 		final List<String> marketNames = Stream.of(store().loadMarkets()).map(Market::getName).collect(Collectors.toList());
-		marketNames.add(0, "전체");
+
+		marketNames.add(0, AggregationQuery.OPTION_TOTAL);
 		spMarket.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, marketNames));
 
 		final List<String> categoryNames = store().loadCategoryNames();
-		categoryNames.add(0, "전체");
+		categoryNames.add(0, AggregationQuery.OPTION_TOTAL);
 		spCategory.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, categoryNames));
 
 		final List<String> productNames = Stream.of(store().loadProducts()).map(Product::getName).collect(Collectors.toList());
-		productNames.add(0, "전체");
+		productNames.add(0, AggregationQuery.OPTION_TOTAL);
 		spProduct.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, productNames));
-	}
-
-	@Builder
-	static class AggregationQuery {
-		Calendar firstDate, secondDate;
-		String groupByTerm, vendorName, marketName, productName, categoryName;
 	}
 }

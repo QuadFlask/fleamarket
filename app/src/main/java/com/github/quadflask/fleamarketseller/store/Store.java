@@ -2,6 +2,7 @@ package com.github.quadflask.fleamarketseller.store;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.Function;
 import com.github.quadflask.fleamarketseller.actions.Action;
 import com.github.quadflask.fleamarketseller.dispatcher.Dispatcher;
 import com.github.quadflask.fleamarketseller.model.Category;
@@ -11,22 +12,26 @@ import com.github.quadflask.fleamarketseller.model.Transaction;
 import com.github.quadflask.fleamarketseller.model.Vendor;
 import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmModel;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import lombok.val;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Func1;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.realm;
 
 public class Store implements Observer {
-
 	private Dispatcher dispatcher;
 
 	public Store(Dispatcher dispatcher) {
@@ -380,7 +385,7 @@ public class Store implements Observer {
 		return realm()
 				.where(Transaction.class)
 				.equalTo("isIncome", isIncome)
-				.findAll()
+				.findAllSortedAsync("date", Sort.DESCENDING)
 				.asObservable();
 	}
 
@@ -531,6 +536,52 @@ public class Store implements Observer {
 				}
 			}
 		});
+	}
+
+	public Observable runQuery(final AggregationQuery query) {
+		RealmQuery<Transaction> realmQuery = realm()
+				.where(Transaction.class)
+				.between("date", query.getFirstDate().getTime(), query.getSecondDate().getTime());
+
+		if (!AggregationQuery.OPTION_TOTAL.equals(query.getMarketName()))
+			realmQuery = realmQuery.equalTo("market.name", query.getMarketName());
+		if (!AggregationQuery.OPTION_TOTAL.equals(query.getCategoryName()))
+			realmQuery = realmQuery.equalTo("category.name", query.getCategoryName());
+		if (!AggregationQuery.OPTION_TOTAL.equals(query.getProductName()))
+			realmQuery = realmQuery.equalTo("product.name", query.getProductName());
+
+		final String groupByTerm = query.getGroupByTerm();
+		final Function<Transaction, String> dateTermsGrouper = createDateTermGrouper(groupByTerm);
+
+		return realmQuery
+				.findAllAsync()
+				.asObservable()
+				.map((Func1<RealmResults<Transaction>, List<Transaction>>) transactions -> Lists.newArrayList(transactions.iterator()))
+				.map(transactions -> Stream
+						.of(transactions)
+						.collect(Collectors.groupingBy(dateTermsGrouper))
+						.get(groupByTerm));
+	}
+
+	private Function<Transaction, String> createDateTermGrouper(String groupByTerm) {
+		return t -> {
+			final Date date = t.getDate();
+
+			switch (groupByTerm) {
+				case AggregationQuery.OPTION_TOTAL:
+					return "total";
+				case AggregationQuery.OPTION_BY_DAY:
+					return new SimpleDateFormat("YYMMDD").format(date);
+				case AggregationQuery.OPTION_BY_MONTH:
+					return new SimpleDateFormat("YYMM").format(date);
+				case AggregationQuery.OPTION_BY_QUARTER:
+					return new SimpleDateFormat("YY").format(date) + (date.getMonth() / 3);
+				case AggregationQuery.OPTION_BY_YEAR:
+					return new SimpleDateFormat("YY").format(date);
+			}
+
+			return "unknown";
+		};
 	}
 
 	public static class StoreChangeEvent {
