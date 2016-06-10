@@ -20,32 +20,36 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class AggregationProcessorTest {
-	List<Transaction> data;
+	List<Transaction> data, data2;
 
 	@Before
 	public void setup() {
 		data = Lists.newArrayList(
-				Transaction.builder().date(new Date(2016, 1, 1, 12, 0)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 1, 1, 13, 0)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 1, 2)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 1, 3)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 1, 4)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 1, 5)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 2, 1)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 2, 2)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 2, 3)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 2, 4)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 3, 4)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 3, 5, 1, 0)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 3, 5, 1, 2)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 4, 1)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 4, 2)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 5, 3)).price(1L).build(),
-				Transaction.builder().date(new Date(2016, 6, 1)).price(1L).build(),
+				Transaction.builder().date(new Date(2016, 1, 1, 12, 0)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 1, 13, 0)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 2)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 3)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 4)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 5)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 2, 1)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 2, 2)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 2, 3)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 2, 4)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 3, 4)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 3, 5, 1, 0)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 3, 5, 1, 2)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 4, 1)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 4, 2)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 5, 3)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 6, 1)).price(1L).isIncome(true).build(),
 
-				Transaction.builder().date(new Date(2017, 1, 3)).price(1L).build(),
-				Transaction.builder().date(new Date(2017, 2, 3)).price(1L).build(),
-				Transaction.builder().date(new Date(2017, 7, 3)).price(1L).build()
+				Transaction.builder().date(new Date(2017, 1, 3)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2017, 2, 3)).price(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2017, 7, 3)).price(1L).isIncome(true).build()
+		);
+		data2 = Lists.newArrayList(
+				Transaction.builder().date(new Date(2016, 1, 3)).price(1L).count(1L).isIncome(true).build(),
+				Transaction.builder().date(new Date(2016, 1, 3)).price(-1L).count(1L).isIncome(false).build()
 		);
 	}
 
@@ -116,5 +120,14 @@ public class AggregationProcessorTest {
 		assertEquals("2", iterator.next().getPrice().toString());
 	}
 
+	@Test
+	public void testGroupByDayWithSelling() {
+		final List<Transaction.TransactionSummary> aggregatedTransactions = AggregationProcessor.aggregate(data2, AggregationQuery.OPTION_BY_DAY);
+		final Iterator<Transaction.TransactionSummary> iterator = aggregatedTransactions.iterator();
 
+		assertEquals(2, aggregatedTransactions.size());
+
+		assertEquals("-1", iterator.next().getPrice().toString());
+		assertEquals("1", iterator.next().getPrice().toString());
+	}
 }

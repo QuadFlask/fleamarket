@@ -22,11 +22,11 @@ public class Transaction extends RealmObject {
 	@PrimaryKey
 	private Long id;
 	private Date date;
-	private Boolean isIncome;
+	private Boolean isIncome = true;
 	private Product product;
 	private Market market;
 	private Vendor vendor;
-	private Long count;
+	private Long count = 1L;
 	private Long price;
 	private String text;
 

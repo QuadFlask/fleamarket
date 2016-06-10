@@ -36,7 +36,6 @@ public class AggregationProcessor {
 										.build(),
 								(value1, value2) -> {
 									value1.setPrice(value1.getPrice() + value2.getPrice());
-									value1.setCount(value1.getCount() + value2.getCount());
 									return value1;
 								}))
 				.collect(Collectors.toList());
@@ -45,18 +44,19 @@ public class AggregationProcessor {
 	private static Function<Transaction, String> createDateTermGrouper(String groupByTerm) {
 		return t -> {
 			final Date date = t.getDate();
+			final String isIncome = t.getIsIncome() ? "" : "-";
 
 			switch (groupByTerm) {
 				case AggregationQuery.OPTION_TOTAL:
-					return "total";
+					return "total" + isIncome;
 				case AggregationQuery.OPTION_BY_DAY:
-					return new SimpleDateFormat("YYMMDD").format(date);
+					return new SimpleDateFormat("YYMMDD").format(date) + isIncome;
 				case AggregationQuery.OPTION_BY_MONTH:
-					return new SimpleDateFormat("YYMM").format(date);
+					return new SimpleDateFormat("YYMM").format(date) + isIncome;
 				case AggregationQuery.OPTION_BY_QUARTER:
-					return new SimpleDateFormat("YY").format(date) + ((date.getMonth() - 1) / 3);
+					return new SimpleDateFormat("YY").format(date) + ((date.getMonth() - 1) / 3) + isIncome;
 				case AggregationQuery.OPTION_BY_YEAR:
-					return new SimpleDateFormat("YY").format(date);
+					return new SimpleDateFormat("YY").format(date) + isIncome;
 			}
 
 			return "unknown";
