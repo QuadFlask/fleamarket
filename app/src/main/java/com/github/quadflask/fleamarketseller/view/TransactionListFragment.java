@@ -11,6 +11,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
+import java.text.NumberFormat;
+
 import butterknife.BindView;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -84,10 +86,9 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 								else
 									viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
 
-								if (transaction.getIsIncome())
-									viewHolder.tv_price.setTextColor(0xff2244ff);
-								else viewHolder.tv_price.setTextColor(0xffff4422);
-								viewHolder.tv_price.setText(transaction.getPrice().toString());
+								viewHolder.tv_price.setTextColor(transaction.getIsIncome() ? 0xff2244ff : 0xffff4422);
+								viewHolder.tv_price.setText(toThousandComma(transaction.getProduct().getPrice()));
+								viewHolder.tvText.setText(transaction.getText());
 							}
 						};
 						rvList.setAdapter(adapter);
@@ -120,7 +121,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 		tvDate.setText(transaction.getFormattedDate());
 		tvMarketName.setText(transaction.getMarket().getName());
 		tvProductName.setText(transaction.getProduct().getName());
-		tvPrice.setText(transaction.getProduct().getPrice().toString());
+		tvPrice.setText(toThousandComma(transaction.getProduct().getPrice()));
 		tvText.setText(transaction.getText());
 	}
 
@@ -129,11 +130,15 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 		reloadTransactionList();
 	}
 
+	private String toThousandComma(Long n) {
+		return NumberFormat.getInstance().format(n == null ? 0 : n);
+	}
+
 	private static class TransactionViewHolder extends RealmViewHolder {
 		static final int RES_ID = R.layout.li_transaction2;
 
 		final RelativeLayout root;
-		final TextView tvDate, tv_product_name, tv_vendor_or_market, tv_price;
+		final TextView tvDate, tv_product_name, tv_vendor_or_market, tv_price, tvText;
 		Transaction transaction;
 
 		TransactionViewHolder(View itemView) {
@@ -143,6 +148,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 			tv_product_name = (TextView) itemView.findViewById(R.id.tv_product_name);
 			tv_vendor_or_market = (TextView) itemView.findViewById(R.id.tv_vendor_or_market);
 			tv_price = (TextView) itemView.findViewById(R.id.tv_price);
+			tvText = (TextView) itemView.findViewById(R.id.tv_text);
 		}
 	}
 }

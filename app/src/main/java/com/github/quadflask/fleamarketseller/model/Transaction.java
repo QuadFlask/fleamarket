@@ -43,7 +43,7 @@ public class Transaction extends RealmObject {
 
 	public String getFormattedDate() {
 		if (date != null && formattedDate == null) {
-			formattedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(date);
+			formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
 			return formattedDate;
 		} else return formattedDate;
 	}
