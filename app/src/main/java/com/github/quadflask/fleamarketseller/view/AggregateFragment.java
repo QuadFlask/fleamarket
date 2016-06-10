@@ -85,24 +85,33 @@ public class AggregateFragment extends BaseFragment {
 				.show();
 
 		final View customView = dialog.getCustomView();
-		Button btnDateRangeSelector = (Button) customView.findViewById(R.id.btn_open_date_range_selector);
+		Button btnDateSelectorFirst = (Button) customView.findViewById(R.id.btn_open_date_selector_first);
+		Button btnDateSelectorSecond = (Button) customView.findViewById(R.id.btn_open_date_selector_second);
 		Spinner spTermType = (Spinner) customView.findViewById(R.id.sp_term_type);
 		Spinner spMarket = (Spinner) customView.findViewById(R.id.sp_market);
 		Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
 		Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
 
-		btnDateRangeSelector.setOnClickListener(v -> SublimePickerBuilder.builder()
+		btnDateSelectorFirst.setOnClickListener(v -> SublimePickerBuilder.builder()
 				.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
 				.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
-				.canPickDateRange(true)
-				.dateParam(firstDate, secondDate)
+				.canPickDateRange(false)
+				.dateParam(firstDate, null)
 				.onDateSetListener(selectedDate -> {
 					firstDate = selectedDate.getFirstDate();
-					secondDate = selectedDate.getSecondDate();
+					btnDateSelectorFirst.setText(new SimpleDateFormat("yyyy/MM/dd").format(firstDate.getTime()));
+				})
+				.build()
+				.show(getActivity()));
 
-					btnDateRangeSelector.setText(
-							new SimpleDateFormat("yyyy/MM/dd").format(firstDate.getTime())
-									+ " ~ " + new SimpleDateFormat("yyyy/MM/dd").format(secondDate.getTime()));
+		btnDateSelectorSecond.setOnClickListener(v -> SublimePickerBuilder.builder()
+				.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
+				.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
+				.canPickDateRange(false)
+				.dateParam(secondDate, null)
+				.onDateSetListener(selectedDate -> {
+					secondDate = selectedDate.getFirstDate();
+					btnDateSelectorSecond.setText(new SimpleDateFormat("yyyy/MM/dd").format(secondDate.getTime()));
 				})
 				.build()
 				.show(getActivity()));

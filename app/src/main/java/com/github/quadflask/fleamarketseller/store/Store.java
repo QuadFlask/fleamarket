@@ -25,7 +25,6 @@ import lombok.val;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
-import rx.functions.Func1;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.realm;
 
@@ -553,7 +552,7 @@ public class Store implements Observer {
 		return realmQuery
 				.findAllAsync()
 				.asObservable()
-				.map((Func1<RealmResults<Transaction>, List<Transaction>>) transactions -> Lists.newArrayList(transactions.iterator()))
+				.map(transactions -> Lists.newArrayList(transactions.iterator()))
 				.map(transactions -> AggregationProcessor.aggregate(transactions, groupByTerm));
 	}
 
