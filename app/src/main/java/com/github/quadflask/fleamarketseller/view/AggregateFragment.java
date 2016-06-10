@@ -1,7 +1,11 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -13,24 +17,27 @@ import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
+import com.github.quadflask.fleamarketseller.model.Transaction;
 import com.github.quadflask.fleamarketseller.store.AggregationQuery;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
-import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
 
-public class AggregateFragment extends BaseFragment {
+public class AggregateFragment extends BaseFragment implements OnClickEditListener<Transaction> {
 	@BindView(R.id.rv_list)
-	RealmRecyclerView rvList;
+	RecyclerView rvList;
 
 	private Calendar firstDate;
 	private Calendar secondDate;
+
+	private RecyclerViewAdapterForTransaction adapter;
 
 	@Override
 	protected void onBindView() {
@@ -77,9 +84,7 @@ public class AggregateFragment extends BaseFragment {
 									.build())
 							.observeOn(AndroidSchedulers.mainThread())
 							.subscribe(
-									transactions -> {
-
-									}, e -> {
+									this::updateTransactions, e -> {
 									});
 				})
 				.show();
@@ -135,5 +140,69 @@ public class AggregateFragment extends BaseFragment {
 		final List<String> productNames = Stream.of(store().loadProducts()).map(Product::getName).collect(Collectors.toList());
 		productNames.add(0, AggregationQuery.OPTION_TOTAL);
 		spProduct.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, productNames));
+	}
+
+	private void updateTransactions(List<Transaction> transactions) {
+		if (adapter == null && getActivity() != null) {
+			adapter = new RecyclerViewAdapterForTransaction(getActivity());
+			adapter.updateData(transactions);
+			rvList.setAdapter(adapter);
+		} else {
+			adapter.updateData(transactions);
+			adapter.notifyDataSetChanged();
+		}
+	}
+
+	private String toThousandComma(Long n) {
+		return NumberFormat.getInstance().format(n == null ? 0 : n);
+	}
+
+	@Override
+	public void onClickEdit(Transaction transaction) {
+
+	}
+
+	private class RecyclerViewAdapterForTransaction extends RecyclerView.Adapter<TransactionListFragment.TransactionViewHolder> {
+		private List<Transaction> transactions;
+		private final LayoutInflater inflater;
+
+		public RecyclerViewAdapterForTransaction(Context context) {
+			inflater = LayoutInflater.from(context);
+		}
+
+		@Override
+		public TransactionListFragment.TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+			TransactionListFragment.TransactionViewHolder viewHolder = new TransactionListFragment.TransactionViewHolder(inflater.inflate(TransactionListFragment.TransactionViewHolder.RES_ID, parent, false));
+			viewHolder.root.setOnClickListener(v -> AggregateFragment.this.onClickEdit(viewHolder.transaction));
+			return viewHolder;
+		}
+
+		@Override
+		public void onBindViewHolder(TransactionListFragment.TransactionViewHolder viewHolder, int position) {
+			Transaction transaction = transactions.get(position);
+			viewHolder.transaction = transaction;
+			viewHolder.tvDate.setText(transaction.getFormattedDate());
+			viewHolder.tv_product_name.setText(transaction.getProduct().getName());
+
+			if (transaction.getIsIncome())
+				viewHolder.tv_vendor_or_market.setText(transaction.getMarket().getName());
+			else
+				viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
+
+			viewHolder.tv_price.setTextColor(transaction.getIsIncome() ? 0xff2244ff : 0xffff4422);
+			viewHolder.tv_price.setText(toThousandComma(transaction.getProduct().getPrice()));
+			viewHolder.tvText.setText(transaction.getText());
+		}
+
+		@Override
+		public int getItemCount() {
+			if (transactions != null)
+				return transactions.size();
+			return 0;
+		}
+
+		public void updateData(List<Transaction> transactions) {
+			this.transactions = transactions;
+		}
 	}
 }

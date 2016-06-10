@@ -134,7 +134,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 		return NumberFormat.getInstance().format(n == null ? 0 : n);
 	}
 
-	private static class TransactionViewHolder extends RealmViewHolder {
+	static class TransactionViewHolder extends RealmViewHolder {
 		static final int RES_ID = R.layout.li_transaction2;
 
 		final RelativeLayout root;
