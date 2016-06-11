@@ -8,9 +8,11 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -129,5 +131,12 @@ public class AggregationProcessorTest {
 
 		assertEquals("-1", iterator.next().getPrice().toString());
 		assertEquals("1", iterator.next().getPrice().toString());
+	}
+
+
+	@Test
+	public void numberFormatTest() {
+		Long n = 10000L;
+		assertEquals("10,000", NumberFormat.getInstance(Locale.US).format(n == null ? 0 : n));
 	}
 }

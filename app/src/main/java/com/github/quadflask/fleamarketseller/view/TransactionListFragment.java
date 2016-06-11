@@ -12,6 +12,7 @@ import com.github.quadflask.fleamarketseller.R;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -87,7 +88,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 									viewHolder.tv_vendor_or_market.setText(transaction.getVendor().getName());
 
 								viewHolder.tv_price.setTextColor(transaction.getIsIncome() ? 0xff2244ff : 0xffff4422);
-								viewHolder.tv_price.setText(toThousandComma(transaction.getProduct().getPrice()));
+								viewHolder.tv_price.setText(toThousandComma(transaction.getPrice()));
 								viewHolder.tvText.setText(transaction.getText());
 							}
 						};
@@ -121,7 +122,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 		tvDate.setText(transaction.getFormattedDate());
 		tvMarketName.setText(transaction.getMarket().getName());
 		tvProductName.setText(transaction.getProduct().getName());
-		tvPrice.setText(toThousandComma(transaction.getProduct().getPrice()));
+		tvPrice.setText(toThousandComma(transaction.getPrice()));
 		tvText.setText(transaction.getText());
 	}
 
@@ -131,7 +132,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	}
 
 	private String toThousandComma(Long n) {
-		return NumberFormat.getInstance().format(n == null ? 0 : n);
+		return NumberFormat.getInstance(Locale.US).format(n == null ? 0 : n);
 	}
 
 	static class TransactionViewHolder extends RealmViewHolder {
