@@ -22,9 +22,11 @@ import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmViewHolder;
+import io.realm.Sort;
 import lombok.val;
 
 import static com.github.quadflask.fleamarketseller.FleamarketApplication.store;
+import static net.steamcrafted.materialiconlib.MaterialDrawableBuilder.IconValue;
 
 public class CategoryListActivity extends BaseActivity implements OnClickEditListener<Category> {
 	@BindView(R.id.main_content)
@@ -51,7 +53,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 	}
 
 	private void reloadCategories() {
-		val categories = store().loadAllCategories();
+		val categories = store().loadAllCategories().sort("parent", Sort.ASCENDING, "date", Sort.DESCENDING);
 		if (adapter == null) {
 			adapter = new RealmBasedRecyclerViewAdapter<Category, CategoryViewHolder>(this, categories, true, false) {
 				@Override
@@ -71,6 +73,7 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 					} else viewHolder.parentName.setText("");
 					viewHolder.name.setText(category.getName());
 					viewHolder.icon.setColor(category.getColor());
+					viewHolder.icon.setIcon(category.getParent() == null ? IconValue.LABEL_OUTLINE : IconValue.ACCOUNT_MINUS);
 				}
 			};
 			rvList.setAdapter(adapter);
