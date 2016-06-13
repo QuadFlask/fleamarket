@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,11 @@ public class SublimeDatePickerDialogFragment extends DialogFragment {
 
 	public SublimeDatePickerDialogFragment show(FragmentActivity activity) {
 		show(activity.getSupportFragmentManager(), "SUBLIME_PICKER");
+		return this;
+	}
+
+	public SublimeDatePickerDialogFragment show(FragmentManager fragmentManager) {
+		show(fragmentManager, "SUBLIME_PICKER");
 		return this;
 	}
 

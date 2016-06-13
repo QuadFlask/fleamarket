@@ -1,6 +1,8 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +35,7 @@ public class TransactionListFragment extends BaseFragment implements OnClickEdit
 	public TransactionListFragment() {
 	}
 
-	public static TransactionListFragment newInstance(boolean isIncome) {
+	public static TransactionListFragment newInstance(Activity activity, FragmentManager fragmentManager, boolean isIncome) {
 		TransactionListFragment transactionListFragment = new TransactionListFragment();
 		transactionListFragment.isIncome = isIncome;
 		return transactionListFragment;

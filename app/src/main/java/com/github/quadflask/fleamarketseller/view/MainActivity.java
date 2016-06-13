@@ -1,5 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,7 +36,7 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setSupportActionBar(toolbar);
 
-		sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
 		viewPager.setAdapter(sectionsPagerAdapter);
 		tabLayout.setupWithViewPager(viewPager);
 		viewPager.setOffscreenPageLimit(3);
@@ -100,20 +101,22 @@ public class MainActivity extends BaseActivity {
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+		private Activity activity;
 
-		public SectionsPagerAdapter(FragmentManager fm) {
+		public SectionsPagerAdapter(Activity activity, FragmentManager fm) {
 			super(fm);
+			this.activity = activity;
 		}
 
 		@Override
 		public Fragment getItem(int position) {
 			switch (position) {
 				case 0:
-					return TransactionListFragment.newInstance(true);
+					return TransactionListFragment.newInstance(activity, getSupportFragmentManager(), true);
 				case 1:
-					return TransactionListFragment.newInstance(false);
+					return TransactionListFragment.newInstance(activity, getSupportFragmentManager(), false);
 				case 2:
-					return AggregateFragment.newInstance();
+					return AggregateFragment.newInstance(activity, getSupportFragmentManager());
 			}
 			throw new IndexOutOfBoundsException();
 		}

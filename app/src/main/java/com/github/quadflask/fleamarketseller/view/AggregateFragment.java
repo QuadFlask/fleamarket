@@ -1,7 +1,9 @@
 package com.github.quadflask.fleamarketseller.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,8 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 	private Calendar firstDate;
 	private Calendar secondDate;
 
+	private Activity activity;
+	private FragmentManager fragmentManager;
 	private RecyclerViewAdapterForTransaction adapter;
 
 	@Override
@@ -58,13 +62,16 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 	public void onNext(UiUpdateEvent event) {
 	}
 
-	public static AggregateFragment newInstance() {
-		return new AggregateFragment();
+	public static AggregateFragment newInstance(Activity activity, FragmentManager fragmentManager) {
+		AggregateFragment aggregateFragment = new AggregateFragment();
+		aggregateFragment.activity = activity;
+		aggregateFragment.fragmentManager = fragmentManager;
+		return aggregateFragment;
 	}
 
 	@Override
 	public void onFabClick(FloatingActionButton fab) {
-		final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+		final MaterialDialog dialog = new MaterialDialog.Builder(activity)
 				.title("필터")
 				.customView(R.layout.dialog_aggregation_filter, true)
 				.positiveText("적용")
@@ -110,7 +117,7 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 					btnDateSelectorFirst.setText(new SimpleDateFormat("yyyy/MM/dd").format(firstDate.getTime()));
 				})
 				.build()
-				.show(getActivity()));
+				.show(fragmentManager));
 
 		btnDateSelectorSecond.setOnClickListener(v -> SublimePickerBuilder.builder()
 				.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
@@ -122,9 +129,9 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 					btnDateSelectorSecond.setText(new SimpleDateFormat("yyyy/MM/dd").format(secondDate.getTime()));
 				})
 				.build()
-				.show(getActivity()));
+				.show(fragmentManager));
 
-		spTermType.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, new String[]{
+		spTermType.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, new String[]{
 				AggregationQuery.OPTION_TOTAL,
 				AggregationQuery.OPTION_BY_DAY,
 				AggregationQuery.OPTION_BY_MONTH,
@@ -134,20 +141,20 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 		final List<String> marketNames = Stream.of(store().loadMarkets()).map(Market::getName).collect(Collectors.toList());
 
 		marketNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spMarket.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, marketNames));
+		spMarket.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, marketNames));
 
 		final List<String> categoryNames = store().loadCategoryNames();
 		categoryNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spCategory.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, categoryNames));
+		spCategory.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, categoryNames));
 
 		final List<String> productNames = Stream.of(store().loadProducts()).map(Product::getName).collect(Collectors.toList());
 		productNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spProduct.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.support_simple_spinner_dropdown_item, productNames));
+		spProduct.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, productNames));
 	}
 
 	private void updateTransactions(List<Transaction.TransactionSummary> transactions) {
-		if (adapter == null && getActivity() != null) {
-			adapter = new RecyclerViewAdapterForTransaction(getActivity());
+		if (adapter == null && activity != null) {
+			adapter = new RecyclerViewAdapterForTransaction(activity);
 			adapter.updateData(transactions);
 			rvList.setAdapter(adapter);
 		} else {
