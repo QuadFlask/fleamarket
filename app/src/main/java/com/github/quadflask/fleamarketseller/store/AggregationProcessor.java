@@ -14,6 +14,9 @@ import java.util.Map;
 public class AggregationProcessor {
 	private static final Comparator<String> STRING_REVERSE_COMPARATOR = (lhs, rhs) -> -1 * lhs.compareTo(rhs);
 
+	private AggregationProcessor() {
+	}
+
 	public static List<Transaction.TransactionSummary> aggregate(List<Transaction> transactions, String condition) {
 		return aggregateAndReduceGroups(Stream
 				.of(transactions)
