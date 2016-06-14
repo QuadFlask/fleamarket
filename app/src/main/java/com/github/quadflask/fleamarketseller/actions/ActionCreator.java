@@ -6,6 +6,7 @@ import com.github.quadflask.fleamarketseller.model.Market;
 import com.github.quadflask.fleamarketseller.model.Product;
 import com.github.quadflask.fleamarketseller.model.Transaction;
 import com.github.quadflask.fleamarketseller.model.Vendor;
+import com.github.quadflask.fleamarketseller.view.UiUpdateEvent;
 
 public class ActionCreator {
 	Dispatcher dispatcher;
@@ -56,5 +57,9 @@ public class ActionCreator {
 
 	public void editVendor(Vendor vendor) {
 		dispatcher.dispatch(new Action.EditVendor(vendor));
+	}
+
+	public void onFabClick(int itemIndex) {
+		dispatcher.dispatch(new UiUpdateEvent.OnFabClick(itemIndex));
 	}
 }

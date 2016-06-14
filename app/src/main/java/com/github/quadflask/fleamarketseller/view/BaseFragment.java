@@ -1,7 +1,6 @@
 package com.github.quadflask.fleamarketseller.view;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,8 +53,5 @@ public abstract class BaseFragment extends Fragment implements Observer<UiUpdate
 	@Override
 	public void onError(Throwable e) {
 		e.printStackTrace();
-	}
-
-	public void onFabClick(FloatingActionButton fab) {
 	}
 }

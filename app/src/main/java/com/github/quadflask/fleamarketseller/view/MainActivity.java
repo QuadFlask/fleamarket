@@ -18,6 +18,8 @@ import com.github.quadflask.fleamarketseller.R;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.github.quadflask.fleamarketseller.FleamarketApplication.actionCreator;
+
 public class MainActivity extends BaseActivity {
 
 	@BindView(R.id.toolbar)
@@ -43,10 +45,9 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@OnClick(R.id.fab)
-	void openInputProduct() {
+	void onClickFab() {
 		final int currentItem = viewPager.getCurrentItem();
-		final BaseFragment item = (BaseFragment) sectionsPagerAdapter.getItem(currentItem);
-		item.onFabClick(fab);
+		actionCreator().onFabClick(currentItem);
 
 		if (currentItem == 0) {
 			final Intent intent = new Intent(this, InputTransactionActivity.class);

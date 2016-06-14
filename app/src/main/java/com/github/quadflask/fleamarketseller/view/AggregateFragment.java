@@ -2,7 +2,6 @@ package com.github.quadflask.fleamarketseller.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,6 +59,87 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 
 	@Override
 	public void onNext(UiUpdateEvent event) {
+		if (event instanceof UiUpdateEvent.OnFabClick) {
+			final MaterialDialog dialog = new MaterialDialog.Builder(activity)
+					.title("필터")
+					.customView(R.layout.dialog_aggregation_filter, true)
+					.positiveText("적용")
+					.onPositive((dialog1, which) -> {
+						final View customView = dialog1.getCustomView();
+
+						Spinner spTermType = (Spinner) customView.findViewById(R.id.sp_term_type);
+						Spinner spMarket = (Spinner) customView.findViewById(R.id.sp_market);
+						Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
+						Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
+
+						store().runQuery(
+								AggregationQuery.builder()
+										.firstDate(firstDate)
+										.secondDate(secondDate)
+										.groupByTerm(spTermType.getSelectedItem().toString())
+										.marketName(spMarket.getSelectedItem().toString())
+										.categoryName(spCategory.getSelectedItem().toString())
+										.productName(spProduct.getSelectedItem().toString())
+										.build())
+								.observeOn(AndroidSchedulers.mainThread())
+								.subscribe(
+										this::updateTransactions, e -> {
+										});
+					})
+					.show();
+
+			final View customView = dialog.getCustomView();
+			Button btnDateSelectorFirst = (Button) customView.findViewById(R.id.btn_open_date_selector_first);
+			Button btnDateSelectorSecond = (Button) customView.findViewById(R.id.btn_open_date_selector_second);
+			Spinner spTermType = (Spinner) customView.findViewById(R.id.sp_term_type);
+			Spinner spMarket = (Spinner) customView.findViewById(R.id.sp_market);
+			Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
+			Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
+
+			btnDateSelectorFirst.setOnClickListener(v -> SublimePickerBuilder.builder()
+					.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
+					.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
+					.canPickDateRange(false)
+					.dateParam(firstDate, null)
+					.onDateSetListener(selectedDate -> {
+						firstDate = selectedDate.getFirstDate();
+						btnDateSelectorFirst.setText(new SimpleDateFormat("yyyy/MM/dd").format(firstDate.getTime()));
+					})
+					.build()
+					.show(fragmentManager));
+
+			btnDateSelectorSecond.setOnClickListener(v -> SublimePickerBuilder.builder()
+					.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
+					.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
+					.canPickDateRange(false)
+					.dateParam(secondDate, null)
+					.onDateSetListener(selectedDate -> {
+						secondDate = selectedDate.getFirstDate();
+						btnDateSelectorSecond.setText(new SimpleDateFormat("yyyy/MM/dd").format(secondDate.getTime()));
+					})
+					.build()
+					.show(fragmentManager));
+
+			spTermType.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, new String[]{
+					AggregationQuery.OPTION_TOTAL,
+					AggregationQuery.OPTION_BY_DAY,
+					AggregationQuery.OPTION_BY_MONTH,
+					AggregationQuery.OPTION_BY_QUARTER,
+					AggregationQuery.OPTION_BY_YEAR}));
+
+			final List<String> marketNames = Stream.of(store().loadMarkets()).map(Market::getName).collect(Collectors.toList());
+
+			marketNames.add(0, AggregationQuery.OPTION_TOTAL);
+			spMarket.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, marketNames));
+
+			final List<String> categoryNames = store().loadCategoryNames();
+			categoryNames.add(0, AggregationQuery.OPTION_TOTAL);
+			spCategory.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, categoryNames));
+
+			final List<String> productNames = Stream.of(store().loadProducts()).map(Product::getName).collect(Collectors.toList());
+			productNames.add(0, AggregationQuery.OPTION_TOTAL);
+			spProduct.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, productNames));
+		}
 	}
 
 	public static AggregateFragment newInstance(Activity activity, FragmentManager fragmentManager) {
@@ -67,89 +147,6 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 		aggregateFragment.activity = activity;
 		aggregateFragment.fragmentManager = fragmentManager;
 		return aggregateFragment;
-	}
-
-	@Override
-	public void onFabClick(FloatingActionButton fab) {
-		final MaterialDialog dialog = new MaterialDialog.Builder(activity)
-				.title("필터")
-				.customView(R.layout.dialog_aggregation_filter, true)
-				.positiveText("적용")
-				.onPositive((dialog1, which) -> {
-					final View customView = dialog1.getCustomView();
-
-					Spinner spTermType = (Spinner) customView.findViewById(R.id.sp_term_type);
-					Spinner spMarket = (Spinner) customView.findViewById(R.id.sp_market);
-					Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
-					Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
-
-					store().runQuery(
-							AggregationQuery.builder()
-									.firstDate(firstDate)
-									.secondDate(secondDate)
-									.groupByTerm(spTermType.getSelectedItem().toString())
-									.marketName(spMarket.getSelectedItem().toString())
-									.categoryName(spCategory.getSelectedItem().toString())
-									.productName(spProduct.getSelectedItem().toString())
-									.build())
-							.observeOn(AndroidSchedulers.mainThread())
-							.subscribe(
-									this::updateTransactions, e -> {
-									});
-				})
-				.show();
-
-		final View customView = dialog.getCustomView();
-		Button btnDateSelectorFirst = (Button) customView.findViewById(R.id.btn_open_date_selector_first);
-		Button btnDateSelectorSecond = (Button) customView.findViewById(R.id.btn_open_date_selector_second);
-		Spinner spTermType = (Spinner) customView.findViewById(R.id.sp_term_type);
-		Spinner spMarket = (Spinner) customView.findViewById(R.id.sp_market);
-		Spinner spCategory = (Spinner) customView.findViewById(R.id.sp_category);
-		Spinner spProduct = (Spinner) customView.findViewById(R.id.sp_product);
-
-		btnDateSelectorFirst.setOnClickListener(v -> SublimePickerBuilder.builder()
-				.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
-				.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
-				.canPickDateRange(false)
-				.dateParam(firstDate, null)
-				.onDateSetListener(selectedDate -> {
-					firstDate = selectedDate.getFirstDate();
-					btnDateSelectorFirst.setText(new SimpleDateFormat("yyyy/MM/dd").format(firstDate.getTime()));
-				})
-				.build()
-				.show(fragmentManager));
-
-		btnDateSelectorSecond.setOnClickListener(v -> SublimePickerBuilder.builder()
-				.displayOption(SublimeOptions.ACTIVATE_DATE_PICKER)
-				.pickerToShow(SublimeOptions.Picker.DATE_PICKER)
-				.canPickDateRange(false)
-				.dateParam(secondDate, null)
-				.onDateSetListener(selectedDate -> {
-					secondDate = selectedDate.getFirstDate();
-					btnDateSelectorSecond.setText(new SimpleDateFormat("yyyy/MM/dd").format(secondDate.getTime()));
-				})
-				.build()
-				.show(fragmentManager));
-
-		spTermType.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, new String[]{
-				AggregationQuery.OPTION_TOTAL,
-				AggregationQuery.OPTION_BY_DAY,
-				AggregationQuery.OPTION_BY_MONTH,
-				AggregationQuery.OPTION_BY_QUARTER,
-				AggregationQuery.OPTION_BY_YEAR}));
-
-		final List<String> marketNames = Stream.of(store().loadMarkets()).map(Market::getName).collect(Collectors.toList());
-
-		marketNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spMarket.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, marketNames));
-
-		final List<String> categoryNames = store().loadCategoryNames();
-		categoryNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spCategory.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, categoryNames));
-
-		final List<String> productNames = Stream.of(store().loadProducts()).map(Product::getName).collect(Collectors.toList());
-		productNames.add(0, AggregationQuery.OPTION_TOTAL);
-		spProduct.setAdapter(new ArrayAdapter<>(activity, R.layout.support_simple_spinner_dropdown_item, productNames));
 	}
 
 	private void updateTransactions(List<Transaction.TransactionSummary> transactions) {

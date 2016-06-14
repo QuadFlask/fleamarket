@@ -74,7 +74,6 @@ public class UiUpdateEvent {
 		final Vendor vendor;
 
 		public VendorAdded(Vendor vendor) {
-			super();
 			this.vendor = vendor;
 		}
 	}
@@ -83,8 +82,15 @@ public class UiUpdateEvent {
 		final Vendor vendor;
 
 		public VendorUpdated(Vendor vendor) {
-			super();
 			this.vendor = vendor;
+		}
+	}
+
+	public static class OnFabClick extends UiUpdateEvent {
+		public final int itemIndex;
+
+		public OnFabClick(int itemIndex) {
+			this.itemIndex = itemIndex;
 		}
 	}
 }
