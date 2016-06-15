@@ -93,8 +93,8 @@ public class VendorListActivity extends BaseActivity implements OnClickEditListe
 								.location(edLocation.getText().toString())
 								.build();
 
-						store()
-								.checkValidAsObservable(newVendor)
+						store().checkValidAsObservable(newVendor)
+								.compose(bindToLifecycle())
 								.subscribe(
 										v -> actionCreator().newVendor(newVendor),
 										e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -125,10 +125,12 @@ public class VendorListActivity extends BaseActivity implements OnClickEditListe
 							.location(edLocation.getText().toString())
 							.build();
 
-					store().checkValidAsObservable(editedVendor).subscribe(
-							v -> actionCreator().editVendor(editedVendor),
-							e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
-					);
+					store().checkValidAsObservable(editedVendor)
+							.compose(bindToLifecycle())
+							.subscribe(
+									v -> actionCreator().editVendor(editedVendor),
+									e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+							);
 				})
 				.show();
 

@@ -118,7 +118,9 @@ public class InputProductActivity extends BaseActivity {
 				.price(price)
 				.build();
 
-		store().checkValidAsObservable(newProduct).subscribe(
+		store().checkValidAsObservable(newProduct)
+				.compose(bindToLifecycle())
+				.subscribe(
 				v -> {
 					if (isEditMode()) {
 						newProduct.setId(product.getId());

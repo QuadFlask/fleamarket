@@ -173,19 +173,21 @@ public class InputCategoryActivity extends BaseActivity {
 					.parentName(parentCategoryName)
 					.build();
 
-			store().checkValidAsObservable(newCategory).subscribe(
-					v -> {
-						if (isEditMode()) {
-							newCategory.setId(category.getId());
-							actionCreator().editCategory(newCategory);
-						} else
-							actionCreator().newCategory(newCategory);
-					},
-					e -> new MaterialDialog.Builder(this)
-							.title("실패")
-							.content(e.getMessage())
-							.positiveText("확인")
-							.show());
+			store().checkValidAsObservable(newCategory)
+					.compose(bindToLifecycle())
+					.subscribe(
+							v -> {
+								if (isEditMode()) {
+									newCategory.setId(category.getId());
+									actionCreator().editCategory(newCategory);
+								} else
+									actionCreator().newCategory(newCategory);
+							},
+							e -> new MaterialDialog.Builder(this)
+									.title("실패")
+									.content(e.getMessage())
+									.positiveText("확인")
+									.show());
 		}
 	}
 }

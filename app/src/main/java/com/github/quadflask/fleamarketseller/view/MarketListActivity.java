@@ -93,8 +93,8 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 								.location(edLocation.getText().toString())
 								.build();
 
-						store()
-								.checkValidAsObservable(newMarket)
+						store().checkValidAsObservable(newMarket)
+								.compose(bindToLifecycle())
 								.subscribe(
 										v -> actionCreator().newMarket(newMarket),
 										e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -120,10 +120,12 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 							.location(edLocation.getText().toString())
 							.build();
 
-					store().checkValidAsObservable(editedMarket).subscribe(
-							v -> actionCreator().editMarket(editedMarket),
-							e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
-					);
+					store().checkValidAsObservable(editedMarket)
+							.compose(bindToLifecycle())
+							.subscribe(
+									v -> actionCreator().editMarket(editedMarket),
+									e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+							);
 				})
 				.show();
 

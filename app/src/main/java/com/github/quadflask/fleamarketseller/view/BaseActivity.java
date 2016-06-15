@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.github.quadflask.fleamarketseller.FleamarketApplication;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observer;
 
-public abstract class BaseActivity extends AppCompatActivity implements Observer<UiUpdateEvent> {
+public abstract class BaseActivity extends RxAppCompatActivity implements Observer<UiUpdateEvent> {
 	private Unbinder bind;
 	private Boolean isEditMode = null;
 
