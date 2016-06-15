@@ -20,6 +20,7 @@ import com.github.quadflask.fleamarketseller.model.Market;
 import com.google.common.base.Strings;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -157,15 +158,18 @@ public class MarketListActivity extends BaseActivity implements OnClickEditListe
 		@LayoutRes
 		static final int RES_ID = R.layout.li_market;
 
-		final LinearLayout root;
-		final TextView name, location;
+		@BindView(R.id.ll_root)
+		LinearLayout root;
+		@BindView(R.id.tv_name)
+		TextView name;
+		@BindView(R.id.tv_location)
+		TextView location;
+
 		Market market;
 
 		public MarketViewHolder(View itemView) {
 			super(itemView);
-			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
-			name = (TextView) itemView.findViewById(R.id.tv_name);
-			location = (TextView) itemView.findViewById(R.id.tv_location);
+			ButterKnife.bind(this, itemView);
 		}
 	}
 }

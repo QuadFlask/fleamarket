@@ -20,6 +20,7 @@ import com.github.quadflask.fleamarketseller.model.Vendor;
 import com.google.common.base.Strings;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -157,16 +158,18 @@ public class VendorListActivity extends BaseActivity implements OnClickEditListe
 		@LayoutRes
 		static final int RES_ID = R.layout.li_vendor;
 
-		final LinearLayout root;
-		final TextView name, location;
+		@BindView(R.id.ll_root)
+		LinearLayout root;
+		@BindView(R.id.tv_name)
+		TextView name;
+		@BindView(R.id.tv_location)
+		TextView location;
 
 		Vendor vendor;
 
 		public VendorViewHolder(View itemView) {
 			super(itemView);
-			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
-			name = (TextView) itemView.findViewById(R.id.tv_name);
-			location = (TextView) itemView.findViewById(R.id.tv_location);
+			ButterKnife.bind(this, itemView);
 		}
 	}
 }

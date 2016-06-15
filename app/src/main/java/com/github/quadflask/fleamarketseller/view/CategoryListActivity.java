@@ -18,6 +18,7 @@ import com.github.quadflask.fleamarketseller.model.Category;
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -107,17 +108,20 @@ public class CategoryListActivity extends BaseActivity implements OnClickEditLis
 		@LayoutRes
 		static final int RES_ID = R.layout.li_category;
 
-		final MaterialIconView icon;
-		final LinearLayout root;
-		final TextView name, parentName;
+		@BindView(R.id.ll_root)
+		MaterialIconView icon;
+		@BindView(R.id.icon)
+		LinearLayout root;
+		@BindView(R.id.tv_category_parent_name)
+		TextView name;
+		@BindView(R.id.tv_category_name)
+		TextView parentName;
+
 		Category category;
 
 		CategoryViewHolder(View itemView) {
 			super(itemView);
-			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
-			icon = (MaterialIconView) itemView.findViewById(R.id.icon);
-			parentName = (TextView) itemView.findViewById(R.id.tv_category_parent_name);
-			name = (TextView) itemView.findViewById(R.id.tv_category_name);
+			ButterKnife.bind(this, itemView);
 		}
 	}
 }

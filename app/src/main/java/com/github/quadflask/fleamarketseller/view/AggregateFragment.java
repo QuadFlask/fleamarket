@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.RealmViewHolder;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -215,18 +216,24 @@ public class AggregateFragment extends BaseFragment implements OnClickEditListen
 	static class TransactionSummaryViewHolder extends RealmViewHolder {
 		static final int RES_ID = R.layout.li_transaction2;
 
-		final RelativeLayout root;
-		final TextView tvDate, tv_product_name, tv_vendor_or_market, tv_price, tvText;
+		@BindView(R.id.rl_root)
+		RelativeLayout root;
+		@BindView(R.id.tv_date)
+		TextView tvDate;
+		@BindView(R.id.tv_product_name)
+		TextView tv_product_name;
+		@BindView(R.id.tv_vendor_or_market)
+		TextView tv_vendor_or_market;
+		@BindView(R.id.tv_price)
+		TextView tv_price;
+		@BindView(R.id.tv_text)
+		TextView tvText;
+
 		Transaction.TransactionSummary transaction;
 
 		TransactionSummaryViewHolder(View itemView) {
 			super(itemView);
-			root = (RelativeLayout) itemView.findViewById(R.id.rl_root);
-			tvDate = (TextView) itemView.findViewById(R.id.tv_date);
-			tv_product_name = (TextView) itemView.findViewById(R.id.tv_product_name);
-			tv_vendor_or_market = (TextView) itemView.findViewById(R.id.tv_vendor_or_market);
-			tv_price = (TextView) itemView.findViewById(R.id.tv_price);
-			tvText = (TextView) itemView.findViewById(R.id.tv_text);
+			ButterKnife.bind(this, itemView);
 		}
 	}
 }

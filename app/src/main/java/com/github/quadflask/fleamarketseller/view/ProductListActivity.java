@@ -20,6 +20,7 @@ import net.steamcrafted.materialiconlib.MaterialIconView;
 import java.text.MessageFormat;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -110,19 +111,24 @@ public class ProductListActivity extends BaseActivity implements OnClickEditList
 		@LayoutRes
 		static final int RES_ID = R.layout.li_product;
 
-		final MaterialIconView icon;
-		final LinearLayout root;
-		final TextView name, category, date, price;
+		@BindView(R.id.ll_root)
+		MaterialIconView icon;
+		@BindView(R.id.icon)
+		LinearLayout root;
+		@BindView(R.id.tv_product_name)
+		TextView name;
+		@BindView(R.id.tv_product_created)
+		TextView category;
+		@BindView(R.id.tv_product_category)
+		TextView date;
+		@BindView(R.id.tv_product_price)
+		TextView price;
+
 		Product product;
 
 		ProductViewHolder(View itemView) {
 			super(itemView);
-			root = (LinearLayout) itemView.findViewById(R.id.ll_root);
-			icon = (MaterialIconView) itemView.findViewById(R.id.icon);
-			name = (TextView) itemView.findViewById(R.id.tv_product_name);
-			date = (TextView) itemView.findViewById(R.id.tv_product_created);
-			category = (TextView) itemView.findViewById(R.id.tv_product_category);
-			price = (TextView) itemView.findViewById(R.id.tv_product_price);
+			ButterKnife.bind(this, itemView);
 		}
 	}
 }
